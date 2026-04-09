@@ -5,7 +5,6 @@ public abstract class Piece {
         this.color = color;
     }
     public abstract void move();
-
     public abstract boolean isLegalMove();
     
 }
