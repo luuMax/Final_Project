@@ -1,3 +1,3 @@
-public class Pawn {
+public class Pawn implements Piece {
     
 }

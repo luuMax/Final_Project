@@ -1,3 +1,3 @@
-public class Rook {
+public class Rook implements Piece {
     
 }

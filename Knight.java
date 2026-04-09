@@ -1,3 +1,3 @@
-public class Knight {
+public class Knight implements Piece {
     
 }

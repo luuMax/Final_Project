@@ -1,3 +1,3 @@
-public class Queen {
+public class Queen implements Piece {
     
 }
