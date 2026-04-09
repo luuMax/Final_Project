@@ -1,12 +1,12 @@
-import java.awt.Color;
-public class Queen extends Piece {
-    public Queen(Color color) {
-        super(color);
+import javafx.scene.paint.Color;public class Queen extends Piece {
+    public Queen(Color color , int row, int col) {
+        super(color, row, col);
     }
-    public void move() {
-        
+    public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board) {
+        //TODO: implement move for queen
     }
-    public boolean isLegalMove() {
+    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board) {
+        //TODO: implement isLegalMove for queen
         return false;
     }
 }
