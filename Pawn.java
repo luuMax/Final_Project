@@ -1,3 +1,5 @@
-public class Pawn implements Piece {
-    
+public class Pawn extends Piece {
+    public void move() {
+        
+    }
 }

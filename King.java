@@ -1,3 +1,5 @@
-public class King implements Piece {
-    
+public class King extends Piece {
+    public void move() {
+        
+    }
 }

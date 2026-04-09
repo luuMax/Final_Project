@@ -1,3 +1,5 @@
-public class Queen implements Piece {
-    
+public class Queen extends Piece {
+    public void move() {
+        
+    }
 }

@@ -1,3 +1,5 @@
-public interface Piece {
+public abstract class Piece {
+
     public abstract void move();
+    
 }

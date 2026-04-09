@@ -1,3 +1,5 @@
-public class Knight implements Piece {
-    
+public class Knight extends Piece {
+    public void move() {
+        
+    }
 }
