@@ -1,6 +1,6 @@
 public class GameRunner
 {
-    public static void main(String[] args) {
+    //runs the game
         
     }
-}
+
