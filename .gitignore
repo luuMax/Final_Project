@@ -1,3 +1,10 @@
 javafx-sdk-26/
 *.class
 .DS_Store
+.vscode/
+.idea/
+*.iml/
+javafx-sdk-21.0.10/
+.idea/
+*.iml/
+javafx-sdk-21.0.10/
