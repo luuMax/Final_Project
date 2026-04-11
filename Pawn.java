@@ -15,24 +15,24 @@ public class Pawn extends Piece
     }
 
 
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         // TODO: implement isLegalMove for pawn
         int direction = (this.getColor() == Color.WHITE) ? -1 : 1; // different directions for white and black
 
         // forward moves
         // move up 2
-        if (toRow - fromRow == 2 * direction && isFirstMove && toCol - fromCol == 0 && board[fromRow + direction][fromCol] == null && board[fromRow + 2 * direction][fromCol] == null) {
+        if (toRow - fromRow == 2 * direction && isFirstMove && toCol - fromCol == 0 && board.getPieceAt(fromRow + direction, fromCol) == null && board.getPieceAt(fromRow + 2 * direction, fromCol) == null) {
             return true;
         }
 
         // move up 1
-        if (toRow - fromRow == direction && toCol - fromCol == 0 && board[fromRow + direction][fromCol] == null) {
+        if (toRow - fromRow == direction && toCol - fromCol == 0 && board.getPieceAt(fromRow + direction, fromCol) == null) {
             return true;
         }
         
         // TODO: captures (diagonal) 
-        if (toRow - fromRow == direction && Math.abs(toCol - fromCol) == 1 && board[toRow][toCol] != null && getColor() != board[toRow][toCol].getColor()) {
+        if (toRow - fromRow == direction && Math.abs(toCol - fromCol) == 1 && board.getPieceAt(toRow, toCol) != null && getColor() != board.getPieceAt(toRow, toCol).getColor()) {
             return true;
         }
 

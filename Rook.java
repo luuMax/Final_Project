@@ -2,13 +2,14 @@ import javafx.scene.paint.Color;
 
 public class Rook extends Piece
 {
+    boolean isFirstMove = true;
     public Rook(Color color, int row, int col)
     {
         super(color, row, col);
     }
 
 
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         
     }
@@ -16,7 +17,7 @@ public class Rook extends Piece
 
     // isLegalMove checks if piece follows its movement rules, doesn't jump over
     // pieces, doesn't capture friendly piece
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         // Rook moves in straight lines, can't jump over pieces
 
@@ -31,7 +32,7 @@ public class Rook extends Piece
             int maxCol = Math.max(fromCol, toCol);
             for (int c = minCol + 1; c < maxCol; c++)
             {
-                if (board[fromRow][c] != null)
+                if (board.getPieceAt(fromRow, c) != null)
                 {
                     return false;
                 }
@@ -43,14 +44,14 @@ public class Rook extends Piece
             int maxRow = Math.max(fromRow, toRow);
             for (int r = minRow + 1; r < maxRow; r++)
             {
-                if (board[r][fromCol] != null)
+                if (board.getPieceAt(r, fromCol) != null)
                 {
                     return false;
                 }
             }
         }
 
-        if (board[toRow][toCol] != null && board[toRow][toCol].getColor().equals(this.getColor()))
+        if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor().equals(this.getColor()))
         {
             return false; // can't capture own piece
         }

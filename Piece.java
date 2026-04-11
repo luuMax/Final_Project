@@ -21,16 +21,16 @@ public abstract class Piece
     // board
     public abstract
         boolean
-        isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
+        isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
 
     // move can be nonabstract.. can just be the smae for all pieces as its just
     // a shift in position.
     // game logic & islegalmove will handle capturing, enpassant, castling..
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
-        board[toRow][toCol] = this;
-        board[fromRow][fromCol] = null;
+        board.getBoard()[toRow][toCol] = this;
+        board.getBoard()[fromRow][fromCol] = null;
         this.setRow(toRow);
         this.setCol(toCol);
     }
@@ -38,7 +38,7 @@ public abstract class Piece
 
     // Get legal moves, can display all legal moves like in chess.com. O(64).
     // 8x8 board.
-    public ArrayList<String> getLegalMoves(Piece[][] board)
+    public ArrayList<String> getLegalMoves(Board board)
     {
         ArrayList<String> legalMoves = new ArrayList<>();
         for (int r = 0; r < 8; r++)

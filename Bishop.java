@@ -8,14 +8,14 @@ public class Bishop extends Piece
     }
 
 
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         // TODO: implement move for bishop
 
     }
 
 
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         // TODO: implement isLegalMove for bishop
         return false;
