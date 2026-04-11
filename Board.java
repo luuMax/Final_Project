@@ -16,12 +16,12 @@ public class Board {
         this(BoardType.DEFAULT);
     }
 
-    public void initializePieces(BoardType boardType) {
-        if (this.boardType == boardType) {
-            // initialize pieces in starting positions
-        }
-        else {
-            // do other stuff for other modes maybe
-        }
-    }
+    // public void initializePieces(BoardType boardType) {
+    //     if (this.boardType == boardType) {
+    //         // initialize pieces in starting positions
+    //     }
+    //     else {
+    //         // do other stuff for other modes maybe
+    //     }
+    // }
 }

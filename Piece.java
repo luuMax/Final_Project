@@ -23,4 +23,21 @@ public abstract class Piece
 
     public abstract boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
 
+    // helper method for bishop, rook, queen
+    public boolean isPathClear(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board) {
+        int rowStep = (int) Math.signum(toRow - fromRow);
+        int colStep = (int) Math.signum(toCol - fromCol);
+        
+        int currentRow = fromRow + rowStep;
+        int currentCol = fromCol + colStep;
+        while (currentRow != toRow || currentCol != toCol) {
+            if (board[currentRow][currentCol] != null) {
+                return false;
+            }
+            currentRow += rowStep;
+            currentCol += colStep;
+        }
+        return true;
+    }
+
 }
