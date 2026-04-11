@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javafx.scene.paint.Color;
 // used javafx color instead of awt color to avoid conflicts with
 // javafx.scene.paint.Color in Board.java
@@ -14,16 +15,44 @@ public abstract class Piece
         this.row = row;
         this.col = col;
     }
+
+
     // needs board[][] to check if move is legal, since new moves change current
     // board
-
-
-    public abstract void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
-
-
     public abstract
         boolean
         isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
+
+
+    // move can be nonabstract.. can just be the smae for all pieces as its just
+    // a shift in position.
+    // game logic & islegalmove will handle capturing, enpassant, castling..
+    public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    {
+        board[toRow][toCol] = this;
+        board[fromRow][fromCol] = null;
+        this.setRow(toRow);
+        this.setCol(toCol);
+    }
+
+
+    // Get legal moves, can display all legal moves like in chess.com. O(64).
+    // 8x8 board.
+    public ArrayList<String> getLegalMoves(Piece[][] board)
+    {
+        ArrayList<String> legalMoves = new ArrayList<>();
+        for (int r = 0; r < 8; r++)
+        {
+            for (int c = 0; c < 8; c++)
+            {
+                if (isLegalMove(this.row, this.col, r, c, board))
+                {
+                    legalMoves.add(r + "," + c);
+                }
+            }
+        }
+        return legalMoves;
+    }
 
 
     // helper method for bishop, rook, queen
@@ -46,6 +75,7 @@ public abstract class Piece
         return true;
     }
 
+
     public Color getColor()
     {
         return color;
@@ -63,16 +93,19 @@ public abstract class Piece
         return col;
     }
 
+
     public void setColor(Color color)
     {
         this.color = color;
     }
 
+
     public void setRow(int row)
     {
         this.row = row;
     }
-    
+
+
     public void setCol(int col)
     {
         this.col = col;

@@ -10,7 +10,7 @@ public class Board {
     private King blackKing;
 
     public enum BoardType {
-        DEFAULT, CUSTOM
+        DEFAULT, CUSTOM //none for now
     }
 
     public Board(BoardType boardType) {

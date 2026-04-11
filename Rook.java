@@ -10,10 +10,7 @@ public class Rook extends Piece
 
     public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
     {
-        board[toRow][toCol] = this;
-        board[fromRow][fromCol] = null;
-        this.setRow(toRow);
-        this.setCol(toCol);
+        
     }
 
 
