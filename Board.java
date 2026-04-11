@@ -74,4 +74,14 @@ public class Board {
     public Piece[][] getBoard() {
         return boardArr;
      }
+
+
+    public King getKing(Color color) {
+        if (color == Color.WHITE) {
+            return whiteKing;
+        }
+        else {
+            return blackKing;
+        }
+    }
 }
