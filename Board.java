@@ -1,5 +1,7 @@
 import javafx.scene.paint.Color;
 
+// Board class to represent the chess board and piece positions
+
 public class Board {
     private BoardType boardType;
     private Piece[][] boardArr;
@@ -59,5 +61,17 @@ public class Board {
          else {
             // do other stuff for other modes maybe
          }
+     }
+
+     //getPieceAt for checking gameState 
+     public Piece getPieceAt(int row, int col) {
+        if (row < 0 || row >= 8 || col < 0 || col >= 8) {
+            return null; // out of bounds
+        }
+        return boardArr[row][col];
+     }
+
+    public Piece[][] getBoard() {
+        return boardArr;
      }
 }

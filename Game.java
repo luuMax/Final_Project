@@ -1,15 +1,17 @@
 import javafx.scene.paint.Color;;
 
 public class Game {
-    private Piece[][] board;
+    private Board board;
     private Color currentTurn;
-    private boolean gameState;
+    private boolean gameState; // true means ongoing, false means game over
 
     public Game() {
-        board = new Piece[8][8];
+        board = new Board(Board.BoardType.DEFAULT);
+        board.initializePieces(Board.BoardType.DEFAULT);
         currentTurn = Color.WHITE;
-        gameState = true; // true means game is ongoing, false means game is over
-        
+        gameState = true; 
     }
+
+    
 
 }
