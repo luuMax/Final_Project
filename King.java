@@ -29,7 +29,8 @@ public class King extends Piece
         King king = board.getKing(color);
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if (board.getPieceAt(row, col) != null && board.getPieceAt(row, col).isLegalMove(row, col, king.getRow(), king.getCol(), board)) {
+                Piece piece = board.getPieceAt(row, col);
+                if (piece != null && piece.getColor() != color && piece.isLegalMove(row, col, king.getRow(), king.getCol(), board)) {
                     return true;
                 }
             }

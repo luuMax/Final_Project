@@ -19,9 +19,8 @@ public abstract class Piece
 
     // needs board[][] to check if move is legal, since new moves change current
     // board
-    public abstract
-        boolean
-        isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board);
+    // before returning true, make the move temporarily and then call isInCheck, and undo the move if necessary
+    public abstract boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
 
     // move can be nonabstract.. can just be the smae for all pieces as its just
