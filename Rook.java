@@ -10,11 +10,10 @@ public class Rook extends Piece
 
     public void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
     {
-        board[toRow][toCol] = this; // if there was a piece there, it's
-                                    // captured/replaced
+        board[toRow][toCol] = this;
         board[fromRow][fromCol] = null;
-        this.row = toRow;
-        this.col = toCol;
+        this.setRow(toRow);
+        this.setCol(toCol);
     }
 
 
@@ -54,7 +53,7 @@ public class Rook extends Piece
             }
         }
 
-        if (board[toRow][toCol] != null && board[toRow][toCol].color.equals(this.color))
+        if (board[toRow][toCol] != null && board[toRow][toCol].getColor().equals(this.getColor()))
         {
             return false; // can't capture own piece
         }

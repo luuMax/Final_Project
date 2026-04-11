@@ -1,6 +1,7 @@
 public class GameRunner
 {
-    //runs the game
+    //runs the game, we COULD use Main.java for now
+    
         
     }
 

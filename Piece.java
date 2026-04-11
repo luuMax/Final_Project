@@ -4,9 +4,9 @@ import javafx.scene.paint.Color;
 
 public abstract class Piece
 {
-    Color color;
-    int row;
-    int col;
+    private Color color;
+    private int   row;
+    private int   col;
 
     public Piece(Color color, int row, int col)
     {
@@ -21,17 +21,23 @@ public abstract class Piece
     public abstract void move(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
 
 
-    public abstract boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
+    public abstract
+        boolean
+        isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board);
+
 
     // helper method for bishop, rook, queen
-    public boolean isPathClear(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board) {
-        int rowStep = (int) Math.signum(toRow - fromRow);
-        int colStep = (int) Math.signum(toCol - fromCol);
-        
+    public boolean isPathClear(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    {
+        int rowStep = (int)Math.signum(toRow - fromRow);
+        int colStep = (int)Math.signum(toCol - fromCol);
+
         int currentRow = fromRow + rowStep;
         int currentCol = fromCol + colStep;
-        while (currentRow != toRow || currentCol != toCol) {
-            if (board[currentRow][currentCol] != null) {
+        while (currentRow != toRow || currentCol != toCol)
+        {
+            if (board[currentRow][currentCol] != null)
+            {
                 return false;
             }
             currentRow += rowStep;
@@ -40,4 +46,35 @@ public abstract class Piece
         return true;
     }
 
+    public Color getColor()
+    {
+        return color;
+    }
+
+
+    public int getRow()
+    {
+        return row;
+    }
+
+
+    public int getCol()
+    {
+        return col;
+    }
+
+    public void setColor(Color color)
+    {
+        this.color = color;
+    }
+
+    public void setRow(int row)
+    {
+        this.row = row;
+    }
+    
+    public void setCol(int col)
+    {
+        this.col = col;
+    }
 }

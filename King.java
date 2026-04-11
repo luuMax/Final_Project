@@ -13,6 +13,7 @@ public class King extends Piece
         // TODO: implement move for king
 
         //there is 8 adja. squares + castling (we can ignore for now?)
+        //also queenside castling
     }
 
 
