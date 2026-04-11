@@ -1,6 +1,9 @@
 public class Board {
-    BoardType boardType;
-    Piece[][] boardArr;
+    private BoardType boardType;
+    private Piece[][] boardArr;
+
+    private King whiteKing;
+    private King blackKing;
 
     public enum BoardType {
         DEFAULT, CUSTOM

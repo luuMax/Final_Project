@@ -17,8 +17,24 @@ public class Pawn extends Piece
 
     public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
     {
-        
         // TODO: implement isLegalMove for pawn
+        int direction = (this.color == Color.WHITE) ? -1 : 1; // different directions for white and black
+        // forward moves
+
+        // move up 2
+        if (Math.abs(toRow - fromRow) == 2 && isFirstMove && toCol - fromCol == 0 && board[fromRow + direction][fromCol] == null && board[fromRow + 2 * direction][fromCol] == null) {
+            return true;
+        }
+
+        if (Math.abs(toRow - fromRow) == 1 && toCol - fromCol == 0 && board[fromRow + direction][fromCol] == null) {
+            return true;
+        }
+        
+
+        // TODO: captures (diagonal) 
+
+
+        // TODO: en passant?
         return false;
     }
 }
