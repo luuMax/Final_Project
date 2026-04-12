@@ -28,10 +28,12 @@ public abstract class Piece
     // game logic & islegalmove will handle capturing, enpassant, castling..
     public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
-        board.getBoard()[toRow][toCol] = this;
-        board.getBoard()[fromRow][fromCol] = null;
-        this.setRow(toRow);
-        this.setCol(toCol);
+        if (isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
+            board.getBoard()[toRow][toCol] = this;
+            board.getBoard()[fromRow][fromCol] = null;
+            this.setRow(toRow);
+            this.setCol(toCol);
+        }
     }
 
 

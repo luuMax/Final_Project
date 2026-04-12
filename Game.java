@@ -14,6 +14,25 @@ public class Game {
         gameState = true; 
     }
 
+    public Color getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public void makeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        Piece piece = board.getPieceAt(fromRow, fromCol);
+        if (piece != null && piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
+            Piece capturedPiece = board.getPieceAt(toRow, toCol);
+            Move.MoveType moveType;
+            if (capturedPiece != null) {
+                moveType = Move.MoveType.CAPTURE;
+            }
+
+            // more conditions and stuff
+        }
+    }
+
+
+
     
 
 }
