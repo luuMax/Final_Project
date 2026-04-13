@@ -5,6 +5,10 @@ import javafx.scene.paint.Color;public class Queen extends Piece {
     public void move(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         //TODO: implement move for queen
     }
+
+    public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        return false;
+    }
     public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         //TODO: implement isLegalMove for queen
         return false;

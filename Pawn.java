@@ -14,6 +14,10 @@ public class Pawn extends Piece
         // TODO: implement move for pawn
     }
 
+    public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        return false;
+    }
+
 
     public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {

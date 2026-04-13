@@ -23,6 +23,7 @@ public abstract class Piece
     // assumes that the toRow, toCol is a square on the board
     public abstract boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
+    public abstract boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
     // move can be nonabstract.. can just be the smae for all pieces as its just
     // a shift in position.
@@ -58,7 +59,7 @@ public abstract class Piece
 
 
     // helper method for bishop, rook, queen
-    public boolean isPathClear(int fromRow, int fromCol, int toRow, int toCol, Piece[][] board)
+    public boolean isPathClear(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         int rowStep = (int)Math.signum(toRow - fromRow);
         int colStep = (int)Math.signum(toCol - fromCol);
@@ -67,7 +68,7 @@ public abstract class Piece
         int currentCol = fromCol + colStep;
         while (currentRow != toRow || currentCol != toCol)
         {
-            if (board[currentRow][currentCol] != null)
+            if (board.getPieceAt(currentRow, currentCol) != null)
             {
                 return false;
             }
