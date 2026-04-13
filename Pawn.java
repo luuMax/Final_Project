@@ -49,6 +49,8 @@ public class Pawn extends Piece
                 return false;
             }
             else {
+                board.getBoard()[fromRow][fromCol] = this;
+                board.getBoard()[toRow][toCol] = capturedPiece;
                 return true;
             }
         }
