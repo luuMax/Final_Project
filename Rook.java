@@ -8,11 +8,11 @@ public class Rook extends Piece
         super(color, row, col);
     }
 
-
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
+    //should we use the piece move method? 
+    /* public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         
-    }
+    } */
 
 
     public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
