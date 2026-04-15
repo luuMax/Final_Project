@@ -12,7 +12,7 @@ public class King extends Piece
 
     // just for king so theres no infinite loop in isInCheck()
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        if (Math.abs(toRow - fromRow) <= 1 && Math.abs(toCol - fromCol) <= 1) {
+        if (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8 && Math.abs(toRow - fromRow) <= 1 && Math.abs(toCol - fromCol) <= 1) {
             if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() != this.getColor()) {
                 return true;
             }
