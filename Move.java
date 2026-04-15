@@ -94,8 +94,9 @@ public class Move {
                         rankDis = true;
                     }
                 }
-
-                moveString += String.valueOf((char) ('a' + fromCol));
+                if (!dPieces.isEmpty()) {
+                    moveString += String.valueOf((char) ('a' + fromCol));
+                }
                 if (rankDis) {
                     moveString += Math.abs(fromRow - 8);
                 }
