@@ -9,7 +9,7 @@ public class Game {
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
-        board.initializePieces(Board.BoardType.DEFAULT);
+        board.initializePieces();
         currentTurn = Color.WHITE;
         gameState = true; 
     }
@@ -23,9 +23,6 @@ public class Game {
         if (piece != null && piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
             Piece capturedPiece = board.getPieceAt(toRow, toCol);
             Move.MoveType moveType;
-            if (capturedPiece != null) {
-                moveType = Move.MoveType.CAPTURE;
-            }
 
             // more conditions and stuff
         }

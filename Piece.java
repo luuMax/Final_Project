@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 public abstract class Piece
 {
     private Color color;
-    private int   row;
-    private int   col;
+    private int row;
+    private int col;
 
     public Piece(Color color, int row, int col)
     {
