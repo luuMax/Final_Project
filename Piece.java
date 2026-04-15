@@ -21,9 +21,30 @@ public abstract class Piece
     // board
     // before returning true, make the move temporarily and then call isInCheck, and undo the move if necessary
     // assumes that the toRow, toCol is a square on the board
-    public abstract boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
-    public abstract boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board);
+    // checks if the piece can move to the square, disregarding possible checks on the king
+    public abstract boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board);
+
+    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        return canMoveTo(fromRow, fromCol, toRow, toCol, board) && isSafeMove(fromRow, fromCol, toRow, toCol, board);
+    }
+
+    // checks if the move keeps the king out of check
+    public boolean isSafeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        Piece capturedPiece = board.getPieceAt(toRow, toCol);
+        board.getBoard()[toRow][toCol] = this;
+        board.getBoard()[fromRow][fromCol] = null;
+        if (board.getKing(this.getColor()).isInCheck(this.getColor(), board)) {
+            board.getBoard()[fromRow][fromCol] = this;
+            board.getBoard()[toRow][toCol] = capturedPiece;
+            return false;
+        }
+        else {
+            board.getBoard()[fromRow][fromCol] = this;
+            board.getBoard()[toRow][toCol] = capturedPiece;
+            return true;
+        }
+    }
 
     // move can be nonabstract.. can just be the smae for all pieces as its just
     // a shift in position.

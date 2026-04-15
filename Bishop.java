@@ -8,20 +8,9 @@ public class Bishop extends Piece
     }
 
 
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
+    public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
-        // TODO: implement move for bishop
-
-    }
-
-
-    public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        return false;
-    }
-
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
-    {
-        // TODO: implement isLegalMove for bishop
+        // TODO: Bishop moving logic
         return false;
     }
 

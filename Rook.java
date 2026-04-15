@@ -15,15 +15,11 @@ public class Rook extends Piece
     } */
 
 
-    public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        return false;
-    }
-
     // isLegalMove checks if piece follows its movement rules, doesn't jump over
     // pieces, doesn't capture friendly piece
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
-    {
-        // Rook moves in straight lines, can't jump over pieces
+
+    public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+         // Rook moves in straight lines, can't jump over pieces
 
         if (fromRow != toRow && fromCol != toCol)
         {

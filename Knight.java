@@ -7,20 +7,8 @@ public class Knight extends Piece
         super(color, row, col);
     }
 
-
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
-    {
-        // TODO: implement move for knight
-    }
-
-
-    public boolean isAttacking(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        return false;
-    }
-
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board)
-    {
-        // TODO: implement isLegalMove for knight
+    public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        // TODO: Knight moving logic
         return false;
     }
 }

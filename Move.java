@@ -52,7 +52,10 @@ public class Move {
             }
 
             if (capturedPiece != null) {
-                moveString += "x" + (char)('a' + toCol) + (Math.abs(toRow - 8)); 
+                moveString += "x";
+            }
+            if (!(piece instanceof Pawn)) {
+                moveString += String.valueOf(((char) ('a' + toCol))) + (Math.abs(toRow - 8));
             }
 
             if (isCheckmate) {
