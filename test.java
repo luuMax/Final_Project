@@ -1,4 +1,6 @@
+
 import javafx.scene.paint.Color;
+
 public class Test {
     public static void main(String[] args) {
         Board board = new Board(Board.BoardType.DEFAULT);
@@ -27,3 +29,4 @@ public class Test {
         
     }
 }
+
