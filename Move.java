@@ -37,11 +37,15 @@ public class Move {
         this.isCheckmate = isCheckmate;
         this.board = board;
         piece = board.getPieceAt(fromRow, fromCol);
-        capturedPiece = board.getPieceAt(toRow, toCol);
+        if (moveType == MoveType.EN_PASSANT) {
+            capturedPiece = board.getPieceAt(fromRow, toCol);
+        }
+        else {
+            capturedPiece = board.getPieceAt(toRow, toCol);
+        }
     }
 
     public String toString() {
-        // TODO: add a way to disambiguate two or more pieces of the same type and color that can move to the same square
         String moveString = "";
         boolean isCapture = capturedPiece != null;
         if (moveType != MoveType.SHORT_CASTLE && moveType != MoveType.LONG_CASTLE) {

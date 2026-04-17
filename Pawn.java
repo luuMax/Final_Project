@@ -2,7 +2,7 @@ import javafx.scene.paint.Color;
 
 public class Pawn extends Piece
 {
-    boolean isFirstMove = true;
+    protected boolean isEnPassantable = false;
     public Pawn(Color color, int row, int col)
     {
         super(color, row, col);
@@ -10,7 +10,6 @@ public class Pawn extends Piece
 
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         int direction = (this.getColor() == Color.WHITE) ? -1 : 1; // different directions for white and black
-
         // forward moves
         // move up 2
         if (toRow - fromRow == 2 * direction && isFirstMove && toCol - fromCol == 0 && board.getPieceAt(fromRow + direction, fromCol) == null && board.getPieceAt(fromRow + 2 * direction, fromCol) == null) {
@@ -27,6 +26,9 @@ public class Pawn extends Piece
         }
 
         // TODO: en passant
+        if (toRow - fromRow == direction && Math.abs(toCol - fromCol) == 1 && board.getPieceAt(fromRow, toCol) instanceof Pawn && ((Pawn) board.getPieceAt(fromRow, toCol)).isEnPassantable) {
+            return true;
+        }
         return false;
     }
 }

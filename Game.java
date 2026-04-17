@@ -25,6 +25,9 @@ public class Game {
             Move.MoveType moveType;
 
             // more conditions and stuff
+            // after making a move set isFirstMove to false
+            // also make sure to check that if a pawn moves two squares, set isEnPassantable to true
+
         }
     }
 

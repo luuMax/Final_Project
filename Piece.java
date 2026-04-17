@@ -8,6 +8,7 @@ public abstract class Piece
     private Color color;
     private int row;
     private int col;
+    protected boolean isFirstMove = true;
 
     public Piece(Color color, int row, int col)
     {
@@ -56,6 +57,7 @@ public abstract class Piece
             board.getBoard()[fromRow][fromCol] = null;
             this.setRow(toRow);
             this.setCol(toCol);
+            isFirstMove = false;
         }
     }
 
@@ -98,7 +100,6 @@ public abstract class Piece
         }
         return true;
     }
-
 
     public Color getColor()
     {
