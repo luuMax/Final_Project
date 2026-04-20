@@ -18,7 +18,14 @@ public class Main extends Application {
         launch();
     }
 }
+ //only for neel and Alex: (java sdk 26 for silicon mac): 
 
+ //how to run main.java normally: (faster way below)
 //cd ~/Documents/GitHub/Final_Project
 //javac --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics *.java
 //java --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics Main
+
+
+//faster way: 
+// echo 'javac --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics *.java && java --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics Main' > run.sh
+// run the command, then run bash run.sh to run main.java (only for java sdk 26 computers)
