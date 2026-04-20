@@ -14,19 +14,6 @@ public class Move {
     boolean isCheckmate;
     Board board;
 
-    // keep check and checkmate separate, only one should be true at a time
-    // public Move(Piece piece, int fromRow, int fromCol, int toRow, int toCol, Piece capturedPiece, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
-    //     this.piece = piece;
-    //     this.fromRow = fromRow;
-    //     this.fromCol = fromCol;
-    //     this.toRow = toRow;
-    //     this.toCol = toCol;
-    //     this.capturedPiece = capturedPiece;
-    //     this.moveType = moveType;
-    //     this.isCheck = isCheck;
-    //     this.isCheckmate = isCheckmate;
-    //     this.board = board;
-    // }
     public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
         this.fromRow = fromRow;
         this.fromCol = fromCol;
