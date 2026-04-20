@@ -18,3 +18,7 @@ public class Main extends Application {
         launch();
     }
 }
+
+//cd ~/Documents/GitHub/Final_Project
+//javac --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics *.java
+//java --module-path javafx-sdk-26/lib --add-modules javafx.controls,javafx.graphics Main
