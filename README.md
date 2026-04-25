@@ -26,8 +26,8 @@ The SDK folder is over 100MB which exceeds GitHub's file limit, and everyone nee
 
 That means your JavaFX version doesn't match your Java version. Make sure you downloaded JavaFX 21 specifically, not JavaFX 26 or another version.
 
-
-
+6. For users of Java SDK 26: you will need to do extra things to reduce errors, as the vscode and computer frameworks don't natively handle usage of javafx. Press cmd + shift + p to and search for configure classpath, go to libraries tab, select add libraries. 
+Then go into your Javafx-sdk-26 folder, go into the lib folder, to highlight all the .jar folders (command A works). rerun/exit out of vscode, should be good. 
 
 
 Chessly with 450mg electrolytes

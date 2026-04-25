@@ -18,7 +18,7 @@ public class Main extends Application {
         launch();
     }
 }
- //only for neel and Alex: (java sdk 26 for silicon mac): 
+ // (java sdk 26 for silicon mac): 
 
  //how to run main.java normally: (faster way below)
 //cd ~/Documents/GitHub/Final_Project
