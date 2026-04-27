@@ -96,15 +96,6 @@ public class Move {
                 moveString += Math.abs(toRow - 8);
 
             }
-
-            if (isCheckmate) {
-                moveString += "#";
-            }
-
-            if (isCheck) {
-                moveString += "+";
-            }
-
         }
         else if (moveType == MoveType.SHORT_CASTLE){
             moveString = "O-O";
@@ -112,8 +103,13 @@ public class Move {
         else if (moveType == MoveType.LONG_CASTLE) {
             moveString = "O-O-O";
         }
+        if (isCheckmate) {
+            moveString += "#";
+        }
 
-
+        if (isCheck) {
+            moveString += "+";
+        }
         return moveString;
     }
 }
