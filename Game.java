@@ -21,7 +21,6 @@ public class Game {
     public void makeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         Piece piece = board.getPieceAt(fromRow, fromCol);
         if (piece != null && piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
-            Piece capturedPiece = board.getPieceAt(toRow, toCol);
             Move.MoveType moveType;
 
             // more conditions and stuff
