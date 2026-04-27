@@ -71,7 +71,6 @@ public class King extends Piece
             board.getBoard()[toRow][0] = null;
         }
         isFirstMove = false;
-
     }
 
     // Used for check, checkmate, pin logic
