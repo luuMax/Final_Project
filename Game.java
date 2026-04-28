@@ -1,4 +1,5 @@
 import javafx.scene.paint.Color;
+import java.text.Normalizer;
 import java.util.ArrayList;
 
 public class Game {
@@ -18,15 +19,28 @@ public class Game {
         return currentTurn;
     }
 
+    //
     public void makeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         Piece piece = board.getPieceAt(fromRow, fromCol);
+        if (piece.getColor() != currentTurn) {return;}
         if (piece == null || !piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) 
             {return;}
-        
-            Piece capturedPiece = board.getPieceAt(toRow, toCol);
-            Move.MoveType moveType;
 
-            //stuff it does after "making" the move:
+        Move.MoveType moveType = Move.MoveType.NORMAL; //default move type
+        Piece capturedPiece = board.getPieceAt(toRow, toCol); //default placeholder *captured piece*
+
+        //en passant
+
+       
+
+                
+        
+        
+
+
+
+
+        //stuff it does after "making" the move:
         
 
 
