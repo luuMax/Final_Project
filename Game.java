@@ -20,14 +20,15 @@ public class Game {
 
     public void makeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         Piece piece = board.getPieceAt(fromRow, fromCol);
-        if (piece == null || !piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {return;}
+        if (piece == null || !piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) 
+            {return;}
         
             Piece capturedPiece = board.getPieceAt(toRow, toCol);
             Move.MoveType moveType;
 
             //stuff it does after "making" the move:
         
-\
+
 
 
 
@@ -42,4 +43,4 @@ public class Game {
 
     
 
-}
+
