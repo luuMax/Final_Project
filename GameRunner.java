@@ -1,6 +1,6 @@
 public class GameRunner
 {
-    //runs the game, we COULD use Main.java for now
-    //actually remove this file
+    //runs the game (makes a board and stuff, allows each player to take turns)
+
         
     }
