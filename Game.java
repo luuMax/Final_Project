@@ -25,6 +25,7 @@ public class Game {
         
             Piece capturedPiece = board.getPieceAt(toRow, toCol);
             Move.MoveType moveType;
+            
 
             //stuff it does after "making" the move:
         

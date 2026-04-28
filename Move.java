@@ -13,6 +13,8 @@ public class Move {
     boolean isCheck;
     boolean isCheckmate;
     Board board;
+    boolean needsFileDisambiguation;
+    boolean needsRankDisambiguation;
 
     public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
         this.fromRow = fromRow;
@@ -30,22 +32,65 @@ public class Move {
         else {
             capturedPiece = board.getPieceAt(toRow, toCol);
         }
+
+        ArrayList<Piece> dPieces = getAmbiguousPieces();
+        needsFileDisambiguation = needsFileDisambiguation(dPieces);
+        needsRankDisambiguation = needsRankDisambiguation(dPieces);
     }
 
+    private ArrayList<Piece> getAmbiguousPieces() {
+        ArrayList<Piece> dPieces = new ArrayList<>();
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece dPiece = board.getPieceAt(row, col);
+                if (dPiece != null && dPiece.getClass() == piece.getClass() && dPiece.getColor() == piece.getColor() && dPiece.isLegalMove(row, col, toRow, toCol, board) && dPiece != piece) {
+                    dPieces.add(dPiece);
+                }
+            }
+        }
+        return dPieces;
+    }
+    private boolean needsFileDisambiguation(ArrayList<Piece> dPieces) {
+        if (!dPieces.isEmpty()) {
+            for (Piece dPiece : dPieces) {
+                if (dPiece.getCol() == fromCol) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean needsRankDisambiguation(ArrayList<Piece> dPieces) {
+        if (!dPieces.isEmpty()) {
+            for (Piece dPiece : dPieces) {
+                if (dPiece.getCol() == fromCol) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     public String toString() {
         String moveString = "";
         boolean isCapture = capturedPiece != null;
         if (moveType != MoveType.SHORT_CASTLE && moveType != MoveType.LONG_CASTLE) {
             if (piece instanceof Pawn) {
-                moveString += (char) ('a' + fromCol);
                 if (moveType == MoveType.NORMAL) {
+                    moveString += (char) ('a' + toCol);
                     moveString += Math.abs(toRow - 8);
                 }
-                if (isCapture) {
-                    moveString += "x" + String.valueOf((char) ('a' + toCol) + Math.abs(toRow - 8));
+                else if (isCapture || moveType == MoveType.EN_PASSANT) {
+                    moveString += (char) ('a' + fromCol);
+                    moveString += "x";
+                    moveString += (char) ('a' + toCol);
+                    moveString += Math.abs(toRow - 8);
                 }
                 if (moveType == MoveType.PROMOTION) {
-                    moveString += "=Q"; // queen by default add logic for under promotions later
+                    moveString += "=Q";
                 }
             }
             else {
@@ -64,34 +109,16 @@ public class Move {
                 else if (piece instanceof King) {
                     moveString += "K";
                 }
-
+                if (needsFileDisambiguation) {
+                    moveString += (char) ('a' + fromCol);
+                }
+                if (needsRankDisambiguation) {
+                    moveString += Math.abs(fromRow - 8);
+                }
                 if (capturedPiece != null) {
                     moveString += "x";
                 }
 
-                // disambiguation
-                boolean rankDis = false;
-                ArrayList<Piece> dPieces = new ArrayList<>();
-                for (int row = 0; row < 8; row++) {
-                    for (int col = 0; col < 8; col++) {
-                        Piece dPiece = board.getPieceAt(row, col);
-                        if (dPiece != null && dPiece.getClass() == piece.getClass() && dPiece.getColor() == piece.getColor() && dPiece.isLegalMove(row, col, toRow, toCol, board) && dPiece != piece) {
-                            dPieces.add(dPiece);
-                        }
-                    }
-                }
-                for (Piece disPiece : dPieces) {
-                    if (disPiece.getCol() == fromCol) {
-                        rankDis = true;
-                    }
-                }
-                if (!dPieces.isEmpty()) {
-                    moveString += String.valueOf((char) ('a' + fromCol));
-                }
-                if (rankDis) {
-                    moveString += Math.abs(fromRow - 8);
-                }
-                
                 moveString += String.valueOf((char) ('a' + toCol));
                 moveString += Math.abs(toRow - 8);
 
