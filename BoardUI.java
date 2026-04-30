@@ -100,6 +100,8 @@ public class BoardUI extends JFrame{
     public static void main(String[] args) {
         BoardUI board = new BoardUI(600,600,20);
         board.initialize();
+        Board imagineNamingYourSonBoard2 = new Board();
+        
     }
 
 }
