@@ -48,6 +48,9 @@ public class King extends Piece
     }
 
     // override move method specifically for castling
+
+    // king.move has errors, islegalmove should return if false. makeMove should handle king castling
+
     @Override
     public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
