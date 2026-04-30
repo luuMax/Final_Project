@@ -7,8 +7,8 @@ public class BoardUI extends JFrame{
     private int windowLength;
     private int tileSize;
 
-    public static final Color VERY_LIGHT_BROWN = new Color(234,208,167);
-    public static final Color DARK_BROWN = new Color(175,124,87);
+    public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
+    public static final Color DARK_BROWN = new Color(205,154,117);
 
 
 

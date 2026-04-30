@@ -25,7 +25,7 @@ public class Pawn extends Piece
             return true;
         }
 
-        // TODO: en passant
+        //en passant directions
         if (toRow - fromRow == direction && Math.abs(toCol - fromCol) == 1 && board.getPieceAt(fromRow, toCol) instanceof Pawn && ((Pawn) board.getPieceAt(fromRow, toCol)).isEnPassantable) {
             return true;
         }
