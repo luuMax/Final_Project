@@ -47,9 +47,7 @@ public abstract class Piece
         }
     }
 
-    // move can be nonabstract.. can just be the smae for all pieces as its just
-    // a shift in position.
-    // game logic & islegalmove will handle capturing, enpassant, castling..
+    //piece.move is irrelevant if Game.makemove does it for it. 
     public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         if (isLegalMove(fromRow, fromCol, toRow, toCol, board)) {

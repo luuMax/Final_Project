@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-public class Move {
+public class Move { //a recipt for a move, contains all info about move. 
     public enum MoveType {
         NORMAL, PROMOTION, EN_PASSANT, SHORT_CASTLE, LONG_CASTLE
     }

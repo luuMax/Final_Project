@@ -20,25 +20,55 @@ public class Game {
 
     public void makeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         Piece piece = board.getPieceAt(fromRow, fromCol);
-        if (piece == null || !piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) 
-            {return;}
         
-            Piece capturedPiece = board.getPieceAt(toRow, toCol);
-            Move.MoveType moveType;
-            
-
-            //stuff it does after "making" the move:
-        
-
-
-
-
-            // more conditions and stuff
-            // after making a move set isFirstMove to false
-            // also make sure to check that if a pawn moves two squares, set isEnPassantable to true
-
+        if (piece == null || piece.getColor() != currentTurn) {
+            System.out.println("Invalid move: No piece of current player's color at the source square.");
+            return; // testing
         }
+
+        if (!piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
+            System.out.println("Invalid move: The piece cannot move to the target square.");
+            return; // testing
+        }
+
+        Move.MoveType moveType; 
+
+        //(color doens't matter, works for both sides)
+        //short/long castling classifcation 
+        if (piece instanceof King && (Math.abs(toCol - fromCol) == 2)) {
+            if (toCol > fromCol) {
+                moveType = Move.MoveType.SHORT_CASTLE;
+            }
+
+            else {
+                moveType = Move.MoveType.LONG_CASTLE;
+            }
+        }
+
+        //enpassant 
+        else if (piece instanceof Pawn && (Math.abs(toCol - fromCol) == 1) 
+        && board.getPieceAt(toRow, toCol) == null) {
+            moveType = Move.MoveType.EN_PASSANT;
+        }
+
+        //promotion
+        else if (piece instanceof Pawn && (toRow == 0 || toRow == 7)) {
+            moveType = Move.MoveType.PROMOTION;
+        }
+
+        else {
+            moveType = Move.MoveType.NORMAL;
+        }
+        //MAKE move obj BEFORE altering board
+        moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, false, false, board));
+        
+
+
+
+
     }
+
+}
 
 
 

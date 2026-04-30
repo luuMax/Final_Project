@@ -3,6 +3,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+
+//currently broken, we using swing
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
