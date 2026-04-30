@@ -48,7 +48,8 @@ public abstract class Piece
     }
 
     //piece.move is irrelevant if Game.makemove does it for it. 
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
+    //to be removed
+   /*  public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         if (isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
             board.getBoard()[toRow][toCol] = this;
@@ -57,7 +58,7 @@ public abstract class Piece
             this.setCol(toCol);
             isFirstMove = false;
         }
-    }
+    } */
 
 
     // Get legal moves, can display all legal moves like in chess.com. O(64).

@@ -49,9 +49,11 @@ public class King extends Piece
 
     // override move method specifically for castling
 
-    // king.move has errors, islegalmove should return if false. makeMove should handle king castling
+   //1. there are a few errors in king.move
+   //2. makeMove does all this and flows better logically, so basically we can remove this. 
+   //what do you think 
 
-    @Override
+    /* @Override
     public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
         if (isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
@@ -74,7 +76,7 @@ public class King extends Piece
             board.getBoard()[toRow][0] = null;
         }
         isFirstMove = false;
-    }
+    } */
 
     // Used for check, checkmate, pin logic
     public boolean isInCheck(Color color, Board board) {
