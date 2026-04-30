@@ -7,6 +7,8 @@ public class BoardUI extends JFrame{
     private int windowLength;
     private int tileSize;
 
+
+    //BoardUI will eventually need a reference to game, to update board visually and stuff
     public BoardUI(int windowW, int windowL, int tileS)
     {
         windowWidth = windowW;

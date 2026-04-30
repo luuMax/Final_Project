@@ -1,7 +1,21 @@
 public class GameRunner
 {
-    //runs the game (makes a board and stuff, allows each player to take turns)
+    private Game game;
+    private BoardUI boardUI;
 
-    //Game is for gamestate (like can castle)
-    //Gamerunner is more for time limits, maybe bourdui
+    public static void main(String[] args) {
+        GameRunner runner = new GameRunner();
+        runner.start();
     }
+
+    //testing, currently boardui has no references to game
+    public void start() {
+        game = new Game();
+        boardUI = new BoardUI(600, 600, 75); 
+        boardUI.initialize();
+
+
+        System.out.println(game.getCurrentTurn()); //testing;
+    }
+
+}
