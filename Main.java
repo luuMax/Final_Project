@@ -3,6 +3,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+
+//currently broken, we using swing
+
+//main class might be moved to gamerunner class
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
