@@ -7,6 +7,10 @@ public class BoardUI extends JFrame{
     private int windowLength;
     private int tileSize;
 
+    public static final Color VERY_LIGHT_BROWN = new Color(234,208,167);
+    public static final Color DARK_BROWN = new Color(175,124,87);
+
+
 
     //BoardUI will eventually need a reference to game, to update board visually and stuff
     public BoardUI(int windowW, int windowL, int tileS)
@@ -37,10 +41,10 @@ public class BoardUI extends JFrame{
             for (int j = 0; j < 8; j++) {
                 JPanel square = new JPanel();
                 if ((i + j) % 2 == 0) {
-                    square.setBackground(Color.WHITE);
+                    square.setBackground(VERY_LIGHT_BROWN);
                     square.setPreferredSize(new Dimension(tileSize, tileSize));
                 } else {
-                    square.setBackground(Color.GRAY);
+                    square.setBackground(DARK_BROWN);
                     square.setPreferredSize(new Dimension(tileSize, tileSize));
                 }
                 board.add(square);
