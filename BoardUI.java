@@ -101,31 +101,6 @@ public class BoardUI extends JFrame{
         BoardUI board = new BoardUI(600,600,20);
         board.initialize();
 
-        //just random tests rn
-        Board imagineNamingYourSonBoard2 = new Board();
-        for (Piece[] pieceRow : imagineNamingYourSonBoard2.getBoard()) {
-            for (Piece piece : pieceRow) {
-                if (piece != null) {
-                    char file = (char) ('a' + piece.getCol());
-                    int rank = 8 - piece.getRow();
-                    String currentNotation = "" + file + rank;
-                    String n;
 
-                    switch (piece) {
-                        case King _ -> {n= "King";}
-                        case Queen _ -> {n = "Queen";}
-                        case Rook _ -> {n = "Rook";}
-                        case Knight _ -> {n = "Knight";}
-                        case Pawn _ -> {n = "Pawn";}
-                        case Bishop _ -> {n = "Bishop";}
-                        default -> {n = "Nothing";}
-                    }
-
-                    
-
-                    System.out.println(n + " at " + currentNotation);
-                }
-            }
-        }
     }
 }
