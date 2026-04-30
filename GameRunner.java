@@ -16,6 +16,7 @@ public class GameRunner //basically gamerunner, boardui, and modifiers are all t
 
 
                 //just random tests rn
+        System.out.println(game.getCurrentTurn());
         Board imagineNamingYourSonBoard2 = new Board();
         for (Piece[] pieceRow : imagineNamingYourSonBoard2.getBoard()) {
             for (Piece piece : pieceRow) {
