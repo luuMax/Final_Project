@@ -21,6 +21,8 @@ public class Board {
 
     public Board() {
         this(BoardType.DEFAULT);
+        initializePieces();
+
     }
 
     public void initializePieces() {
