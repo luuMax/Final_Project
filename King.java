@@ -19,7 +19,7 @@ public class King extends Piece
         }
         // castling
         else if (toRow == fromRow && isFirstMove && Math.abs(toCol-fromCol) == 2 && !isInCheck(getColor(), board)) {
-            int dir = (int) Math.signum(toCol - fromCol);
+            int dir = (int) Math.signum(toCol - fromCol); //short vs long castle direction
             if (isSafeMove(fromRow, fromCol, toRow, fromCol + dir, board) && isSafeMove(fromRow, fromCol, toRow, fromCol + 2 * dir, board)) {
                 Piece piece;
                 if (dir == 1) {
