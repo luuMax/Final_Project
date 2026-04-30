@@ -47,36 +47,6 @@ public class King extends Piece
         return false;
     }
 
-    // override move method specifically for castling
-
-   //1. there are a few errors in king.move
-   //2. makeMove does all this and flows better logically, so basically we can remove this. 
-   //what do you think 
-
-    /* @Override
-    public void move(int fromRow, int fromCol, int toRow, int toCol, Board board)
-    {
-        if (isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
-            board.getBoard()[toRow][toCol] = this;
-            board.getBoard()[fromRow][fromCol] = null;
-            this.setRow(toRow);
-            this.setCol(toCol);
-        }
-        int dir = (int) Math.signum(toCol - fromCol);
-        Rook rook;
-        if (dir == 1) {
-            rook = (Rook) board.getPieceAt(toRow, 7);
-            board.getBoard()[toRow][fromCol + dir] = rook;
-            board.getBoard()[toRow][7] = null;
-            
-        }
-        else {
-            rook = (Rook) board.getPieceAt(toRow, 0);
-            board.getBoard()[toRow][fromCol + dir] = rook;
-            board.getBoard()[toRow][0] = null;
-        }
-        isFirstMove = false;
-    } */
 
     // Used for check, checkmate, pin logic
     public boolean isInCheck(Color color, Board board) {
