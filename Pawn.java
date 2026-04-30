@@ -1,4 +1,4 @@
-import javafx.scene.paint.Color;
+import java.awt.*;
 
 public class Pawn extends Piece
 {

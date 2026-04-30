@@ -1,4 +1,4 @@
-import javafx.scene.paint.Color;
+import java.awt.*;
 
 // Board class to represent the chess board and piece positions
 

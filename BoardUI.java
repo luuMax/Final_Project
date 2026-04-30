@@ -10,7 +10,7 @@ public class BoardUI extends JFrame{
     public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
     public static final Color DARK_BROWN = new Color(205,154,117);
 
-
+    Board board = new Board();
 
     //BoardUI will eventually need a reference to game, to update board visually and stuff
     public BoardUI(int windowW, int windowL, int tileS)
