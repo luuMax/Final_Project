@@ -99,6 +99,10 @@ public class BoardUI extends JFrame{
         
         setVisible(true);
     }
+    public void update()
+    {
+        
+    }
     public static void main(String[] args) {
         BoardUI board = new BoardUI(600,600,20);
     }
