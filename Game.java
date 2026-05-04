@@ -156,12 +156,14 @@ public class Game {
 
     //for later, we can handle gameover by draw, resignation, time loss, insufficent matieral, modifyer win cons, etc... 
 
-    private void checkGameOver() {
+    public boolean checkGameOver() {
         if (!hasAnyLegalMove(currentTurn)) {
             gameOver = true;
             boolean inCheck = board.getKing(currentTurn).isInCheck(currentTurn, board);
             System.out.println(inCheck ? "Checkmate!" : "Stalemate!"); //just print for now, ui needs win/loss/draw screen, elo change, etc...
+            return true;
         }
+        return false;
     }
 
     //HELPER returns true if the given color has any legal moves on board
@@ -177,6 +179,10 @@ public class Game {
         }
 
         return false;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
 }
