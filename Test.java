@@ -19,6 +19,7 @@ public class Test {
             System.out.print("Enter move (e.g. e2 e4): ");
 
             int[] from = parseSquare(scanner.next());
+
             int[] to   = parseSquare(scanner.next());
 
             game.makeMove(from[0], from[1], to[0], to[1]);
