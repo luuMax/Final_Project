@@ -5,6 +5,7 @@ public class Bishop extends Piece
     public Bishop(Color color, int row, int col)
     {
         super(color, row, col);
+        setType(Type.BISHOP);
     }
 
 

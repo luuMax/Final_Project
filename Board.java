@@ -98,39 +98,4 @@ public class Board {
             return blackKing;
         }
     }
-
-    public void printBoard() {
-        // Unicode chess pieces: white pieces, black pieces
-        // Order: King, Queen, Rook, Bishop, Knight, Pawn
-        System.out.println("  +---+---+---+---+---+---+---+---+");
-        for (int row = 0; row < 8; row++) {
-            int rank = 8 - row;
-            System.out.print(rank + " |");
-            for (int col = 0; col < 8; col++) {
-                Piece p = boardArr[row][col];
-                String symbol;
-                if (p == null) {
-                    symbol = " ";
-                } else if (p.getColor() == Color.WHITE) {
-                    if      (p instanceof King)   symbol = "♔";
-                    else if (p instanceof Queen)  symbol = "♕";
-                    else if (p instanceof Rook)   symbol = "♖";
-                    else if (p instanceof Bishop) symbol = "♗";
-                    else if (p instanceof Knight) symbol = "♘";
-                    else                          symbol = "♙"; // Pawn
-                } else {
-                    if      (p instanceof King)   symbol = "♚";
-                    else if (p instanceof Queen)  symbol = "♛";
-                    else if (p instanceof Rook)   symbol = "♜";
-                    else if (p instanceof Bishop) symbol = "♝";
-                    else if (p instanceof Knight) symbol = "♞";
-                    else                          symbol = "♟"; // Pawn
-                }
-                System.out.print(" " + symbol + " |");
-            }
-            System.out.println();
-            System.out.println("  +---+---+---+---+---+---+---+---+");
-        }
-        System.out.println("    a   b   c   d   e   f   g   h");
-    }
 }

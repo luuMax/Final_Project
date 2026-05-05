@@ -8,14 +8,44 @@ public abstract class Piece
     private Color color;
     private int row;
     private int col;
+    public enum Type{PAWN, KING, KNIGHT, ROOK, QUEEN, BISHOP};
+    public enum Side{WHITE, BLACK};
+
+    private Type type;
+    private Side side;
+
     protected boolean isFirstMove = true;
 
     public Piece(Color color, int row, int col)
     {
         this.color = color;
+        if(this.color.equals(Color.BLACK))
+        {
+            side = Side.BLACK;
+        }
+        else
+        {
+            side = Side.WHITE;
+        }
         this.row = row;
         this.col = col;
     }
+
+    public Type getType()
+    {
+        return type;
+    }
+
+    public void setType(Type type)
+    {
+        this.type = type;
+    }
+    
+    public Side getSide()
+    {
+        return side;
+    }
+
 
 
     // needs board[][] to check if move is legal, since new moves change current
@@ -122,5 +152,10 @@ public abstract class Piece
     public void setCol(int col)
     {
         this.col = col;
+    }
+
+    public String toString()
+    {
+        return (getType() + "_" + getSide()).toLowerCase();
     }
 }
