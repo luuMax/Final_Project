@@ -1,4 +1,4 @@
-public class GameRunner //basically gamerunner, boardui, and modifiers are all thats left (lie)
+public class GameRunner //basically gamerunner, boardui, and modifiers are all thats left (true)
 {
     private Game game;
     private BoardUI boardUI;
