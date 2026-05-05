@@ -45,7 +45,7 @@ public class BoardUI extends JFrame{
         folder on your machine. Next push will resolve this, but currently, for GUI testing purposes,
         please replace the file path.
         */
-        ImageIcon image = new ImageIcon("/Users/neelparimi/Documents/GitHub/Final_Project/PieceSprites/new_" + piece.toString() + ".png");
+        ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
         if (image.getImage() == null) {
             System.out.println("Image not found: " + piece.toString());
             return null;
