@@ -3,6 +3,7 @@ import java.awt.*;
 public class Queen extends Piece {
     public Queen(Color color , int row, int col) {
         super(color, row, col);
+        setType(Type.QUEEN);
     }
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         if (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8 && (fromRow != toRow && fromCol != toCol)) {

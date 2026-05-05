@@ -2,9 +2,12 @@ import java.awt.*;
 
 public class King extends Piece
 {  
+    boolean isFirstMove = true;
+
     public King(Color color, int row, int col)
     {
         super(color, row, col);
+        setType(Type.KING);
     }
 
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {

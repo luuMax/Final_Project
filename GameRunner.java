@@ -11,8 +11,8 @@ public class GameRunner //basically gamerunner, boardui, and modifiers are all t
     //testing, currently boardui has no references to game
     public void start() {
         game = new Game();
-        boardUI = new BoardUI(600, 600, 75); 
-        boardUI.initialize();
+        Board board = new Board();
+        boardUI = new BoardUI(800, 800, 30, board); 
 
 
                 //just random tests rn

@@ -2,9 +2,11 @@ import java.awt.*;
 
 public class Rook extends Piece
 {
+    boolean isFirstMove = true;
     public Rook(Color color, int row, int col)
     {
         super(color, row, col);
+        setType(Type.ROOK);
     }
 
     //should we use the piece move method? 
