@@ -40,8 +40,9 @@ public class BoardUI extends JFrame{
         The underscored must be removed and placed with the appropriate path to the PieceSprites
         folder on your machine. Next push will resolve this, but currently, for GUI testing purposes,
         please replace the file path.
+        /Users/achen285/Documents/GitHub/Final_Project/new_bishop_black.png
         */
-        ImageIcon image = new ImageIcon("/Users/neelparimi/Documents/GitHub/Final_Project/PieceSprites/new_" + piece.toString() + ".png");
+        ImageIcon image = new ImageIcon("/Users/achen285/Documents/GitHub/Final_Project/new_" + piece.toString() + ".png");
         if (image.getImage() == null) {
             System.out.println("Image not found: " + piece.toString());
             return null;
