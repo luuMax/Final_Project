@@ -14,6 +14,11 @@ public class Game {
         gameOver = false;
     }
 
+    public Board getBoard()
+    {
+        return board;
+    }
+
     public Color getCurrentTurn() {
         return currentTurn;
     }
@@ -25,23 +30,23 @@ public class Game {
     For now, It can largely replace Piece.move, it already handles the logic better, no need to do it twice. 
     */
 
-    public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
+    public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol) {
 
         if (gameOver) {
             System.out.println("Game is already over. No more moves can be made."); //testing
-            return;
+            return false;
         }
 
         Piece piece = board.getPieceAt(fromRow, fromCol);
         
         if (piece == null || piece.getColor() != currentTurn) {
             System.out.println("Invalid move: No piece of current player's color at the source square.");
-            return; // testing
+            return false; // testing
         }
 
         if (!piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
             System.out.println("Invalid move: The piece cannot move to the target square.");
-            return; // testing
+            return false; // testing
         }
 
 
@@ -148,7 +153,8 @@ public class Game {
         }
 
         checkGameOver();
-
+        
+        return true;
     }
 
 

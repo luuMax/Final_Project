@@ -12,7 +12,7 @@ public class GameRunner //basically gamerunner, boardui, and modifiers are all t
     public void start() {
         game = new Game();
         Board board = new Board();
-        boardUI = new BoardUI(800, 800, 30, board); 
+        boardUI = new BoardUI(800, 800, 30, game); 
 
 
                 //just random tests rn
