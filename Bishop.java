@@ -11,6 +11,9 @@ public class Bishop extends Piece
 
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
+        if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() == this.getColor()) {
+            return false;
+        }
         if (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8 && 
             (fromRow != toRow && fromCol != toCol) &&
             Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol) && 

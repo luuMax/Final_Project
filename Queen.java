@@ -6,6 +6,9 @@ public class Queen extends Piece {
         setType(Type.QUEEN);
     }
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() == this.getColor()) {
+            return false;
+        }
         if (Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol) && isPathClear(fromRow, fromCol, toRow, toCol, board)) {
             return true;
         }  
