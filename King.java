@@ -18,12 +18,10 @@ public class King extends Piece
             }
         }
         // castling
-        else if (toRow == fromRow && isFirstMove && Math.abs(toCol-fromCol) == 2 && !isInCheck(getColor(), board)) {
+        else if (toRow == fromRow && isFirstMove && Math.abs(toCol-fromCol) == 2) {
             int dir = (int) Math.signum(toCol - fromCol); //short vs long castle direction
-            simulating = true; 
             boolean firstSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + dir, board);
             boolean secondSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + 2 * dir, board);
-            simulating = false;
             if (firstSquare && secondSquare) {
                 Piece piece;
                 if (dir == 1) {

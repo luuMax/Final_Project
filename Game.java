@@ -89,6 +89,7 @@ public class Game {
 
         //MAKE move obj BEFORE altering board
         moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, false, false, board));
+        System.out.println(moveHistory.get(moveHistory.size() - 1).toString());
 
 
 

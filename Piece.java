@@ -9,7 +9,6 @@ public abstract class Piece
     public enum Type{PAWN, KING, KNIGHT, ROOK, QUEEN, BISHOP};
     public enum Side{WHITE, BLACK};
 
-    protected static boolean simulating = false;
     protected boolean isFirstMove = true;
 
     private Color color;
@@ -61,7 +60,7 @@ public abstract class Piece
     public abstract boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
     public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        return canMoveTo(fromRow, fromCol, toRow, toCol, board) && (simulating || isSafeMove(fromRow, fromCol, toRow, toCol, board));
+        return canMoveTo(fromRow, fromCol, toRow, toCol, board) && (isSafeMove(fromRow, fromCol, toRow, toCol, board));
     }
 
     // checks if the move keeps the king out of check
@@ -69,11 +68,6 @@ public abstract class Piece
         Piece capturedPiece = board.getPieceAt(toRow, toCol);
         board.getBoard()[toRow][toCol] = this;
         board.getBoard()[fromRow][fromCol] = null;
-
-        if (this instanceof King) {
-            this.setRow(toRow);
-            this.setCol(toCol);
-        }
 
         if (board.getKing(this.getColor()).isInCheck(this.getColor(), board)) {
             board.getBoard()[fromRow][fromCol] = this;
