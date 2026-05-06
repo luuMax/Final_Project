@@ -81,18 +81,18 @@ public class Move { //a recipt for a move, contains all info about move.
         boolean isCapture = capturedPiece != null;
         if (moveType != MoveType.SHORT_CASTLE && moveType != MoveType.LONG_CASTLE) {
             if (piece instanceof Pawn) {
-                if (moveType == MoveType.NORMAL) {
+                if (moveType == MoveType.NORMAL || moveType == MoveType.PROMOTION) {
                     moveString += (char) ('a' + toCol);
                     moveString += Math.abs(toRow - 8);
+                    if (moveType == MoveType.PROMOTION) {
+                        moveString += "=Q";
+                    }
                 }
                 else if (isCapture || moveType == MoveType.EN_PASSANT) {
                     moveString += (char) ('a' + fromCol);
                     moveString += "x";
                     moveString += (char) ('a' + toCol);
                     moveString += Math.abs(toRow - 8);
-                }
-                if (moveType == MoveType.PROMOTION) {
-                    moveString += "=Q";
                 }
             }
             else {
