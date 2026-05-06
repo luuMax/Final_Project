@@ -69,16 +69,22 @@ public abstract class Piece
         board.getBoard()[toRow][toCol] = this;
         board.getBoard()[fromRow][fromCol] = null;
 
-        if (board.getKing(this.getColor()).isInCheck(this.getColor(), board)) {
-            board.getBoard()[fromRow][fromCol] = this;
-            board.getBoard()[toRow][toCol] = capturedPiece;
-            return false;
+        if (this instanceof King) {
+            this.setRow(toRow);
+            this.setCol(toCol);
         }
-        else {
-            board.getBoard()[fromRow][fromCol] = this;
-            board.getBoard()[toRow][toCol] = capturedPiece;
-            return true;
+
+        boolean safe = !board.getKing(this.getColor()).isInCheck(this.getColor(), board);
+
+        board.getBoard()[fromRow][fromCol] = this;
+        board.getBoard()[toRow][toCol] = capturedPiece;
+
+        if (this instanceof King) {
+            this.setRow(fromRow); // ← and restored here
+            this.setCol(fromCol);
         }
+
+        return safe;
     }
 
   

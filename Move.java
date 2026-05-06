@@ -15,6 +15,7 @@ public class Move { //a recipt for a move, contains all info about move.
     Board board;
     boolean needsFileDisambiguation;
     boolean needsRankDisambiguation;
+    private String notation;
 
     public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
         this.fromRow = fromRow;
@@ -36,6 +37,7 @@ public class Move { //a recipt for a move, contains all info about move.
         ArrayList<Piece> dPieces = getAmbiguousPieces();
         needsFileDisambiguation = needsFileDisambiguation(dPieces);
         needsRankDisambiguation = needsRankDisambiguation(dPieces);
+        notation = toString();
     }
 
     private ArrayList<Piece> getAmbiguousPieces() {
@@ -138,5 +140,17 @@ public class Move { //a recipt for a move, contains all info about move.
             moveString += "+";
         }
         return moveString;
+    }
+
+    public void setCheck() {
+        notation += "+";
+    }
+    
+    public void setCheckmate() {
+        notation += "#";
+    }
+
+    public String getNotation() {
+        return notation;
     }
 }

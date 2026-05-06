@@ -89,7 +89,6 @@ public class Game {
 
         //MAKE move obj BEFORE altering board
         moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, false, false, board));
-        System.out.println(moveHistory.get(moveHistory.size() - 1).toString());
 
 
 
@@ -154,6 +153,7 @@ public class Game {
         }
 
         checkGameOver();
+        System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
         
         return true;
     }
@@ -164,10 +164,19 @@ public class Game {
     //for later, we can handle gameover by draw, resignation, time loss, insufficent matieral, modifyer win cons, etc... 
 
     private void checkGameOver() {
+        Move lastMove = moveHistory.get(moveHistory.size() - 1);
+        boolean inCheck = board.getKing(currentTurn).isInCheck(currentTurn, board);
+
         if (!hasAnyLegalMove(currentTurn)) {
             gameOver = true;
-            boolean inCheck = board.getKing(currentTurn).isInCheck(currentTurn, board);
+            if (inCheck) {
+                lastMove.setCheckmate();
+            }
             System.out.println(inCheck ? "Checkmate!" : "Stalemate!"); //just print for now, ui needs win/loss/draw screen, elo change, etc...
+        }
+
+        else if (inCheck) {
+            lastMove.setCheck();
         }
     }
 
