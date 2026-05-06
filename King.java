@@ -2,8 +2,6 @@ import java.awt.*;
 
 public class King extends Piece
 {  
-    boolean isFirstMove = true;
-
     public King(Color color, int row, int col)
     {
         super(color, row, col);
@@ -22,7 +20,11 @@ public class King extends Piece
         // castling
         else if (toRow == fromRow && isFirstMove && Math.abs(toCol-fromCol) == 2 && !isInCheck(getColor(), board)) {
             int dir = (int) Math.signum(toCol - fromCol); //short vs long castle direction
-            if (isSafeMove(fromRow, fromCol, toRow, fromCol + dir, board) && isSafeMove(fromRow, fromCol, toRow, fromCol + 2 * dir, board)) {
+            simulating = true; 
+            boolean firstSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + dir, board);
+            boolean secondSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + 2 * dir, board);
+            simulating = false;
+            if (firstSquare && secondSquare) {
                 Piece piece;
                 if (dir == 1) {
                     if (isPathClear(fromRow, fromCol, toRow, 7, board)) {
