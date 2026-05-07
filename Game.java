@@ -158,10 +158,9 @@ public class Game {
 
         for (Modifier m : activeModifiers) {
             m.decrementTurns();
-            if (m.isExpired()) {
-                activeModifiers.remove(m);
-            }
         }
+
+        activeModifiers.removeIf(Modifier::isExpired);
         
         return true;
     }
