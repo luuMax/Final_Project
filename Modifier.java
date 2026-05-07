@@ -3,7 +3,7 @@ public class Modifier {
         // BRAINSTORM 
         PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE
     }
-    int turnsRemaining;
+    private int turnsRemaining;
     private Type type;
 
     public Modifier(int turns, Type type) {

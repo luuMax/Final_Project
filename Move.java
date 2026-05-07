@@ -3,18 +3,18 @@ public class Move { //a recipt for a move, contains all info about move.
     public enum MoveType {
         NORMAL, PROMOTION, EN_PASSANT, SHORT_CASTLE, LONG_CASTLE
     }
-    Piece piece;
-    Piece capturedPiece;
-    int fromRow;
-    int fromCol;
-    int toRow;
-    int toCol;
-    MoveType moveType;
-    boolean isCheck;
-    boolean isCheckmate;
-    Board board;
-    boolean needsFileDisambiguation;
-    boolean needsRankDisambiguation;
+    private Piece piece;
+    private Piece capturedPiece;
+    private int fromRow;
+    private int fromCol;
+    private int toRow;
+    private int toCol;
+    private MoveType moveType;
+    private boolean isCheck;
+    private boolean isCheckmate;
+    private Board board;
+    private boolean needsFileDisambiguation;
+    private boolean needsRankDisambiguation;
     private String notation;
 
     public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
