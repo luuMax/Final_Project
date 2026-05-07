@@ -8,7 +8,8 @@ public class Client {
         try {
 
             // connect to server computer
-            Socket socket = new Socket("192.168.1.5", 5000);
+            /* Socket socket = new Socket("192.168.1.5", 5000); */
+            Socket socket = new Socket("localhost", 5000);
 
             System.out.println("Connected to server!");
 
