@@ -17,4 +17,15 @@ public class Modifier {
     public int getTurnsRemaining() {
         return turnsRemaining;
     }
+
+    public void decrementTurns() {
+        turnsRemaining--;
+    }
+
+    public boolean isExpired() {
+        if (turnsRemaining <= 0) {
+            return false;
+        }
+        return true;
+    }
 }

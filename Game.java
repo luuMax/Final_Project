@@ -6,6 +6,7 @@ public class Game {
     private Color currentTurn;
     private boolean gameOver; //true = checkmate/stalemate (resign? <--problem for UI to fix. )
     private ArrayList<Move> moveHistory = new ArrayList<>();
+    private ArrayList<Modifier> activeModifiers = new ArrayList<>();
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
@@ -154,6 +155,13 @@ public class Game {
 
         checkGameOver();
         System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
+
+        for (Modifier m : activeModifiers) {
+            m.decrementTurns();
+            if (m.isExpired()) {
+                activeModifiers.remove(m);
+            }
+        }
         
         return true;
     }
