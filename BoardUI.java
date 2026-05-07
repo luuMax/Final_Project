@@ -13,7 +13,7 @@ public class BoardUI extends JFrame
     // Tile Colors  //
     public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
     public static final Color DARK_BROWN = new Color(205,154,117);
-    public static final Color HIGHLIGHT = new Color(255, 255, 255);
+    public static final Color HIGHLIGHT = new Color(0);
 
     // Some useful stuff for UI logic   //
     private Game game;
@@ -244,9 +244,5 @@ public class BoardUI extends JFrame
 
         board.revalidate();
         board.repaint();
-    }
-    public static void main(String[] args) {
-        Game game = new Game();
-        BoardUI board = new BoardUI(800,800,30, game);
     }
 }
