@@ -32,7 +32,8 @@ public class Server {
             String message = in.readLine();
 
             System.out.println("Client says: " + message);
-
+            GameRunner runner = new GameRunner();
+            runner.start();
         }
         catch (Exception e) {
             e.printStackTrace();
