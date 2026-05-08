@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Game {
     private Board board;
@@ -7,6 +9,8 @@ public class Game {
     private boolean gameOver; //true = checkmate/stalemate (resign? <--problem for UI to fix. )
     private ArrayList<Move> moveHistory = new ArrayList<>();
     private ArrayList<Modifier> activeModifiers = new ArrayList<>();
+    private int moveCount = 0;
+    private Scanner input = new Scanner(System.in);
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
@@ -36,6 +40,7 @@ public class Game {
     */
 
     public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol) {
+
         if (gameOver) {
             System.out.println("Game is already over.");
             return false;
@@ -80,6 +85,7 @@ public class Game {
         
         System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
         decrementModifiers();
+        moveCount++;
         return true;
     }
 
