@@ -10,21 +10,17 @@ public class Move { //a recipt for a move, contains all info about move.
     private int toRow;
     private int toCol;
     private MoveType moveType;
-    private boolean isCheck;
-    private boolean isCheckmate;
     private Board board;
     private boolean needsFileDisambiguation;
     private boolean needsRankDisambiguation;
     private String notation;
 
-    public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, boolean isCheck, boolean isCheckmate, Board board) {
+    public Move(int fromRow, int fromCol, int toRow, int toCol, MoveType moveType, Board board) {
         this.fromRow = fromRow;
         this.fromCol = fromCol;
         this.toRow = toRow;
         this.toCol = toCol;
         this.moveType = moveType;
-        this.isCheck = isCheck;
-        this.isCheckmate = isCheckmate;
         this.board = board;
         piece = board.getPieceAt(fromRow, fromCol);
         if (moveType == MoveType.EN_PASSANT) {
@@ -45,7 +41,7 @@ public class Move { //a recipt for a move, contains all info about move.
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece dPiece = board.getPieceAt(row, col);
-                if (dPiece != null && dPiece.getClass() == piece.getClass() && dPiece.getColor() == piece.getColor() && dPiece.isLegalMove(row, col, toRow, toCol, board) && dPiece != piece) {
+                if (dPiece != null && dPiece.getClass() == piece.getClass() && dPiece.getColor() == piece.getColor() && dPiece.canMoveTo(row, col, toRow, toCol, board) && dPiece != piece) {
                     dPieces.add(dPiece);
                 }
             }
@@ -87,12 +83,14 @@ public class Move { //a recipt for a move, contains all info about move.
                     moveString += (char) ('a' + toCol);
                     moveString += Math.abs(toRow - 8);
                 }
-                else if (moveType == MoveType.NORMAL || moveType == MoveType.PROMOTION) {
+                
+                else if (moveType == MoveType.NORMAL) {
                     moveString += (char) ('a' + toCol);
                     moveString += Math.abs(toRow - 8);
-                    if (moveType == MoveType.PROMOTION) {
-                        moveString += "=Q";
-                    }
+                }
+
+                if (moveType == MoveType.PROMOTION) {
+                    moveString += "=Q";
                 }
 
             }
@@ -132,13 +130,6 @@ public class Move { //a recipt for a move, contains all info about move.
         }
         else if (moveType == MoveType.LONG_CASTLE) {
             moveString = "O-O-O";
-        }
-        if (isCheckmate) {
-            moveString += "#";
-        }
-
-        if (isCheck) {
-            moveString += "+";
         }
         return moveString;
     }

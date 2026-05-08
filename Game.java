@@ -23,6 +23,10 @@ public class Game {
     public Color getCurrentTurn() {
         return currentTurn;
     }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
     
     /* 
     makeMove is main method that handles making a move, altering the board, and switching turns.
@@ -32,33 +36,61 @@ public class Game {
     */
 
     public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol) {
-
         if (gameOver) {
-            System.out.println("Game is already over. No more moves can be made."); //testing
+            System.out.println("Game is already over.");
             return false;
         }
-
         Piece piece = board.getPieceAt(fromRow, fromCol);
+        Piece capturedPiece = board.getPieceAt(toRow, toCol);
         
         if (piece == null || piece.getColor() != currentTurn) {
             System.out.println("Invalid move: No piece of current player's color at the source square.");
             return false; // testing
         }
 
-        if (!piece.isLegalMove(fromRow, fromCol, toRow, toCol, board)) {
+        if (!piece.canMoveTo(fromRow, fromCol, toRow, toCol, board)) {
             System.out.println("Invalid move: The piece cannot move to the target square.");
             return false; // testing
         }
 
+        Move.MoveType moveType = categorizeMoveType(fromRow, fromCol, toRow, toCol);
 
+        //MAKE move obj BEFORE altering board
+        moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, board));
 
+        // Apply the move to the board
+        piece = applyMove(fromRow, fromCol, toRow, toCol, moveType, piece);
 
+        //En passant special flags
+        updateEnPassantFlags(piece, fromRow, toRow, moveType);
+        if (capturedPiece instanceof King) {
+            gameOver = true;
+            return true;
+        }
+
+        // switch turns
+        if (currentTurn == Color.WHITE) {
+            currentTurn = Color.BLACK;
+        }
+
+        else {
+            currentTurn = Color.WHITE;
+        }
+
+        
+        System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
+        decrementModifiers();
+        return true;
+    }
+
+    public Move.MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol) {
         //------------------------CATEGORIZING THE TYPE OF MOVE ITS ABOUT TO MAKE------------------------
         
         //(color doens't matter, works for both sides)
         //ALSO, isFirstMove is already handled by islegalmove. canmoveto checks it.
         
         Move.MoveType moveType; 
+        Piece piece = board.getPieceAt(fromRow, fromCol);
 
         //short/long castling classifcation 
         if (piece instanceof King && (Math.abs(toCol - fromCol) == 2)) {
@@ -70,7 +102,7 @@ public class Game {
                 moveType = Move.MoveType.LONG_CASTLE;
             }
         }
-
+        
         //enpassant 
         else if (piece instanceof Pawn && (Math.abs(toCol - fromCol) == 1) 
         && board.getPieceAt(toRow, toCol) == null) {
@@ -85,15 +117,11 @@ public class Game {
         else {
             moveType = Move.MoveType.NORMAL;
         }
+        return moveType;
+    }
 
-        //------------------------ADDS MOVE OBJ TO MOVEHISTORY LIST------------------------
-
-        //MAKE move obj BEFORE altering board
-        moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, false, false, board));
-
-
-
-        //------------------------DIRECTLY ALTERS BOARD STATE------------------------ //holy hell this is long
+    public Piece applyMove(int fromRow, int fromCol, int toRow, int toCol, Move.MoveType moveType, Piece piece) {
+   //------------------------DIRECTLY ALTERS BOARD STATE------------------------ //holy hell this is long
         
         //all alters work regardless of color
 
@@ -127,9 +155,10 @@ public class Game {
         if (moveType != Move.MoveType.PROMOTION) { //promotion = first move of promoted piece
             piece.isFirstMove = false;
         }
+        return piece;
+    }
 
-        //En passant special flags
-
+    public void updateEnPassantFlags(Piece piece, int fromRow, int toRow, Move.MoveType moveType) {
         if (moveType != Move.MoveType.EN_PASSANT && piece instanceof Pawn && Math.abs(toRow - fromRow) == 2) {
             ((Pawn) piece).isEnPassantable = true; //for islegalmove pawn
         }
@@ -142,67 +171,17 @@ public class Game {
                 }
             }
         }
+    }
 
-        //------------------------SWITCH TURNS------------------------
-
-        if (currentTurn == Color.WHITE) {
-            currentTurn = Color.BLACK;
-        }
-
-        else {
-            currentTurn = Color.WHITE;
-        }
-
-        checkGameOver();
-        System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
-
+    public void decrementModifiers() {
         for (Modifier m : activeModifiers) {
             m.decrementTurns();
         }
 
         activeModifiers.removeIf(Modifier::isExpired);
-        
-        return true;
     }
-
-
-    //HELPER detects checkmate/stalemate after every move
-
-    //for later, we can handle gameover by draw, resignation, time loss, insufficent matieral, modifyer win cons, etc... 
-
-    private void checkGameOver() {
-        Move lastMove = moveHistory.get(moveHistory.size() - 1);
-        boolean inCheck = board.getKing(currentTurn).isInCheck(currentTurn, board);
-
-        if (!hasAnyLegalMove(currentTurn)) {
-            gameOver = true;
-            if (inCheck) {
-                lastMove.setCheckmate();
-            }
-            System.out.println(inCheck ? "Checkmate!" : "Stalemate!"); //just print for now, ui needs win/loss/draw screen, elo change, etc...
-        }
-
-        else if (inCheck) {
-            lastMove.setCheck();
-        }
-    }
-
-    //HELPER returns true if the given color has any legal moves on board
-
-    private boolean hasAnyLegalMove(Color color) {
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                Piece p = board.getPieceAt(r, c);
-                if (p != null && p.getColor() == color && !(p.getLegalMoves(board).isEmpty())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
 }
+
 
 
 

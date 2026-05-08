@@ -176,6 +176,9 @@ public class BoardUI extends JFrame
             if (selectedRow != i || selectedCol != j)
             {
                 game.makeMove(selectedRow, selectedCol, i, j);
+                if (game.isGameOver()) {
+                    System.out.println(game.getCurrentTurn() == Color.WHITE ? "White wins!" : "Black wins!");
+                }
             }
         }
         redrawBoard();
