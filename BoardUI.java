@@ -57,7 +57,7 @@ public class BoardUI extends JFrame
     public void initialize()
     {
         // General window intitializing //
-        setTitle("Chess");
+        setTitle("The Game");
         setSize(windowLength,windowWidth);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
