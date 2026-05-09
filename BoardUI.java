@@ -179,6 +179,16 @@ public class BoardUI extends JFrame
             }
         }
         redrawBoard();
+
+        if(game.isGameOver())
+        {
+            endGame();
+        }
+    }
+
+    private void endGame()
+    {
+        // End game screen then trnasition back to MainMenu once made   //
     }
 
     private void highLightTile(JPanel panel, Color highLightColor)

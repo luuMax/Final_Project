@@ -187,6 +187,12 @@ public class Game {
         }
     }
 
+    public boolean isGameOver()
+    {
+        checkGameOver();
+        return gameOver;
+    }
+
     //HELPER returns true if the given color has any legal moves on board
 
     private boolean hasAnyLegalMove(Color color) {
