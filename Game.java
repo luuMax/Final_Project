@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -185,6 +186,35 @@ public class Game {
         }
 
         activeModifiers.removeIf(Modifier::isExpired);
+    }
+
+    public Modifier.Type[] offeredModifiers() {
+        ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
+        Modifier.Type[] modifiers = new Modifier.Type[3];
+        pool.removeIf(type -> {
+            switch (type) {
+                case PAWNS_ONLY:   return !hasPieceOfType(Pawn.class);
+                case KNIGHTS_ONLY: return !hasPieceOfType(Knight.class);
+                case BISHOPS_ONLY: return !hasPieceOfType(Bishop.class);
+                case ROOKS_ONLY:   return !hasPieceOfType(Rook.class);
+                case QUEENS_ONLY:  return !hasPieceOfType(Queen.class);
+                case KINGS_ONLY:   return !hasPieceOfType(King.class);
+                default:           return false;
+            }
+        });
+        return modifiers;
+    }
+
+    private boolean hasPieceOfType(Class<?> pieceClass) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = board.getPieceAt(r, c);
+                if (p != null && p.getColor() == currentTurn && pieceClass.isInstance(p)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 
