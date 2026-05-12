@@ -20,45 +20,26 @@ public class King extends Piece
         // castling
         else if (toRow == fromRow && isFirstMove && Math.abs(toCol-fromCol) == 2) {
             int dir = (int) Math.signum(toCol - fromCol); //short vs long castle direction
-            boolean firstSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + dir, board);
-            boolean secondSquare = isSafeMove(fromRow, fromCol, toRow, fromCol + 2 * dir, board);
-            if (firstSquare && secondSquare) {
-                Piece piece;
-                if (dir == 1) {
-                    if (isPathClear(fromRow, fromCol, toRow, 7, board)) {
-                        piece = board.getPieceAt(toRow, 7);
-                    }
-                    else {
-                        return false;
-                    }
-                    
+            Piece piece;
+            if (dir == 1) {
+                if (isPathClear(fromRow, fromCol, toRow, 7, board)) {
+                    piece = board.getPieceAt(toRow, 7);
                 }
                 else {
-                    if (isPathClear(fromRow, fromCol, toRow, 0, board)) {
-                        piece = board.getPieceAt(toRow, 0);
-                    }
-                    else {
-                        return false;
-                    }
+                    return false;
                 }
-                if (piece instanceof Rook && piece.isFirstMove) {
-                    return true;
+                
+            }
+            else {
+                if (isPathClear(fromRow, fromCol, toRow, 0, board)) {
+                    piece = board.getPieceAt(toRow, 0);
+                }
+                else {
+                    return false;
                 }
             }
-        }
-        return false;
-    }
-
-
-    // Used for check, checkmate, pin logic
-    public boolean isInCheck(Color color, Board board) {
-        King king = board.getKing(color);
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece piece = board.getPieceAt(row, col);
-                if (piece != null && piece.getColor() != color && piece.canMoveTo(row, col, king.getRow(), king.getCol(), board)) {
-                    return true;
-                }
+            if (piece instanceof Rook && piece.isFirstMove) {
+                return true;
             }
         }
         return false;

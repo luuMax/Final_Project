@@ -59,37 +59,6 @@ public abstract class Piece
     // checks if the piece can move to the square, disregarding possible checks on the king
     public abstract boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board);
 
-    public boolean isLegalMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        return canMoveTo(fromRow, fromCol, toRow, toCol, board) && (isSafeMove(fromRow, fromCol, toRow, toCol, board));
-    }
-
-    // checks if the move keeps the king out of check
-    public boolean isSafeMove(int fromRow, int fromCol, int toRow, int toCol, Board board) {
-        Piece capturedPiece = board.getPieceAt(toRow, toCol);
-        board.getBoard()[toRow][toCol] = this;
-        board.getBoard()[fromRow][fromCol] = null;
-
-        if (this instanceof King) {
-            this.setRow(toRow);
-            this.setCol(toCol);
-        }
-
-        boolean safe = !board.getKing(this.getColor()).isInCheck(this.getColor(), board);
-
-        board.getBoard()[fromRow][fromCol] = this;
-        board.getBoard()[toRow][toCol] = capturedPiece;
-
-        if (this instanceof King) {
-            this.setRow(fromRow); // ← and restored here
-            this.setCol(fromCol);
-        }
-
-        return safe;
-    }
-
-  
-
-
     // Get legal moves, can display all legal moves like in chess.com. O(64).
     // 8x8 board.
     public ArrayList<String> getLegalMoves(Board board)
@@ -99,7 +68,7 @@ public abstract class Piece
         {
             for (int c = 0; c < 8; c++)
             {
-                if (isLegalMove(this.row, this.col, r, c, board))
+                if (canMoveTo(this.row, this.col, r, c, board))
                 {
                     legalMoves.add(r + "," + c);
                 }

@@ -6,9 +6,6 @@ public class Board {
     private BoardType boardType;
     private Piece[][] boardArr;
 
-    private King whiteKing;
-    private King blackKing;
-
     public enum BoardType {
         DEFAULT, CUSTOM //none for now
     }
@@ -56,9 +53,6 @@ public class Board {
                 boardArr[6][col] = new Pawn(Color.WHITE, 6, col);
             }
 
-            // Store king references for easy check/checkmate access later
-            whiteKing = (King) boardArr[7][4];
-            blackKing = (King) boardArr[0][4];
         }
    
         else {
@@ -77,10 +71,6 @@ public class Board {
     // mainly for testing purposes 
     public void setPieceAt(Piece piece, int row, int col) {
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
-            if (piece instanceof King) {
-                if (piece.getColor() == Color.WHITE) whiteKing = (King) piece;
-                else blackKing = (King) piece;
-            }
             boardArr[row][col] = piece;
         }
     }
@@ -88,14 +78,4 @@ public class Board {
     public Piece[][] getBoard() {
         return boardArr;
      }
-
-
-    public King getKing(Color color) {
-        if (color == Color.WHITE) {
-            return whiteKing;
-        }
-        else {
-            return blackKing;
-        }
-    }
 }
