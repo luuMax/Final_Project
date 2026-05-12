@@ -1,42 +1,34 @@
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 public class Server {
 //Test: ipconfig getifaddr en0
     public static void main(String[] args) {
-
         try {
+            System.out.println("Starting server on port 5000...");
+            System.out.println("Your IP (run 'ipconfig getifaddr en0' on Mac or 'ipconfig' on Windows)");
 
-            // create server on port 5000
             ServerSocket serverSocket = new ServerSocket(5000);
+            System.out.println("Waiting for opponent to connect...");
 
-            System.out.println("Waiting for connection...");
+            Socket socket = serverSocket.accept(); // blocks here until client joins
+            serverSocket.close(); // only need one game, stop listening
 
-            // wait until client joins
-            Socket socket = serverSocket.accept();
+            System.out.println("Opponent connected! Starting game...");
 
-            System.out.println("Client connected!");
+            boolean serverIsWhite = new Random().nextBoolean();
+            PrintWriter setupOut = new PrintWriter(socket.getOutputStream(), true);
+            setupOut.println(serverIsWhite ? "WHITE" : "BLACK");
 
-            // input stream
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
+            System.out.println("You are " + (serverIsWhite ? "WHITE" : "BLACK"));
 
-            // output stream
-            PrintWriter out = new PrintWriter(
-                    socket.getOutputStream(), true);
+            NetworkManager network = new NetworkManager(socket, true); // true = isServer = White
+            new GameRunner(network).start();
 
-            // send test message
-            out.println("Hello from server!");
-
-            // receive message
-            String message = in.readLine();
-
-            System.out.println("Client says: " + message);
-            GameRunner runner = new GameRunner();
-            runner.start();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
