@@ -8,7 +8,10 @@ public class Server
 
     public static void main(String[] args)
     {
+        connect();   
+    }
 
+    public static void connect() {
         try
         {
 

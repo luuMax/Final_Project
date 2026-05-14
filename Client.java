@@ -6,11 +6,19 @@ public class Client
 
     public static void main(String[] args)
     {
+        String localIP = "172.18.231.33";
+        localIP = "localhos";
+        connect(localIP);
+    }
 
+
+
+
+    public static void connect(String hostIP) {
         try
         {
 
-            Socket socket = new Socket("localhost", 5000);
+            Socket socket = new Socket(hostIP, 5000);
 
             System.out.println("Connected to server.");
 
@@ -35,3 +43,4 @@ public class Client
         }
     }
 }
+
