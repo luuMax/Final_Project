@@ -48,7 +48,7 @@ public class BoardUI extends JFrame
             System.out.println("Image not found: " + piece.toString());
             return null;
         }
-        Image scaled = image.getImage().getScaledInstance( (int)(tileSize * 2), (int)(tileSize * 2), Image.SCALE_SMOOTH); // Scales the image to preferred size
+        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH); // Scales the image to preferred size
         return new JLabel(new ImageIcon(scaled));
     }
 

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Collections;
 
 public class Game {
     private Board board;
@@ -87,6 +88,19 @@ public class Game {
         System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
         decrementModifiers();
         moveCount++;
+        if (moveCount >= 3 && moveCount % 3 == 0) {
+            Modifier.Type[] options = offeredModifiers();
+            System.out.println("Choose a modifier:");
+            for (int i = 0; i < options.length; i++) {
+                System.out.println((i + 1) + ". " + options[i]);
+            }
+            int choice = input.nextInt() - 1;
+            if (choice >= 0 && choice < options.length) {
+                activeModifiers.add(new Modifier(3, options[choice]));
+            }
+        }
+
+
         return true;
     }
 
@@ -190,7 +204,6 @@ public class Game {
 
     public Modifier.Type[] offeredModifiers() {
         ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
-        Modifier.Type[] modifiers = new Modifier.Type[3];
         pool.removeIf(type -> {
             switch (type) {
                 case PAWNS_ONLY:   return !hasPieceOfType(Pawn.class);
@@ -199,10 +212,19 @@ public class Game {
                 case ROOKS_ONLY:   return !hasPieceOfType(Rook.class);
                 case QUEENS_ONLY:  return !hasPieceOfType(Queen.class);
                 case KINGS_ONLY:   return !hasPieceOfType(King.class);
+
+
+                case EXPLODING_PIECE: return !hasPieceOfType(Knight.class);
                 default:           return false;
             }
         });
-        return modifiers;
+
+        Collections.shuffle(pool);
+        Modifier.Type[] offered = new Modifier.Type[Math.min(3, pool.size())];
+        for (int i = 0; i < offered.length; i++) {
+            offered[i] = pool.get(i);
+        }
+        return offered;
     }
 
     private boolean hasPieceOfType(Class<?> pieceClass) {

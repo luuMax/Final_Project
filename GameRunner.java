@@ -8,7 +8,7 @@ public class GameRunner {
 
     public GameRunner(NetworkManager network) {
         this.network    = network;
-        this.localColor = network.getIsWhite() ? Color.WHITE : Color.BLACK;
+        //this.localColor = network.getIsWhite() ? Color.WHITE : Color.BLACK;
     }
 
     // Keep this so you can still run locally without networking for testing
