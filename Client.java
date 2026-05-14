@@ -5,17 +5,23 @@ public class Client {
 
     public static void main(String[] args) {
 
-        
+            //currently testing
             String IPlocal = "172.18.231.34";
+            IPlocal = "localhost";
             int port = 5000;
 
             // connect to server computer
             /* Socket socket = new Socket("192.168.1.5", 5000) */
+            
+            connect(IPlocal, port);
+    }
 
+
+    public static void connect(String ip, int port) {
         try {
-            System.out.println("Connecting to " + IPlocal + ":" + port + "..");
+            System.out.println("Connecting to " + ip + ":" + port + "..");
 
-            Socket socket = new Socket(IPlocal, port);
+            Socket socket = new Socket(ip, port);
 
             System.out.println("Connected to server!");
 
