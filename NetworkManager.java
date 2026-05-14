@@ -12,7 +12,7 @@ public class NetworkManager {
         this.isWhite = isWhite;
         this.out = new PrintWriter(socket.getOutputStream(), true);
         this.in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        System.out.println("[Network] Playing as " + (isWhite ? "WHITE" : "BLACK"));
+        
     }
 
     public void sendSetup(String msg) {

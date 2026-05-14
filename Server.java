@@ -1,28 +1,44 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Random;
 
-public class Server {
-    public static void main(String[] args) {
-        try {
-            System.out.println("Starting server on port 5000...");
-            System.out.println("Find your IP: run 'ipconfig getifaddr en0' on Mac, 'ipconfig' on Windows");
+public class Server
+{
+
+    public static void main(String[] args)
+    {
+
+        try
+        {
 
             ServerSocket serverSocket = new ServerSocket(5000);
-            System.out.println("Waiting for opponent to connect...");
+
+            System.out.println("Server started.");
+            System.out.println("Waiting for connection...");
 
             Socket socket = serverSocket.accept();
-            serverSocket.close();
-            System.out.println("Opponent connected!");
 
-            boolean serverIsWhite = new Random().nextBoolean();
+            System.out.println("Client connected.");
+
+            // randomly assign server color
+
+            /* boolean serverIsWhite = new Random().nextBoolean(); */
+            boolean serverIsWhite = true;
+
             NetworkManager network = new NetworkManager(socket, serverIsWhite);
-            network.sendSetup(serverIsWhite ? "WHITE" : "BLACK");
 
-            System.out.println("You are " + (serverIsWhite ? "WHITE" : "BLACK"));
-            new GameRunner(network).start();
+            System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
 
-        } catch (Exception e) {
+            GameRunner runner = new GameRunner(network);
+
+            runner.start();
+
+        }
+
+        catch (IOException e)
+        {
+
             e.printStackTrace();
         }
     }

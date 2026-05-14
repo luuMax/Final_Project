@@ -1,26 +1,36 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.Socket;
 
-public class Client {
-    public static void main(String[] args) {
-        String serverIP = "172.18.231.33";
-        serverIP = "localhost"; // change to server's IP
-        int port = 5000;
+public class Client
+{
 
-        try {
-            System.out.println("Connecting to " + serverIP + ":" + port + "...");
-            Socket socket = new Socket(serverIP, port);
-            System.out.println("Connected!");
+    public static void main(String[] args)
+    {
 
-            // isWhite is temporary false, readSetup sets the real value
-            NetworkManager network = new NetworkManager(socket, false);
-            String assigned = network.readSetup();
-            network.isWhite = assigned.equals("WHITE");
+        try
+        {
 
-            System.out.println("You are " + (network.isWhite ? "WHITE" : "BLACK"));
-            new GameRunner(network).start();
+            Socket socket = new Socket("localhost", 5000);
 
-        } catch (Exception e) {
+            System.out.println("Connected to server.");
+
+            // client is ALWAYS opposite color
+
+            boolean clientIsWhite = false;
+
+            NetworkManager network = new NetworkManager(socket, clientIsWhite);
+
+            System.out.println("Client is BLACK");
+
+            GameRunner runner = new GameRunner(network);
+
+            runner.start();
+
+        }
+
+        catch (IOException e)
+        {
+
             e.printStackTrace();
         }
     }
