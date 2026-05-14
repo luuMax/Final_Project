@@ -2,40 +2,25 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-
     public static void main(String[] args) {
+        String serverIP = "172.18.231.33";
+        serverIP = "localhost"; // change to server's IP
+        int port = 5000;
 
-            //currently testing
-            String IPlocal = "172.18.231.34";
-            IPlocal = "localhost";
-            int port = 5000;
-
-            // connect to server computer
-            /* Socket socket = new Socket("192.168.1.5", 5000) */
-            
-            connect(IPlocal, port);
-    }
-
-
-    public static void connect(String ip, int port) {
         try {
-            System.out.println("Connecting to " + ip + ":" + port + "..");
+            System.out.println("Connecting to " + serverIP + ":" + port + "...");
+            Socket socket = new Socket(serverIP, port);
+            System.out.println("Connected!");
 
-            Socket socket = new Socket(ip, port);
+            // isWhite is temporary false, readSetup sets the real value
+            NetworkManager network = new NetworkManager(socket, false);
+            String assigned = network.readSetup();
+            network.isWhite = assigned.equals("WHITE");
 
-            System.out.println("Connected to server!");
-
-            BufferedReader setupIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String assigned = setupIn.readLine();
-            boolean clientIsWhite = assigned.equals("WHITE");
-
-            System.out.println("You are " + (clientIsWhite ? "WHITE" : "BLACK"));
-            
-            NetworkManager network = new NetworkManager(socket, false); 
+            System.out.println("You are " + (network.isWhite ? "WHITE" : "BLACK"));
             new GameRunner(network).start();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
