@@ -5,11 +5,15 @@ import java.util.Random;
 public class Server {
 //Test: ipconfig getifaddr en0
     public static void main(String[] args) {
+        connect(5000);
+    }
+
+    public static void connect(int port) {
         try {
             System.out.println("Starting server on port 5000...");
             System.out.println("Your IP (run 'ipconfig getifaddr en0' on Mac or 'ipconfig' on Windows)");
 
-            ServerSocket serverSocket = new ServerSocket(5000);
+            ServerSocket serverSocket = new ServerSocket(port);
             System.out.println("Waiting for opponent to connect...");
 
             Socket socket = serverSocket.accept(); // blocks here until client joins
@@ -29,6 +33,5 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
