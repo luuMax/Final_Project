@@ -31,6 +31,7 @@ public class GameRunner {
                             break;
                         }
 
+<<<<<<< HEAD
                         int fr = move[0], fc = move[1], tr = move[2], tc = move[3];
                         javax.swing.SwingUtilities.invokeLater(() -> {
                             boolean valid = game.makeMove(fr, fc, tr, tc);
@@ -52,5 +53,9 @@ public class GameRunner {
                 boardUI = new BoardUI(800, 800, 100, game);
             }
         });
+=======
+        listenerThread.setDaemon(true); //on disconnect
+        listenerThread.start();
+>>>>>>> af0e339faa61080cd9a2597e185f20571ac01fdb
     }
 }
