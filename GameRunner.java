@@ -51,7 +51,7 @@ public class GameRunner {
             network.close();
         });
 
-        listenerThread.setDaemon(true); // thread dies when the window closes
+        listenerThread.setDaemon(true); //on disconnect
         listenerThread.start();
     }
 }
