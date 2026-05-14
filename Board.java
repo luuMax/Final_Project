@@ -1,10 +1,12 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 // Board class to represent the chess board and piece positions
 
 public class Board {
     private BoardType boardType;
     private Piece[][] boardArr;
+    private ArrayList<Modifier> activeModifiers = new ArrayList<>();
 
     public enum BoardType {
         DEFAULT, CUSTOM //none for now
@@ -77,5 +79,30 @@ public class Board {
 
     public Piece[][] getBoard() {
         return boardArr;
-     }
+    }
+    public ArrayList<Modifier> getActiveModifiers() {
+        return activeModifiers;
+    }
+    public void addModifier(Modifier modifier) {
+        activeModifiers.add(modifier);
+    }
+
+    public void removeModifier(Modifier modifier) {
+        activeModifiers.remove(modifier);
+    }
+
+    public boolean hasModifier(Modifier modifier) {
+        return activeModifiers.contains(modifier);
+    }
+
+    public void decrementModifiers() {
+        for (int i = 0; i < activeModifiers.size(); i++) {
+            Modifier m = activeModifiers.get(i);
+            m.decrementTurns();
+            if (m.getTurnsRemaining() <= 0) {
+                activeModifiers.remove(m);
+                i--;
+            }
+        }
+    }
 }
