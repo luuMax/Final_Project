@@ -10,6 +10,7 @@ public class Pawn extends Piece
     }
     
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
+        
         int direction = (this.getColor() == Color.WHITE) ? -1 : 1; // different directions for white and black
         // forward moves
         // move up 2

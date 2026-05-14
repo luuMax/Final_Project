@@ -13,6 +13,7 @@ public class Game {
     private ArrayList<Modifier> activeModifiers = new ArrayList<>();
     private int moveCount = 0;
     private Scanner input = new Scanner(System.in);
+    private boolean modifierOfferedThisCycle = false; // stops modifiers from infinitely being offered in the same turn
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
@@ -47,6 +48,7 @@ public class Game {
             System.out.println("Game is already over.");
             return false;
         }
+
         Piece piece = board.getPieceAt(fromRow, fromCol);
         Piece capturedPiece = board.getPieceAt(toRow, toCol);
         
@@ -60,6 +62,9 @@ public class Game {
             return false; // testing
         }
 
+        if (isBlockedByModifier(piece)) {
+            return false;
+        }
         Move.MoveType moveType = categorizeMoveType(fromRow, fromCol, toRow, toCol);
 
         //MAKE move obj BEFORE altering board
@@ -88,19 +93,9 @@ public class Game {
         System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
         decrementModifiers();
         moveCount++;
-        if (moveCount >= 3 && moveCount % 3 == 0) {
-            Modifier.Type[] options = offeredModifiers();
-            System.out.println("Choose a modifier:");
-            for (int i = 0; i < options.length; i++) {
-                System.out.println((i + 1) + ". " + options[i]);
-            }
-            int choice = input.nextInt() - 1;
-            if (choice >= 0 && choice < options.length) {
-                activeModifiers.add(new Modifier(3, options[choice]));
-            }
-        }
-
-
+        modifierOfferedThisCycle = false;
+        System.out.println(moveCount);
+        System.out.println(activeModifiers);
         return true;
     }
 
@@ -237,6 +232,25 @@ public class Game {
             }
         }
         return false;
+    }
+
+    private boolean isBlockedByModifier(Piece piece) {
+        for (Modifier m : activeModifiers) {
+            Class<?> required = m.affectedClass();
+            if (required != null && !required.isInstance(piece)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean shouldOfferModifier() {
+        return (moveCount >=3 && moveCount % 3 == 0 && !modifierOfferedThisCycle);
+    }
+
+    public void addModifier(Modifier modifier) {
+        activeModifiers.add(modifier);
+        modifierOfferedThisCycle = true;
     }
 }
 

@@ -13,7 +13,7 @@ public class BoardUI extends JFrame
     // Tile Colors  //
     public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
     public static final Color DARK_BROWN = new Color(205,154,117);
-    public static final Color HIGHLIGHT = new Color(0);
+    public static final Color HIGHLIGHT = new Color(247, 247, 105);
 
     // Some useful stuff for UI logic   //
     private Game game;
@@ -176,12 +176,32 @@ public class BoardUI extends JFrame
             if (selectedRow != i || selectedCol != j)
             {
                 game.makeMove(selectedRow, selectedCol, i, j);
+                redrawBoard();
                 if (game.isGameOver()) {
                     System.out.println(game.getCurrentTurn() == Color.WHITE ? "White wins!" : "Black wins!");
                 }
+                else if (game.shouldOfferModifier()) {
+                    Modifier.Type[] options = game.offeredModifiers();
+                    String[] optionStrings = new String[options.length];
+                    for (int neel = 0; neel < options.length; neel++) {
+                        optionStrings[neel] = (neel + 1) + ". " + options[neel];
+                    }
+                    String chosen = (String) JOptionPane.showInputDialog(
+                        this,
+                        "Choose a modifier:",
+                        "Modifier",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        optionStrings,
+                        optionStrings[0]
+                    );
+                    if (chosen != null) {
+                        int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
+                        game.addModifier(new Modifier(3, options[choice]));
+                    }
+                }
             }
         }
-        redrawBoard();
 
         if(game.isGameOver())
         {

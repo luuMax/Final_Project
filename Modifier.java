@@ -20,18 +20,22 @@ public class Modifier {
         this(turns, type, null);
     }
 
+    // returns the type of modifier
     public Type getType() {
         return type;
     }
     
+    // returns the number of turns remaining on a modifier
     public int getTurnsRemaining() {
         return turnsRemaining;
     }
 
+    // decreases the remaining turns on the modifier
     public void decrementTurns() {
         turnsRemaining--;
     }
 
+    // checks if a modifier is Expired
     public boolean isExpired() {
         if (turnsRemaining <= 0) {
             return true;
@@ -39,7 +43,21 @@ public class Modifier {
         return false;
     }
 
+    // for modifiers that affect a certain piece, such as the exploding knight
     public Piece getAffectedPiece() {
         return affectedPiece;
     }
+
+    // for modifiers that affect a certain class of pieces, such as only Pawns can move
+    public Class<?> affectedClass() {
+        switch (type) {
+            case PAWNS_ONLY:   return Pawn.class;
+            case KNIGHTS_ONLY: return Knight.class;
+            case BISHOPS_ONLY: return Bishop.class;
+            case ROOKS_ONLY:   return Rook.class;
+            case QUEENS_ONLY:  return Queen.class;
+            case KINGS_ONLY:   return King.class;
+            default:           return null;
+        }
+}
 }
