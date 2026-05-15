@@ -1,7 +1,7 @@
 public class Modifier {
     public enum Type {
         // BRAINSTORM 
-        PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE;
+        PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE, SNIPER_BISHOP;
 
         @Override
         public String toString() {
@@ -13,6 +13,7 @@ public class Modifier {
                 case QUEENS_ONLY:     return "Queens Only";
                 case KINGS_ONLY:      return "Kings Only";
                 case EXPLODING_PIECE: return "Mi Bombo";
+                case SNIPER_BISHOP:   return "Sniper Bishop";
                 default:              return super.toString();
             }
         }

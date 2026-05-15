@@ -193,6 +193,7 @@ public class Game {
                 case QUEENS_ONLY:     return !hasPieceOfType(Queen.class);
                 case KINGS_ONLY:      return !hasPieceOfType(King.class);
                 case EXPLODING_PIECE: return !hasPieceOfType(Knight.class);
+                case SNIPER_BISHOP:   return !hasPieceOfType(Bishop.class);
                 default:              return false;
             }
         });

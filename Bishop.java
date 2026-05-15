@@ -11,14 +11,25 @@ public class Bishop extends Piece
 
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
+        for (Modifier m : board.getActiveModifiers()) {
+            if (m.getType() == Modifier.Type.SNIPER_BISHOP) {
+                // sniper bishop logic
+            }
+        }
         if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() == this.getColor()) {
             return false;
         }
         if (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8 && 
             (fromRow != toRow && fromCol != toCol) &&
-            Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol) && 
-            isPathClear(fromRow, fromCol, toRow, toCol, board)) {
-            return true;
+            Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol)) {
+            for (Modifier m : board.getActiveModifiers()) {
+                if (m.getType() == Modifier.Type.SNIPER_BISHOP) {
+                    return true;
+                }
+            }
+            if (isPathClear(fromRow, fromCol, toRow, toCol, board)) {
+                return true;
+            }
         }
         return false;
     }
