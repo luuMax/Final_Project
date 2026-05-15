@@ -1,7 +1,21 @@
 public class Modifier {
     public enum Type {
         // BRAINSTORM 
-        PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE
+        PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case PAWNS_ONLY:      return "Pawns Only";
+                case KNIGHTS_ONLY:    return "Knights Only";
+                case BISHOPS_ONLY:    return "Bishops Only";
+                case ROOKS_ONLY:      return "Rooks Only";
+                case QUEENS_ONLY:     return "Queens Only";
+                case KINGS_ONLY:      return "Kings Only";
+                case EXPLODING_PIECE: return "Mi Bombo";
+                default:              return super.toString();
+            }
+        }
     }
 
     private Piece affectedPiece; // used for modifiers that only apply to a single piece

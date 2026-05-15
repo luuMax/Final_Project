@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 // Board class to represent the chess board and piece positions
 
@@ -7,6 +8,7 @@ public class Board {
     private BoardType boardType;
     private Piece[][] boardArr;
     private ArrayList<Modifier> activeModifiers = new ArrayList<>();
+    private Random rand = new Random();
 
     public enum BoardType {
         DEFAULT, CUSTOM //none for now
@@ -80,6 +82,8 @@ public class Board {
     public Piece[][] getBoard() {
         return boardArr;
     }
+
+    // MODIFIER METHODS
     public ArrayList<Modifier> getActiveModifiers() {
         return activeModifiers;
     }
@@ -100,9 +104,47 @@ public class Board {
             Modifier m = activeModifiers.get(i);
             m.decrementTurns();
             if (m.getTurnsRemaining() <= 0) {
+                if (m.getType() == Modifier.Type.EXPLODING_PIECE) {
+                    Piece[][] board = getBoard();
+                    Piece piece = m.getAffectedPiece();
+                    int row = piece.getRow();
+                    int col = piece.getCol();
+                    for (int x = row - 1; x <= row + 1; x++) {
+                        for (int y = col - 1; y <= col + 1; y++) {
+                            if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                                board[x][y] = null;
+                            }
+                        }
+                    }
+                }
                 activeModifiers.remove(m);
                 i--;
             }
         }
+    }
+
+    /* Returns an int[row, col] which represents a random square on the board
+     * Precondition: pieceType is either a subclass of Piece or null. Color is either black, white, or null
+     * Postcondition: returns a random square that fulfills the requirements of being a specific piece and color
+     */
+    public int[] randomSquare(Class<?> pieceType, Color color) {
+        ArrayList<int[]> candidates = new ArrayList<>();
+
+        for (int row = 0; row < getBoard().length; row++) {
+            for (int col = 0; col < getBoard()[0].length; col++) {
+                Piece piece = getPieceAt(row, col);
+                if (((pieceType == null || pieceType.isInstance(piece)) && (color == null || (piece != null && piece.getColor() == color)))) {
+                    candidates.add(new int[]{row, col});
+                }
+            }
+        }
+
+        // if no squares that meet the criteria are found, return null;
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        int[] randomSquare = candidates.get(rand.nextInt(0, candidates.size()));
+        return randomSquare;
     }
 }

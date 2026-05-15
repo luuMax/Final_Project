@@ -197,7 +197,14 @@ public class BoardUI extends JFrame
                     );
                     if (chosen != null) {
                         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
-                        game.addModifier(new Modifier(3, options[choice]));
+                        if (options[choice] == Modifier.Type.EXPLODING_PIECE) {
+                            int[] square = game.getBoard().randomSquare(Knight.class, game.getCurrentTurn());
+                            Piece knight = game.getBoard().getPieceAt(square[0], square[1]);
+                            System.out.println("The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8) + " is about to explode mi bomboclat");
+                            game.addModifier(new Modifier(3, Modifier.Type.EXPLODING_PIECE, knight));
+                        } else {
+                            game.addModifier(new Modifier(2, options[choice]));
+                        }
                     }
                 }
             }
