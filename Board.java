@@ -99,28 +99,22 @@ public class Board {
         return activeModifiers.contains(modifier);
     }
 
-    public void decrementModifiers() {
+    /* decreases the reamining turns on modifiers
+     * Precondition: none
+     * Postcondition: returns an ArrayList<Modifier> of all EXPIRED modifiers
+     */
+    public ArrayList<Modifier> decrementModifiers() {
+        ArrayList<Modifier> expiredModifiers = new ArrayList<>();
         for (int i = 0; i < activeModifiers.size(); i++) {
             Modifier m = activeModifiers.get(i);
             m.decrementTurns();
             if (m.getTurnsRemaining() <= 0) {
-                if (m.getType() == Modifier.Type.EXPLODING_PIECE) {
-                    Piece[][] board = getBoard();
-                    Piece piece = m.getAffectedPiece();
-                    int row = piece.getRow();
-                    int col = piece.getCol();
-                    for (int x = row - 1; x <= row + 1; x++) {
-                        for (int y = col - 1; y <= col + 1; y++) {
-                            if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                board[x][y] = null;
-                            }
-                        }
-                    }
-                }
+                expiredModifiers.add(m);
                 activeModifiers.remove(m);
                 i--;
             }
         }
+        return expiredModifiers;
     }
 
     /* Returns an int[row, col] which represents a random square on the board

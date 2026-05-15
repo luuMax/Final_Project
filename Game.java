@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Collections;
 
 public class Game {
@@ -32,6 +30,15 @@ public class Game {
         return gameOver;
     }
 
+    // ==================== CORE GAME LOGIC ====================
+    /**
+     * Attempts to make a move after checking if it is legal; handles modifiers; checks if the game is over
+     * @param fromRow the row of the piece the player is moving
+     * @param fromCol the col of the piece the player is moving
+     * @param toRow the row of the square the player is moving the piece to
+     * @param toCol the row of the square the player is moving the piece to
+     * @return true if the move was successfully made, false if invalid
+     */
     public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol) {
         if (gameOver) {
             System.out.println("Game is already over.");
@@ -39,7 +46,6 @@ public class Game {
         }
 
         Piece piece = board.getPieceAt(fromRow, fromCol);
-        Piece capturedPiece = board.getPieceAt(toRow, toCol);
 
         if (piece == null || piece.getColor() != currentTurn) {
             System.out.println("Invalid move: No piece of current player's color at the source square.");
@@ -60,8 +66,11 @@ public class Game {
         piece = applyMove(fromRow, fromCol, toRow, toCol, moveType, piece);
         updateEnPassantFlags(piece, fromRow, toRow, moveType);
 
-        if (capturedPiece instanceof King) {
-            gameOver = true;
+        // System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
+        ArrayList<Modifier> expiredModifiers = board.decrementModifiers();
+        handleExpiredModifiers(expiredModifiers);
+
+        if (checkKingsAlive()) {
             return true;
         }
 
@@ -71,14 +80,20 @@ public class Game {
             currentTurn = Color.WHITE;
         }
 
-        System.out.println(moveHistory.get(moveHistory.size() - 1).getNotation());
-        board.decrementModifiers();
         moveCount++;
         modifierOfferedThisCycle = false;
         System.out.println(moveCount);
         return true;
     }
 
+    /**
+     * Categorizes the move type of a move
+     * @param fromRow the row of the piece the player is moving
+     * @param fromCol the col of the piece the player is moving
+     * @param toRow the row of the square the player is moving the piece to
+     * @param toCol the row of the square the player is moving the piece to
+     * @return MoveType of the move the player is making
+     */
     public Move.MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol) {
         Move.MoveType moveType;
         Piece piece = board.getPieceAt(fromRow, fromCol);
@@ -100,6 +115,16 @@ public class Game {
         return moveType;
     }
 
+    /**
+     * Applies the move to the board
+     * @param fromRow the row of the piece the player is moving
+     * @param fromCol the col of the piece the player is moving
+     * @param toRow the row of the square the player is moving the piece to
+     * @param toCol the row of the square the player is moving the piece to
+     * @param moveType the moveType of the move the player is making
+     * @param piece the piece the player is moving
+     * @return the Piece that is moved
+     */
     public Piece applyMove(int fromRow, int fromCol, int toRow, int toCol, Move.MoveType moveType, Piece piece) {
         if (moveType == Move.MoveType.EN_PASSANT) {
             board.getBoard()[fromRow][toCol] = null;
@@ -129,6 +154,13 @@ public class Game {
         return piece;
     }
 
+    /**
+     * updates enPassantFlags
+     * @param piece
+     * @param fromRow the row of the piece the player is moving
+     * @param toRow the row of the square the player is moving the piece to
+     * @param moveType the moveType of the move the player is making
+     */
     public void updateEnPassantFlags(Piece piece, int fromRow, int toRow, Move.MoveType moveType) {
         if (moveType != Move.MoveType.EN_PASSANT && piece instanceof Pawn && Math.abs(toRow - fromRow) == 2) {
             ((Pawn) piece).isEnPassantable = true;
@@ -144,6 +176,12 @@ public class Game {
         }
     }
 
+    // ==================== MODIFIER LOGIC ====================
+    /**
+     * Offers three random modifiers from the pool of all modifiers 
+     * and excludes modifiers that don't make sense for the current board state
+     * @return an array of Modifier.Type that contains the three random modifiers chosen 
+     */
     public Modifier.Type[] offeredModifiers() {
         ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
         pool.removeIf(type -> {
@@ -166,19 +204,28 @@ public class Game {
         }
         return offered;
     }
-
-    private boolean hasPieceOfType(Class<?> pieceClass) {
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                Piece p = board.getPieceAt(r, c);
-                if (p != null && p.getColor() == currentTurn && pieceClass.isInstance(p)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    /**
+     * Adds a modifier to the Board's activeModifiers
+     * @param modifier the modifier being added
+     */
+    public void addModifier(Modifier modifier) {
+        board.addModifier(modifier);
+        modifierOfferedThisCycle = true; // prevents infinite loop of modifiers being offered
     }
 
+    /**
+     * Considers whether modifiers should be offered or not based on move number and whether modifiers were already offered
+     * @return true if modifiers should be offered and false if not
+     */
+    public boolean shouldOfferModifier() {
+        return (moveCount >= 3 && moveCount % 3 == 0 && !modifierOfferedThisCycle);
+    }
+
+    /**
+     * Checks if a move is illegal based on current modifiers
+     * @param piece the piece in question of being able to move
+     * @return true if the piece is illegal, false if it is legal
+     */
     private boolean isBlockedByModifier(Piece piece) {
         for (Modifier m : board.getActiveModifiers()) {
             Class<?> required = m.affectedClass();
@@ -189,12 +236,76 @@ public class Game {
         return false;
     }
 
-    public boolean shouldOfferModifier() {
-        return (moveCount >= 3 && moveCount % 3 == 0 && !modifierOfferedThisCycle);
+    /**
+     * Handles modifiers on their expiration
+     * @param expiredModifiers all the modifiers that have expired
+     */
+    private void handleExpiredModifiers(ArrayList<Modifier> expiredModifiers) {
+        for (Modifier m : expiredModifiers) {
+            if (m.getType() == Modifier.Type.EXPLODING_PIECE) {
+                Piece[][] boardArr = board.getBoard();
+                Piece piece = m.getAffectedPiece();
+                int row = piece.getRow();
+                int col = piece.getCol();
+                for (int x = row - 1; x <= row + 1; x++) {
+                    for (int y = col - 1; y <= col + 1; y++) {
+                        if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                            boardArr[x][y] = null;
+                        }
+                    }
+                }
+            }
+            // add more conditions for new modifiers
+        }
     }
 
-    public void addModifier(Modifier modifier) {
-        board.addModifier(modifier);
-        modifierOfferedThisCycle = true;
+    // ==================== GAME STATE ====================
+    /**
+     * Checks whether the Kings are alive, which is important for game over logic
+     * @return true if the game is over, false if the game is still going
+     */
+    private boolean checkKingsAlive() {
+        boolean whiteKingAlive = false;
+        boolean blackKingAlive = false;
+        for (int row = 0; row < board.getBoard().length; row++) {
+            for (int col = 0; col < board.getBoard()[0].length; col++) {
+                Piece piece = board.getPieceAt(row, col);
+                if (piece instanceof King) {
+                    if (piece.getColor() == Color.WHITE) {
+                        whiteKingAlive = true;
+                    }
+                    else {
+                        blackKingAlive = true;
+                    }
+                }
+            }
+        }
+        if (whiteKingAlive == false && blackKingAlive == false) {
+            gameOver = true;
+            System.out.println("DRAW: BOTH KINGS ARE DEAD");
+            return true;
+        }
+        if (!whiteKingAlive || !blackKingAlive) {
+            gameOver = true;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether there is a piece of a given type on the board
+     * @param pieceClass the type of piece
+     * @return true if there exists a piece of that type, false if not
+     */
+    private boolean hasPieceOfType(Class<?> pieceClass) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = board.getPieceAt(r, c);
+                if (p != null && p.getColor() == currentTurn && pieceClass.isInstance(p)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
