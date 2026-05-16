@@ -14,6 +14,8 @@ public class BoardUI extends JFrame
     public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
     public static final Color DARK_BROWN = new Color(205,154,117);
     public static final Color HIGHLIGHT = new Color(247, 247, 105);
+    public static final Color BACKGROUND = new Color(41, 41, 41);
+    public static final Color OUTLINE = new Color(37,28,24);
 
     // Some useful stuff for UI logic   //
     private Game game;
@@ -58,6 +60,7 @@ public class BoardUI extends JFrame
     {
         // General window intitializing //
         setTitle("The Game");
+        getContentPane().setBackground(BACKGROUND);
         setSize(windowLength,windowWidth);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -80,23 +83,47 @@ public class BoardUI extends JFrame
 
         c.gridx = 1;
         c.gridy = 1;
-        c.gridwidth =1;
-        c.gridheight =1;
+        c.gridwidth = 1;
+        c.gridheight = 1;
         c.weightx = 1;
         c.weighty = 1;
-        c.fill = GridBagConstraints.BOTH;
-
+        c.fill = GridBagConstraints.NONE;
+        board.setBorder(BorderFactory.createLineBorder(Color.BLACK, 6));
         add(board, c);
 
         // Side Panels
         JPanel fillerTile1 = new JPanel();
-        fillerTile1.setBackground(Color.WHITE);
+        fillerTile1.setBackground(BACKGROUND);
         JPanel fillerTile2 = new JPanel();
-        fillerTile2.setBackground(Color.WHITE);
+        fillerTile2.setBackground(BACKGROUND);
         JPanel fillerTile3 = new JPanel();
-        fillerTile3.setBackground(Color.WHITE);
+        fillerTile3.setBackground(BACKGROUND);
         JPanel fillerTile4 = new JPanel();
-        fillerTile4.setBackground(Color.WHITE);
+        fillerTile4.setBackground(BACKGROUND);
+
+        JPanel backPanel = new JPanel(new BorderLayout());
+        backPanel.setBackground(BACKGROUND);
+
+        ImageIcon image = new ImageIcon("./PieceSprites/BlackForfeitIcon.png");
+        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
+
+        JPanel buttonHolder = new JPanel(new GridLayout(1, 1));
+        buttonHolder.setOpaque(false);
+        JButton backButton = new JButton(new ImageIcon(scaled));
+        backButton.setFont(new Font("Arial", Font.BOLD, 20));
+        backButton.setPreferredSize(new Dimension(60, 53));
+        backButton.setMargin(new Insets(0, 0, 0, 0));
+        backButton.setForeground(DARK_BROWN); 
+        backButton.setFocusPainted(true);
+        backButton.setOpaque(false);
+        backButton.setContentAreaFilled(true);
+        backButton.setBorderPainted(true);
+        backButton.addActionListener(e -> {
+            endGame();
+        });
+        c.fill = GridBagConstraints.BOTH;
+        buttonHolder.add(backButton, c);
+        backPanel.add(buttonHolder, BorderLayout.CENTER);
 
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -106,9 +133,10 @@ public class BoardUI extends JFrame
 
         c.gridx = 0;
         c.gridy = 1;
+        c.weightx = 0.5;
         add(fillerTile1, c);
 
-        c.gridx = 3;
+        c.gridx = 2;
         c.gridy = 1;
         add(fillerTile2, c);
 
@@ -117,8 +145,18 @@ public class BoardUI extends JFrame
         add(fillerTile3, c);
 
         c.gridx = 1;
-        c.gridy = 3;
+        c.gridy = 2;
         add(fillerTile4, c);
+
+        c.gridx = 2;
+        c.gridy = 2;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.SOUTHEAST;
+        add(backPanel, c);
         
         setVisible(true);
     }
