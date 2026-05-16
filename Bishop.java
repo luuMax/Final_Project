@@ -16,9 +16,15 @@ public class Bishop extends Piece
         }
         if (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8 && 
             (fromRow != toRow && fromCol != toCol) &&
-            Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol) && 
-            isPathClear(fromRow, fromCol, toRow, toCol, board)) {
-            return true;
+            Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol)) {
+            for (Modifier m : board.getActiveModifiers()) {
+                if (m.getType() == Modifier.Type.SNIPER_BISHOP && m.getAffectedPiece().equals(this)) {
+                    return true;
+                }
+            }
+            if (isPathClear(fromRow, fromCol, toRow, toCol, board)) {
+                return true;
+            }
         }
         return false;
     }
