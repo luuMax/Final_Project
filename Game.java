@@ -82,7 +82,9 @@ public class Game {
 
         moveCount++;
         modifierOfferedThisCycle = false;
-        System.out.println(moveCount);
+        for (Modifier m : board.getActiveModifiers()) {
+            System.out.println(m.getType().toString() + " - turns remaining: " + m.getTurnsRemaining());
+        }
         return true;
     }
 
@@ -126,6 +128,16 @@ public class Game {
      * @return the Piece that is moved
      */
     public Piece applyMove(int fromRow, int fromCol, int toRow, int toCol, Move.MoveType moveType, Piece piece) {
+        Piece capturedPiece = board.getPieceAt(toRow, toCol);
+        if (capturedPiece != null) {
+            for (int i = 0; i < board.getActiveModifiers().size(); i++) {
+                Modifier m = board.getActiveModifiers().get(i);
+                if (m.getAffectedPiece() == capturedPiece) {
+                    board.getActiveModifiers().remove(i);
+                    i--;
+                }
+            }
+        }
         if (moveType == Move.MoveType.EN_PASSANT) {
             board.getBoard()[fromRow][toCol] = null;
         } else if (moveType == Move.MoveType.SHORT_CASTLE) {
