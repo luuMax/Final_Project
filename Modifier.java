@@ -1,13 +1,14 @@
 public class Modifier {
     public enum Type {
         // BRAINSTORM 
-        PAWNS_ONLY, INVINCIBLE_PAWNS, /*KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY,*/ EXPLODING_PIECE, SNIPER_BISHOP;
+        PAWNS_ONLY, INVINCIBLE_PAWNS, BACK_IT_UP, /*KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY,*/ EXPLODING_PIECE, SNIPER_BISHOP;
 
         @Override
         public String toString() {
             switch (this) {
                 case PAWNS_ONLY:      return "Pawns Only";
                 case INVINCIBLE_PAWNS: return "Pawns cannot be captured";
+                case BACK_IT_UP: return "All pawns move backwards one square";
                 /*case KNIGHTS_ONLY:    return "Knights Only";
                 case BISHOPS_ONLY:    return "Bishops Only";
                 case ROOKS_ONLY:      return "Rooks Only";

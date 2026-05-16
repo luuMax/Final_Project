@@ -222,6 +222,7 @@ public class Game {
      * @param modifier the modifier being added
      */
     public void addModifier(Modifier modifier) {
+        // use if statements for instant effect modifiers
         board.addModifier(modifier);
         modifierOfferedThisCycle = true; // prevents infinite loop of modifiers being offered
     }
