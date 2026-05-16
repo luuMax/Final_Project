@@ -280,7 +280,7 @@ public class Game {
                 }
             }
             else if (m.getType() == Modifier.Type.SANCTUARY) {
-                if (m.getAffectedRow() == toRow && m.getAffectedCol() == toCol) {
+                if (m.getAffectedRow() == toRow && m.getAffectedCol() == toCol && board.getPieceAt(toRow, toCol) != null) {
                     return true;
                 }
             }
