@@ -247,9 +247,10 @@ public class BoardUI extends JFrame
                             System.out.println("The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8) + " is una esniper for 3 turns");
                             game.addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
                         }
-                         else {
+                        else {
                             game.addModifier(new Modifier(5, options[choice]));
                         }
+                        redrawBoard();
                     }
                 }
             }

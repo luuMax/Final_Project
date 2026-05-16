@@ -228,6 +228,32 @@ public class Game {
      * @param modifier the modifier being added
      */
     public void addModifier(Modifier modifier) {
+        // use if statements for instant effect modifiers
+        if (modifier.getType() == Modifier.Type.BACK_IT_UP) {
+            // white pawns
+            for (int row = board.getBoard().length - 1; row >= 0; row--) {// reverse so that the same pawn isn't moved back multiple times
+                for (int col = 0; col < board.getBoard()[0].length; col++) {
+                    Piece piece = board.getPieceAt(row, col);
+                    if (piece instanceof Pawn && piece.getColor() == Color.WHITE && (row + 1) < 8 && board.getPieceAt(row + 1, col) == null) {
+                        board.setPieceAt(piece, row + 1, col);
+                        board.setPieceAt(null, row, col);
+                        piece.setRow(row + 1);
+                    }
+                }
+            }
+
+            // black pawns
+            for (int row = 0; row < board.getBoard().length; row++) {// reverse so that the same pawn isn't moved back multiple times
+                for (int col = 0; col < board.getBoard()[0].length; col++) {
+                    Piece piece = board.getPieceAt(row, col);
+                    if (piece instanceof Pawn && piece.getColor() == Color.BLACK && (row - 1) >= 0 && board.getPieceAt(row - 1, col) == null) {
+                        board.setPieceAt(piece, row - 1, col);
+                        board.setPieceAt(null, row, col);
+                        piece.setRow(row - 1);
+                    }
+                }
+            }
+        }
         board.addModifier(modifier);
         modifierOfferedThisCycle = true; // prevents infinite loop of modifiers being offered
     }
