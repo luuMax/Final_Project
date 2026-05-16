@@ -76,6 +76,10 @@ public class Board {
     public void setPieceAt(Piece piece, int row, int col) {
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
             boardArr[row][col] = piece;
+            if (piece != null) {
+                piece.setRow(row);
+                piece.setCol(col);
+            }
         }
     }
 
@@ -117,13 +121,16 @@ public class Board {
         return expiredModifiers;
     }
 
-    /* Returns an int[row, col] which represents a random square on the board
-     * Precondition: pieceType is either a subclass of Piece or null. Color is either black, white, or null
-     * Postcondition: returns a random square that fulfills the requirements of being a specific piece and color
+    /**
+     * Returns the coordinates of a random square matching the given filters
+     * if both parameters are null, returns a random square including both occupied and empty squares
+     * if either parameter is specified, a random square meeting both requirements is returned
+     * @param pieceType the class of the piece to filter by
+     * @param color the color to filter by
+     * @return an int[row, col] representing the coordinates of a random square, or null if no eligible squares are found
      */
     public int[] randomSquare(Class<?> pieceType, Color color) {
         ArrayList<int[]> candidates = new ArrayList<>();
-
         for (int row = 0; row < getBoard().length; row++) {
             for (int col = 0; col < getBoard()[0].length; col++) {
                 Piece piece = getPieceAt(row, col);
@@ -134,6 +141,28 @@ public class Board {
         }
 
         // if no squares that meet the criteria are found, return null;
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        int[] randomSquare = candidates.get(rand.nextInt(0, candidates.size()));
+        return randomSquare;
+    }
+
+    /**
+     * Flabadabazalright
+     * Annoying that I had to make this a separate method, but its necessary
+     * @return an int[row, col] representing the coordinates of a random square, or null if no eligible squares are found (probably impossible)
+     */
+    public int[] randomEmptySquare() {
+        ArrayList<int[]> candidates = new ArrayList<>();
+        for (int row = 0; row < getBoard().length; row++) {
+            for (int col = 0; col < getBoard()[0].length; col++) {
+                if (getBoard()[row][col] == null) {
+                    candidates.add(new int[]{row, col});
+                }
+            }
+        }
         if (candidates.isEmpty()) {
             return null;
         }

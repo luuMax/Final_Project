@@ -88,9 +88,9 @@ public class Game {
 
         moveCount++;
         modifierOfferedThisCycle = false;
-        for (Modifier m : board.getActiveModifiers()) {
-            System.out.println(m.getType().toString() + " - turns remaining: " + m.getTurnsRemaining());
-        }
+        // for (Modifier m : board.getActiveModifiers()) {
+        //     System.out.println(m.getType().toString() + " - turns remaining: " + m.getTurnsRemaining());
+        // }
         return true;
     }
 
@@ -99,7 +99,7 @@ public class Game {
      * @param fromRow the row of the piece the player is moving
      * @param fromCol the col of the piece the player is moving
      * @param toRow the row of the square the player is moving the piece to
-     * @param toCol the row of the square the player is moving the piece to
+     * @param toCol the col of the square the player is moving the piece to
      * @return MoveType of the move the player is making
      */
     public Move.MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol) {
@@ -128,7 +128,7 @@ public class Game {
      * @param fromRow the row of the piece the player is moving
      * @param fromCol the col of the piece the player is moving
      * @param toRow the row of the square the player is moving the piece to
-     * @param toCol the row of the square the player is moving the piece to
+     * @param toCol the col of the square the player is moving the piece to
      * @param moveType the moveType of the move the player is making
      * @param piece the piece the player is moving
      * @return the Piece that is moved
@@ -162,10 +162,8 @@ public class Game {
             piece = new Queen(piece.getColor(), toRow, toCol);
         }
 
-        board.getBoard()[toRow][toCol] = piece;
-        board.getBoard()[fromRow][fromCol] = null;
-        piece.setRow(toRow);
-        piece.setCol(toCol);
+        board.setPieceAt(piece, toRow, toCol);
+        board.setPieceAt(null, fromRow, fromCol);
         if (moveType != Move.MoveType.PROMOTION) {
             piece.isFirstMove = false;
         }
@@ -237,7 +235,6 @@ public class Game {
                     if (piece instanceof Pawn && piece.getColor() == Color.WHITE && (row + 1) < 8 && board.getPieceAt(row + 1, col) == null) {
                         board.setPieceAt(piece, row + 1, col);
                         board.setPieceAt(null, row, col);
-                        piece.setRow(row + 1);
                     }
                 }
             }
@@ -249,7 +246,6 @@ public class Game {
                     if (piece instanceof Pawn && piece.getColor() == Color.BLACK && (row - 1) >= 0 && board.getPieceAt(row - 1, col) == null) {
                         board.setPieceAt(piece, row - 1, col);
                         board.setPieceAt(null, row, col);
-                        piece.setRow(row - 1);
                     }
                 }
             }
@@ -330,7 +326,7 @@ public class Game {
                 }
             }
         }
-        if (whiteKingAlive == false && blackKingAlive == false) {
+        if (!whiteKingAlive && !blackKingAlive) {
             gameOver = true;
             winner = Color.GRAY;
             System.out.println("DRAW: BOTH KINGS ARE DEAD");

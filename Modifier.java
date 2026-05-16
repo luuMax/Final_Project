@@ -32,11 +32,15 @@ public class Modifier {
         this.turnsRemaining = turnsRemaining;
         this.type = type;
         this.affectedPiece = affectedPiece;
+        this.affectedRow = -1;
+        this.affectedCol = -1;
     }
 
     // used for board-wide modifiers
     public Modifier(int remainingTurns, Type type) {
         this(remainingTurns, type, null);
+        this.affectedRow = -1;
+        this.affectedCol = -1;
     }
 
     // used for modifiers that affect a square
@@ -44,6 +48,7 @@ public class Modifier {
         this.turnsRemaining = turnsRemaining;
         this.type = type;
         this.affectedRow = affectedRow;
+        this.affectedPiece = null;
         this.affectedCol = affectedCol;
     }
 
@@ -60,14 +65,6 @@ public class Modifier {
     // decreases the remaining turns on the modifier
     public void decrementTurns() {
         turnsRemaining--;
-    }
-
-    // checks if a modifier is Expired
-    public boolean isExpired() {
-        if (turnsRemaining <= 0) {
-            return true;
-        }
-        return false;
     }
 
     // for modifiers that affect a certain piece, such as the exploding knight
