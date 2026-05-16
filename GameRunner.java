@@ -18,7 +18,7 @@ public class GameRunner {
 
     public void start() {
         game    = new Game();
-        boardUI = new BoardUI(800, 800, 100, game);
+        boardUI = new BoardUI(800, 800, 60, game);
 
         // If there's no network (local testing), nothing else to do
         if (network == null) return;

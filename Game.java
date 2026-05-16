@@ -10,6 +10,7 @@ public class Game {
     private ArrayList<Move> moveHistory = new ArrayList<>();
     private int moveCount = 0;
     private boolean modifierOfferedThisCycle = false;
+    private Color winner = null;
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
@@ -28,6 +29,11 @@ public class Game {
 
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public Color winner()
+    {
+        return winner;
     }
 
     // ==================== CORE GAME LOGIC ====================
@@ -282,11 +288,20 @@ public class Game {
         }
         if (whiteKingAlive == false && blackKingAlive == false) {
             gameOver = true;
+            winner = Color.GRAY;
             System.out.println("DRAW: BOTH KINGS ARE DEAD");
             return true;
         }
         if (!whiteKingAlive || !blackKingAlive) {
             gameOver = true;
+            if(whiteKingAlive)
+            {
+                winner = Color.WHITE;
+            }
+            else
+            {
+                winner = Color.BLACK;
+            }
             return true;
         }
         return false;
