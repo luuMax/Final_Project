@@ -28,6 +28,9 @@ public class BoardUI extends JFrame
     private int selectedRow;
     private int selectedCol;
     private boolean pieceSelected = false;
+    
+    // Modifiers
+    private boolean placingSanctuary = false; // used for clicking a square for a sanctuary
 
     // Board UI references the Game class for key logic //
     // Chess window and board are initialized           //
@@ -194,6 +197,16 @@ public class BoardUI extends JFrame
 
     private void handleTileClick(int i, int j)
     {
+        if (placingSanctuary) {
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null && target.getColor() != game.getCurrentTurn()) {
+                return; // can't place on enemy piece
+            }
+            game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, i, j));
+            placingSanctuary = false;
+            redrawBoard();
+            return;
+        }
         if(pieceSelected == false) // First click, selecting a piece to move.   //
         {
             Piece piece = boardgrid.getPieceAt(i, j);
@@ -263,13 +276,7 @@ public class BoardUI extends JFrame
             game.addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
         }
         else if (options[choice] == Modifier.Type.SANCTUARY) {
-            Scanner input = new Scanner(System.in);
-            System.out.println("Enter the row of the protected square");
-            int row = input.nextInt();
-            System.out.println("Enter the col of the protected square");
-            int col = input.nextInt();
-            game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, row, col));
-            input.close();
+            placingSanctuary = true;
         }
         else {
             game.addModifier(new Modifier(5, options[choice]));

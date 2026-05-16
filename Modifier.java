@@ -6,8 +6,8 @@ public class Modifier {
         @Override
         public String toString() {
             switch (this) {
-                case PAWNS_ONLY:      return "Pawns Only";
-                case INVINCIBLE_PAWNS: return "Title Card Pawns";
+                case PAWNS_ONLY:      return "PawnStars";
+                case INVINCIBLE_PAWNS: return "[Title Card] Pawns";
                 case BACK_IT_UP: return "Back that Ahh up";
                 case SANCTUARY: return "Sanctuary";
                 /*case KNIGHTS_ONLY:    return "Knights Only";
@@ -15,7 +15,7 @@ public class Modifier {
                 case ROOKS_ONLY:      return "Rooks Only";
                 case QUEENS_ONLY:     return "Queens Only";
                 case KINGS_ONLY:      return "Kings Only";*/
-                case EXPLODING_PIECE: return "Mi Bombo";
+                case EXPLODING_PIECE: return "Mi Bomboclart";
                 case SNIPER_BISHOP:   return "Sniper Bishop";
                 default:              return super.toString();
             }
