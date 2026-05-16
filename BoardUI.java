@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
+import java.util.Scanner;
 
 public class BoardUI extends JFrame
 {
@@ -260,6 +261,15 @@ public class BoardUI extends JFrame
             Piece bishop = game.getBoard().getPieceAt(square[0], square[1]);
             System.out.println("The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8) + " is una esniper for 3 turns");
             game.addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
+        }
+        else if (options[choice] == Modifier.Type.SANCTUARY) {
+            Scanner input = new Scanner(System.in);
+            System.out.println("Enter the row of the protected square");
+            int row = input.nextInt();
+            System.out.println("Enter the col of the protected square");
+            int col = input.nextInt();
+            game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, row, col));
+            input.close();
         }
         else {
             game.addModifier(new Modifier(5, options[choice]));

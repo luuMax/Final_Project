@@ -279,6 +279,11 @@ public class Game {
                     return true;
                 }
             }
+            else if (m.getType() == Modifier.Type.SANCTUARY) {
+                if (m.getAffectedRow() == toRow && m.getAffectedCol() == toCol) {
+                    return true;
+                }
+            }
         }
         return false;
     }
