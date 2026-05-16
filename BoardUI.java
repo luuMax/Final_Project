@@ -80,10 +80,10 @@ public class BoardUI extends JFrame
 
         c.gridx = 1;
         c.gridy = 1;
-        c.gridwidth = 2;
-        c.gridheight = 2;
-        c.weightx = 5;
-        c.weighty = 5;
+        c.gridwidth =1;
+        c.gridheight =1;
+        c.weightx = 1;
+        c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
         add(board, c);
@@ -226,6 +226,10 @@ public class BoardUI extends JFrame
     private void endGame()
     {
         // End game screen then trnasition back to MainMenu once made   //
+        Color winner = game.winner();
+        MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
+        
+        dispose();
     }
 
     private void highLightTile(JPanel panel, Color highLightColor)
