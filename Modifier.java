@@ -1,17 +1,18 @@
 public class Modifier {
     public enum Type {
         // BRAINSTORM 
-        PAWNS_ONLY, KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY, EXPLODING_PIECE, SNIPER_BISHOP;
+        PAWNS_ONLY, INVINCIBLE_PAWNS, /*KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY,*/ EXPLODING_PIECE, SNIPER_BISHOP;
 
         @Override
         public String toString() {
             switch (this) {
                 case PAWNS_ONLY:      return "Pawns Only";
-                case KNIGHTS_ONLY:    return "Knights Only";
+                case INVINCIBLE_PAWNS: return "Pawns cannot be captured";
+                /*case KNIGHTS_ONLY:    return "Knights Only";
                 case BISHOPS_ONLY:    return "Bishops Only";
                 case ROOKS_ONLY:      return "Rooks Only";
                 case QUEENS_ONLY:     return "Queens Only";
-                case KINGS_ONLY:      return "Kings Only";
+                case KINGS_ONLY:      return "Kings Only";*/
                 case EXPLODING_PIECE: return "Mi Bombo";
                 case SNIPER_BISHOP:   return "Sniper Bishop";
                 default:              return super.toString();
@@ -67,11 +68,11 @@ public class Modifier {
     public Class<?> affectedClass() {
         switch (type) {
             case PAWNS_ONLY:   return Pawn.class;
-            case KNIGHTS_ONLY: return Knight.class;
+            /*case KNIGHTS_ONLY: return Knight.class;
             case BISHOPS_ONLY: return Bishop.class;
             case ROOKS_ONLY:   return Rook.class;
             case QUEENS_ONLY:  return Queen.class;
-            case KINGS_ONLY:   return King.class;
+            case KINGS_ONLY:   return King.class;*/
             default:           return null;
         }
 }

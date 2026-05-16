@@ -11,11 +11,6 @@ public class Bishop extends Piece
 
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board)
     {
-        for (Modifier m : board.getActiveModifiers()) {
-            if (m.getType() == Modifier.Type.SNIPER_BISHOP) {
-                // sniper bishop logic
-            }
-        }
         if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() == this.getColor()) {
             return false;
         }
@@ -23,7 +18,7 @@ public class Bishop extends Piece
             (fromRow != toRow && fromCol != toCol) &&
             Math.abs(toRow - fromRow) == Math.abs(toCol - fromCol)) {
             for (Modifier m : board.getActiveModifiers()) {
-                if (m.getType() == Modifier.Type.SNIPER_BISHOP) {
+                if (m.getType() == Modifier.Type.SNIPER_BISHOP && m.getAffectedPiece().equals(this)) {
                     return true;
                 }
             }

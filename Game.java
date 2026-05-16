@@ -57,7 +57,7 @@ public class Game {
             return false;
         }
 
-        if (isBlockedByModifier(piece)) {
+        if (isBlockedByModifier(piece, toRow, toCol)) {
             return false;
         }
 
@@ -187,11 +187,11 @@ public class Game {
         pool.removeIf(type -> {
             switch (type) {
                 case PAWNS_ONLY:      return !hasPieceOfType(Pawn.class);
-                case KNIGHTS_ONLY:    return !hasPieceOfType(Knight.class);
+                /*case KNIGHTS_ONLY:    return !hasPieceOfType(Knight.class);
                 case BISHOPS_ONLY:    return !hasPieceOfType(Bishop.class);
                 case ROOKS_ONLY:      return !hasPieceOfType(Rook.class);
                 case QUEENS_ONLY:     return !hasPieceOfType(Queen.class);
-                case KINGS_ONLY:      return !hasPieceOfType(King.class);
+                case KINGS_ONLY:      return !hasPieceOfType(King.class);*/
                 case EXPLODING_PIECE: return !hasPieceOfType(Knight.class);
                 case SNIPER_BISHOP:   return !hasPieceOfType(Bishop.class);
                 default:              return false;
@@ -219,7 +219,7 @@ public class Game {
      * @return true if modifiers should be offered and false if not
      */
     public boolean shouldOfferModifier() {
-        return (moveCount >= 3 && moveCount % 3 == 0 && !modifierOfferedThisCycle);
+        return (moveCount >= 5 && moveCount % 5 == 0 && !modifierOfferedThisCycle);
     }
 
     /**
@@ -227,16 +227,21 @@ public class Game {
      * @param piece the piece in question of being able to move
      * @return true if the piece is illegal, false if it is legal
      */
-    private boolean isBlockedByModifier(Piece piece) {
+    private boolean isBlockedByModifier(Piece piece, int toRow, int toCol) {
         for (Modifier m : board.getActiveModifiers()) {
             Class<?> required = m.affectedClass();
             if (required != null && !required.isInstance(piece)) {
                 return true;
             }
+            if (m.getType() == Modifier.Type.INVINCIBLE_PAWNS) {
+                Piece target = board.getPieceAt(toRow, toCol);
+                if (target instanceof Pawn) {
+                    return true;
+                }
+            }
         }
         return false;
     }
-
     /**
      * Handles modifiers on their expiration
      * @param expiredModifiers all the modifiers that have expired
