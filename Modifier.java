@@ -22,19 +22,29 @@ public class Modifier {
     }
 
     private Piece affectedPiece; // used for modifiers that only apply to a single piece
+    private int affectedRow;
+    private int affectedCol;
     private int turnsRemaining;
     private Type type;
 
     // used for modifiers that affect a single piece
-    public Modifier(int turns, Type type, Piece affectedPiece) {
-        turnsRemaining = turns;
+    public Modifier(int turnsRemaining, Type type, Piece affectedPiece) {
+        this.turnsRemaining = turnsRemaining;
         this.type = type;
         this.affectedPiece = affectedPiece;
     }
 
     // used for board-wide modifiers
-    public Modifier(int turns, Type type) {
-        this(turns, type, null);
+    public Modifier(int remainingTurns, Type type) {
+        this(remainingTurns, type, null);
+    }
+
+    // used for modifiers that affect a square
+    public Modifier(int turnsRemaining, Type type, int affectedRow, int affectedCol) {
+        this.turnsRemaining = turnsRemaining;
+        this.type = type;
+        this.affectedRow = affectedRow;
+        this.affectedCol = affectedCol;
     }
 
     // returns the type of modifier
@@ -63,6 +73,14 @@ public class Modifier {
     // for modifiers that affect a certain piece, such as the exploding knight
     public Piece getAffectedPiece() {
         return affectedPiece;
+    }
+
+    public int getAffectedRow() {
+        return affectedRow;
+    }
+
+    public int getAffectedCol() {
+        return affectedCol;
     }
 
     // for modifiers that affect a certain class of pieces, such as only Pawns can move
