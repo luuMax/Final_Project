@@ -104,25 +104,26 @@ public class BoardUI extends JFrame
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
-        ImageIcon image = new ImageIcon("./PieceSprites/BlackForfeitIcon.png");
-        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
+        ImageIcon image = new ImageIcon("./PieceSprites/ForfeitIcon.png");
+        Image scaled = image.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
         JPanel buttonHolder = new JPanel(new GridLayout(1, 1));
         buttonHolder.setOpaque(false);
         JButton backButton = new JButton(new ImageIcon(scaled));
         backButton.setFont(new Font("Arial", Font.BOLD, 20));
-        backButton.setPreferredSize(new Dimension(60, 53));
+        backButton.setPreferredSize(new Dimension(70, 70));
         backButton.setMargin(new Insets(0, 0, 0, 0));
-        backButton.setForeground(DARK_BROWN); 
-        backButton.setFocusPainted(true);
-        backButton.setOpaque(false);
+        backButton.setBackground(new Color(155,200,120)); 
+        backButton.setFocusPainted(false);
+        backButton.setOpaque(true);
         backButton.setContentAreaFilled(true);
         backButton.setBorderPainted(true);
+        backButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
         backButton.addActionListener(e -> {
             endGame();
         });
         c.fill = GridBagConstraints.BOTH;
-        buttonHolder.add(backButton, c);
+        buttonHolder.add(backButton);
         backPanel.add(buttonHolder, BorderLayout.CENTER);
 
         c.gridwidth = 1;
@@ -131,21 +132,36 @@ public class BoardUI extends JFrame
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        c.gridx = 0;
-        c.gridy = 1;
-        c.weightx = 0.5;
-        add(fillerTile1, c);
-
         c.gridx = 2;
         c.gridy = 1;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridheight = 3;
+        c.gridwidth = 1;
+        add(fillerTile1, c);
+
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 0.1;
+        c.weighty = 1;
+        c.gridheight = 3;
+        c.gridwidth = 1;
         add(fillerTile2, c);
 
         c.gridx = 1;
         c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridheight = 1;
+        c.gridwidth = 3;
         add(fillerTile3, c);
 
         c.gridx = 1;
         c.gridy = 2;
+        c.weightx = 3;
+        c.weighty = 1;
+        c.gridheight = 1;
+        c.gridwidth = 3;
         add(fillerTile4, c);
 
         c.gridx = 2;
