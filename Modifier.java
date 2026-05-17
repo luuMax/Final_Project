@@ -1,7 +1,12 @@
 public class Modifier {
     public enum Type {
         // BRAINSTORM 
-        PAWNS_ONLY, INVINCIBLE_PAWNS, BACK_IT_UP, SANCTUARY,  /*KNIGHTS_ONLY, BISHOPS_ONLY, ROOKS_ONLY, QUEENS_ONLY, KINGS_ONLY,*/ EXPLODING_PIECE, SNIPER_BISHOP;
+        PAWNS_ONLY, // self explanatory, only pawns can move
+        INVINCIBLE_PAWNS, // pawns cannot be captured
+        BACK_IT_UP, // All pawns must move backwards 1 square IF POSSIBLE
+        SANCTUARY, // player chooses a square; Any piece that is on that square CANNOT be captured for the duration of the modifier
+        EXPLODING_PIECE, // A random knight is chosen (of the side of the player choosing the modifier) and will explode in 10 turns (may change due to balancing)
+        SNIPER_BISHOP; // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
 
         @Override
         public String toString() {
