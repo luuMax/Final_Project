@@ -1,36 +1,47 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Random;
 
-public class Server {
-//Test: ipconfig getifaddr en0
-    public static void main(String[] args) {
-        connect(5000);
+public class Server
+{
+
+    public static void main(String[] args)
+    {
+        connect();   
     }
 
-    public static void connect(int port) {
-        try {
-            System.out.println("Starting server on port 5000...");
-            System.out.println("Your IP (run 'ipconfig getifaddr en0' on Mac or 'ipconfig' on Windows)");
+    public static void connect() {
+        try
+        {
 
-            ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Waiting for opponent to connect...");
+            ServerSocket serverSocket = new ServerSocket(5000);
 
-            Socket socket = serverSocket.accept(); // blocks here until client joins
-            serverSocket.close(); // only need one game, stop listening
+            System.out.println("Server started.");
+            System.out.println("Waiting for connection...");
 
-            System.out.println("Opponent connected! Starting game...");
+            Socket socket = serverSocket.accept();
 
-            boolean serverIsWhite = new Random().nextBoolean();
-            PrintWriter setupOut = new PrintWriter(socket.getOutputStream(), true);
-            setupOut.println(serverIsWhite ? "WHITE" : "BLACK");
+            System.out.println("Client connected.");
 
-            System.out.println("You are " + (serverIsWhite ? "WHITE" : "BLACK"));
+            // randomly assign server color
 
-            NetworkManager network = new NetworkManager(socket, true); // true = isServer = White
-            new GameRunner(network).start();
+            /* boolean serverIsWhite = new Random().nextBoolean(); */
+            boolean serverIsWhite = true;
 
-        } catch (Exception e) {
+            NetworkManager network = new NetworkManager(socket, serverIsWhite);
+
+            System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
+
+            GameRunner runner = new GameRunner(network);
+
+            runner.start();
+
+        }
+
+        catch (IOException e)
+        {
+
             e.printStackTrace();
         }
     }
