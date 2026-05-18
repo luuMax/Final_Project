@@ -10,3 +10,6 @@ en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
         status: active
 
 Neel: 172.18.231.34
+
+
+Max: 10.18.81.146

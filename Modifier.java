@@ -7,6 +7,7 @@ public class Modifier {
         SANCTUARY, // player chooses a square; Any piece that is on that square CANNOT be captured for the duration of the modifier
         EXPLODING_PIECE, // A random knight is chosen (of the side of the player choosing the modifier) and will explode in 10 turns (may change due to balancing)
         SNIPER_BISHOP; // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
+        
         /**
          * Kinds of modifiers that are EASY to add:
          *
