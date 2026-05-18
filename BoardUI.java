@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
-import java.util.Scanner;
 
 public class BoardUI extends JFrame
 {
@@ -265,7 +264,10 @@ public class BoardUI extends JFrame
                     );
                     if (chosen != null) {
                         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
-                        handleModifierChoice(options, choice);
+                        if (options[choice] == Modifier.Type.SANCTUARY) {
+                            placingSanctuary = true;
+                        }
+                        game.handleModifierChoice(options, choice);
                         redrawBoard();
                     }
                 }
@@ -276,28 +278,6 @@ public class BoardUI extends JFrame
         {
             endGame();
         }
-    }
-
-    private void handleModifierChoice(Modifier.Type[] options, int choice) {
-        if (options[choice] == Modifier.Type.EXPLODING_PIECE) {
-            int[] square = game.getBoard().randomSquare(Knight.class, game.getCurrentTurn());
-            Piece knight = game.getBoard().getPieceAt(square[0], square[1]);
-            System.out.println("The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8) + " is about to explode mi bomboclat in 3 turns");
-            game.addModifier(new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight));
-        }
-        else if (options[choice] == Modifier.Type.SNIPER_BISHOP) {
-            int[] square = game.getBoard().randomSquare(Bishop.class, game.getCurrentTurn());
-            Piece bishop = game.getBoard().getPieceAt(square[0], square[1]);
-            System.out.println("The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8) + " is una esniper for 3 turns");
-            game.addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
-        }
-        else if (options[choice] == Modifier.Type.SANCTUARY) {
-            placingSanctuary = true;
-        }
-        else {
-            game.addModifier(new Modifier(5, options[choice]));
-        }
-        redrawBoard();
     }
 
     private void endGame()

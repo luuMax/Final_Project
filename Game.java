@@ -310,6 +310,24 @@ public class Game {
         }
     }
 
+    public void handleModifierChoice(Modifier.Type[] options, int choice) {
+        if (options[choice] == Modifier.Type.EXPLODING_PIECE) {
+            int[] square = getBoard().randomSquare(Knight.class, getCurrentTurn());
+            Piece knight = getBoard().getPieceAt(square[0], square[1]);
+            System.out.println("The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8) + " is about to explode mi bomboclat in 3 turns");
+            addModifier(new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight));
+        }
+        else if (options[choice] == Modifier.Type.SNIPER_BISHOP) {
+            int[] square = getBoard().randomSquare(Bishop.class, getCurrentTurn());
+            Piece bishop = getBoard().getPieceAt(square[0], square[1]);
+            System.out.println("The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8) + " is una esniper for 3 turns");
+            addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
+        }
+        else {
+            addModifier(new Modifier(5, options[choice]));
+        }
+    }
+
     // ==================== GAME STATE ====================
     /**
      * Checks whether the Kings are alive, which is important for game over logic
