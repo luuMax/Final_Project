@@ -309,7 +309,12 @@ public class Game {
             // add more conditions for new modifiers
         }
     }
-
+    
+    /**
+     * Handles the modifier choice chosen by the player
+     * @param options An array list of Modifiers that were offered to the player
+     * @param choice The choice is the index of options that was selected by the player
+     */
     public void handleModifierChoice(Modifier.Type[] options, int choice) {
         if (options[choice] == Modifier.Type.EXPLODING_PIECE) {
             int[] square = getBoard().randomSquare(Knight.class, getCurrentTurn());

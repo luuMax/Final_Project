@@ -7,6 +7,26 @@ public class Modifier {
         SANCTUARY, // player chooses a square; Any piece that is on that square CANNOT be captured for the duration of the modifier
         EXPLODING_PIECE, // A random knight is chosen (of the side of the player choosing the modifier) and will explode in 10 turns (may change due to balancing)
         SNIPER_BISHOP; // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
+        /**
+         * Kinds of modifiers that are EASY to add:
+         *
+         * 1. INVINCIBLE_[PIECE] — a piece type cannot be captured.
+         *    Add a check in isBlockedByModifier() similar to INVINCIBLE_PAWNS.
+         *
+         * 2. RANDOM PIECE TARGET — a random piece of a specific type gets an effect.
+         *    Add to offeredModifiers() eligibility check, then handle in handleModifierChoice()
+         *    similar to EXPLODING_PIECE and SNIPER_BISHOP.
+         *
+         * 3. EXPIRE EFFECT — something happens to a square or piece when the modifier runs out.
+         *    Add a condition in handleExpiredModifiers() similar to EXPLODING_PIECE.
+         *
+         * 4. INSTANT BOARD EFFECT — immediately changes piece positions when applied.
+         *    Add a condition at the top of addModifier() similar to BACK_IT_UP.
+         *
+         * 5. PLAYER CHOOSES SQUARE — player clicks a square after selecting the modifier.
+         *    Add a placing[ModifierName] flag in BoardUI and handle placement in handleTileClick()
+         *    similar to SANCTUARY. Also add to isBlockedByModifier() if the square should be protected.
+         */
 
         @Override
         public String toString() {
@@ -15,11 +35,6 @@ public class Modifier {
                 case INVINCIBLE_PAWNS: return "[Title Card] Pawns";
                 case BACK_IT_UP: return "Back that Ahh up";
                 case SANCTUARY: return "Sanctuary";
-                /*case KNIGHTS_ONLY:    return "Knights Only";
-                case BISHOPS_ONLY:    return "Bishops Only";
-                case ROOKS_ONLY:      return "Rooks Only";
-                case QUEENS_ONLY:     return "Queens Only";
-                case KINGS_ONLY:      return "Kings Only";*/
                 case EXPLODING_PIECE: return "Mi Bomboclart";
                 case SNIPER_BISHOP:   return "Sniper Bishop";
                 default:              return super.toString();
@@ -90,11 +105,6 @@ public class Modifier {
     public Class<?> affectedClass() {
         switch (type) {
             case PAWNS_ONLY:   return Pawn.class;
-            /*case KNIGHTS_ONLY: return Knight.class;
-            case BISHOPS_ONLY: return Bishop.class;
-            case ROOKS_ONLY:   return Rook.class;
-            case QUEENS_ONLY:  return Queen.class;
-            case KINGS_ONLY:   return King.class;*/
             default:           return null;
         }
 }
