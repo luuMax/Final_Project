@@ -1,31 +1,50 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 
 public class Server {
+
     public static void main(String[] args) {
         connect();
     }
 
     public static void connect() {
+
         try {
+
             ServerSocket serverSocket = new ServerSocket(5000);
+
             System.out.println("Server started. Waiting for connection...");
 
             Socket socket = serverSocket.accept();
+
             serverSocket.close();
+
             System.out.println("Client connected.");
 
-            boolean serverIsWhite = new Random().nextBoolean();
-            NetworkManager network = new NetworkManager(socket, serverIsWhite);
-            network.sendSetup(serverIsWhite ? "WHITE" : "BLACK");
+            // SERVER IS ALWAYS WHITE
+            boolean serverIsWhite = true;
 
-            System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
+            NetworkManager network =
+                    new NetworkManager(socket, serverIsWhite);
+
+            /*
+             * IMPORTANT:
+             * Send the OPPOSITE color to the client.
+             *
+             * Server = WHITE
+             * Client = BLACK
+             */
+            network.sendSetup("BLACK");
+
+            System.out.println(
+                    "Server is WHITE"
+            );
 
             new GameRunner(network).start();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
