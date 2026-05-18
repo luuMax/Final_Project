@@ -3,45 +3,29 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-public class Server
-{
-
-    public static void main(String[] args)
-    {
-        connect();   
+public class Server {
+    public static void main(String[] args) {
+        connect();
     }
 
     public static void connect() {
-        try
-        {
-
+        try {
             ServerSocket serverSocket = new ServerSocket(5000);
-
-            System.out.println("Server started.");
-            System.out.println("Waiting for connection...");
+            System.out.println("Server started. Waiting for connection...");
 
             Socket socket = serverSocket.accept();
-
+            serverSocket.close();
             System.out.println("Client connected.");
 
-            // randomly assign server color
-
-            /* boolean serverIsWhite = new Random().nextBoolean(); */
-            boolean serverIsWhite = true;
-
+            boolean serverIsWhite = new Random().nextBoolean();
             NetworkManager network = new NetworkManager(socket, serverIsWhite);
+            network.sendSetup(serverIsWhite ? "WHITE" : "BLACK");
 
             System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
 
-            GameRunner runner = new GameRunner(network);
+            new GameRunner(network).start();
 
-            runner.start();
-
-        }
-
-        catch (IOException e)
-        {
-
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -1,44 +1,25 @@
 import java.io.IOException;
 import java.net.Socket;
 
-public class Client
-{
-
-    public static void main(String[] args)
-    {
-        String localIP = "172.18.231.33";
-        localIP = "localhos";
-        connect(localIP);
+public class Client {
+    public static void main(String[] args) {
+        connect("localhost"); // change to server's IP when on different machines
     }
 
-
-
-
     public static void connect(String hostIP) {
-        try
-        {
-
+        try {
             Socket socket = new Socket(hostIP, 5000);
-
             System.out.println("Connected to server.");
 
-            // client is ALWAYS opposite color
+            NetworkManager network = new NetworkManager(socket, false); // color set by readSetup
+            String assigned = network.readSetup();
+            network.isWhite = assigned.equals("WHITE");
 
-            boolean clientIsWhite = false;
+            System.out.println("Client is " + (network.isWhite ? "WHITE" : "BLACK"));
 
-            NetworkManager network = new NetworkManager(socket, clientIsWhite);
+            new GameRunner(network).start();
 
-            System.out.println("Client is BLACK");
-
-            GameRunner runner = new GameRunner(network);
-
-            runner.start();
-
-        }
-
-        catch (IOException e)
-        {
-
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
