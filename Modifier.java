@@ -35,7 +35,7 @@ public class Modifier {
                 case PAWNS_ONLY:      return "PawnStars";
                 case INVINCIBLE_PAWNS: return "[Title Card] Pawns";
                 case BACK_IT_UP: return "Back that Ahh up";
-                case SANCTUARY: return "Sanctuary";
+                case SANCTUARY: return "Mi casa es su casa";
                 case EXPLODING_PIECE: return "Mi Bomboclart";
                 case SNIPER_BISHOP:   return "Sniper Bishop";
                 default:              return super.toString();

@@ -22,58 +22,61 @@ public class BoardUI extends JFrame
     private Board boardgrid;
     private JPanel[][] panelBoard = new JPanel[8][8];
     private JPanel board = new JPanel(new GridLayout(8,8));
-    
-    // Mosuse Inputs    //
+
+    // Mouse Inputs    //
     private int selectedRow;
     private int selectedCol;
     private boolean pieceSelected = false;
-    
-    // Modifiers
-    private boolean placingSanctuary = false; // used for clicking a square for a sanctuary
 
-    // Board UI references the Game class for key logic //
-    // Chess window and board are initialized           //
+    // Modifiers
+    private boolean placingSanctuary = false;
+
+    // Networking //
+    private NetworkManager network = null;
+    private Color localColor = null;
+
+    // 4-param constructor for local play — delegates to full constructor //
     public BoardUI(int windowW, int windowL, int tileS, Game game)
     {
-        windowWidth = windowW;
+        this(windowW, windowL, tileS, game, null, null);
+    }
+
+    // 6-param constructor for networked play //
+    public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol)
+    {
+        windowWidth  = windowW;
         windowLength = windowL;
-        tileSize = tileS;
-        this.game = game;
+        tileSize     = tileS;
+        this.game      = game;
+        this.network   = net;
+        this.localColor = loCol;
         boardgrid = game.getBoard();
         initialize();
     }
 
     public JLabel getImage(Piece piece)
     {
-        // the "./----" accesses that images directly from the project directory    //
-        // so that we don't need to replace the file directory one every different  //
-        // machine.                                                                 //
         ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
         if (image.getImage() == null) {
             System.out.println("Image not found: " + piece.toString());
             return null;
         }
-        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH); // Scales the image to preferred size
+        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
         return new JLabel(new ImageIcon(scaled));
     }
 
-    // Makes the window and board, as well as some filler tiles //
-    // on the side.                                             //
     public void initialize()
     {
-        // General window intitializing //
         setTitle("The Game");
         getContentPane().setBackground(BACKGROUND);
-        setSize(windowLength,windowWidth);
+        setSize(windowLength, windowWidth);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setLayout(new GridBagLayout()); // Allows for custom layouts(ie. big middle tile for board, 
-        // and thinner tiles on sides for addons like pieces taken or timer.)
+        setLayout(new GridBagLayout());
 
-        board.setBounds(windowLength/2, windowWidth/2, tileSize * 8, tileSize*8);
+        board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
 
-        // Fill our board JPanel with white and gray tiles to represent a chess board
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 JPanel square = makeTile(i, j);
@@ -94,7 +97,6 @@ public class BoardUI extends JFrame
         board.setBorder(BorderFactory.createLineBorder(Color.BLACK, 6));
         add(board, c);
 
-        // Side Panels
         JPanel fillerTile1 = new JPanel();
         fillerTile1.setBackground(BACKGROUND);
         JPanel fillerTile2 = new JPanel();
@@ -116,15 +118,13 @@ public class BoardUI extends JFrame
         backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.setPreferredSize(new Dimension(70, 70));
         backButton.setMargin(new Insets(0, 0, 0, 0));
-        backButton.setBackground(new Color(155,200,120)); 
+        backButton.setBackground(new Color(155, 200, 120));
         backButton.setFocusPainted(false);
         backButton.setOpaque(true);
         backButton.setContentAreaFilled(true);
         backButton.setBorderPainted(true);
         backButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
-        backButton.addActionListener(e -> {
-            endGame();
-        });
+        backButton.addActionListener(e -> endGame());
         c.fill = GridBagConstraints.BOTH;
         buttonHolder.add(backButton);
         backPanel.add(buttonHolder, BorderLayout.CENTER);
@@ -176,22 +176,18 @@ public class BoardUI extends JFrame
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.SOUTHEAST;
         add(backPanel, c);
-        
+
         setVisible(true);
     }
 
-    // Helper method to create a sqaure tile for a chess board  //
-    // Useful when creating the board or redrawing. Eliminates  //
-    // some logic overlap in initialize() and redraw().         //
     private JPanel makeTile(int i, int j)
     {
         JPanel square = new JPanel(new BorderLayout());
-        Color tileColor = tileColor(i, j);
-        square.setBackground(tileColor);
+        square.setBackground(tileColor(i, j));
         square.setPreferredSize(new Dimension(tileSize, tileSize));
 
-        Piece piece = boardgrid.getPieceAt(i,j);
-        if (boardgrid.getPieceAt(i,j) != null) {
+        Piece piece = boardgrid.getPieceAt(i, j);
+        if (piece != null) {
             JLabel label = getImage(piece);
             label.setHorizontalAlignment(SwingConstants.CENTER);
             square.add(label, BorderLayout.CENTER);
@@ -199,9 +195,6 @@ public class BoardUI extends JFrame
 
         square.addMouseListener(new MouseAdapter() {
             @Override
-            // Using mousePressed instead of mouseClicked because mousePressed feels better //
-            // Allows for clicking even when mouse moves, but the other does not allow      //
-            // moving while clicking.                                                       //
             public void mousePressed(MouseEvent e) {
                 handleTileClick(i, j);
             }
@@ -212,42 +205,47 @@ public class BoardUI extends JFrame
 
     private void handleTileClick(int i, int j)
     {
+        // Turn lock — ignore clicks when it's not your turn in a networked game
+        if (localColor != null && game.getCurrentTurn() != localColor) return;
+
         if (placingSanctuary) {
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null && target.getColor() != game.getCurrentTurn()) {
-                return; // can't place on enemy piece
-            }
+            if (target != null && target.getColor() != game.getCurrentTurn()) return;
             game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, i, j));
             placingSanctuary = false;
             redrawBoard();
             return;
         }
-        if(pieceSelected == false) // First click, selecting a piece to move.   //
+
+        if (pieceSelected == false)
         {
             Piece piece = boardgrid.getPieceAt(i, j);
-            if (piece == null || piece.getColor() != game.getCurrentTurn())
-            {
-                return;
-            }
+            if (piece == null || piece.getColor() != game.getCurrentTurn()) return;
 
             selectedRow = i;
             selectedCol = j;
             pieceSelected = true;
             highLightTile(panelBoard[i][j], HIGHLIGHT);
         }
-        else    // Second click, moving the peice to a legal position. Nothing happens if illegal move. //
+        else
         {
             highLightTile(panelBoard[selectedRow][selectedCol], tileColor(selectedRow, selectedCol));
             pieceSelected = false;
 
             if (selectedRow != i || selectedCol != j)
             {
-                game.makeMove(selectedRow, selectedCol, i, j);
+                boolean moved = game.makeMove(selectedRow, selectedCol, i, j);
+
+                if (moved && network != null) {
+                    network.sendMove(selectedRow, selectedCol, i, j);
+                }
+
                 redrawBoard();
+
                 if (game.isGameOver()) {
                     System.out.println(game.getCurrentTurn() == Color.WHITE ? "White wins!" : "Black wins!");
                 }
-                else if (game.shouldOfferModifier()) {
+                else if (moved && game.shouldOfferModifier()) {
                     Modifier.Type[] options = game.offeredModifiers();
                     String[] optionStrings = new String[options.length];
                     for (int neel = 0; neel < options.length; neel++) {
@@ -274,18 +272,13 @@ public class BoardUI extends JFrame
             }
         }
 
-        if(game.isGameOver())
-        {
-            endGame();
-        }
+        if (game.isGameOver()) endGame();
     }
 
     private void endGame()
     {
-        // End game screen then trnasition back to MainMenu once made   //
         Color winner = game.winner();
         MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
-        
         dispose();
     }
 
@@ -294,62 +287,39 @@ public class BoardUI extends JFrame
         panel.setBackground(highLightColor);
     }
 
-    private boolean hasLabel(JPanel panel) // Not used, but necessary for other helper getLabel //
+/*     private boolean hasLabel(JPanel panel)
     {
-        Component[] components = panel.getComponents();
-    
-        for (Component comp : components)
-        {
-            if (comp instanceof JLabel)
-            {
-                return true;
-            }
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JLabel) return true;
         }
         return false;
-    }
-    
-    private Component getLabel(JPanel panel) // Not used now but could be useful when changing player sprites to indicate some type of modifier or powerup
+    } */
+
+/*     private Component getLabel(JPanel panel)
     {
-        if(hasLabel(panel))
-        {
-            Component[] components = panel.getComponents();
-    
-            for (Component comp : components)
-            {
-                if (comp instanceof JLabel)
-                {
-                    return comp;
-                }
+        if (hasLabel(panel)) {
+            for (Component comp : panel.getComponents()) {
+                if (comp instanceof JLabel) return comp;
             }
         }
         return null;
-    }
+    } */
 
-    private Color tileColor(int i, int j)   // Reduces a lot of space consuming logic deciding tile color   //
+    private Color tileColor(int i, int j)
     {
-        if((i +j) % 2 == 0)
-        {
-            return VERY_LIGHT_BROWN;
-        }
-        else
-        {
-            return DARK_BROWN;
-        }
+        return ((i + j) % 2 == 0) ? VERY_LIGHT_BROWN : DARK_BROWN;
     }
 
-    public void redrawBoard()   // Redraws the entire board, updating the postitions of each piece  //
-    {                           // Could change to only redrawing the two squares that were changed //
-        board.removeAll();      // to make more efficient                                           //
-        for(int i = 0; i < 8; i++)
-        {
-            for(int j = 0; j < 8; j++)
-            {
+    public void redrawBoard()
+    {
+        board.removeAll();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 JPanel square = makeTile(i, j);
                 panelBoard[i][j] = square;
                 board.add(square);
             }
         }
-
         board.revalidate();
         board.repaint();
     }

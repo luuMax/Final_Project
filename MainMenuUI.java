@@ -19,6 +19,7 @@ public class MainMenuUI extends JFrame
     }
 
     public void initialize()
+    
     {
         setTitle("The Menu");
         setSize(windowLength,windowWidth);

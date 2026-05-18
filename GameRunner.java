@@ -8,50 +8,49 @@ public class GameRunner {
 
     public GameRunner(NetworkManager network) {
         this.network    = network;
-        //this.localColor = network.getIsWhite() ? Color.WHITE : Color.BLACK;
+        this.localColor = network != null ? (network.getIsWhite() ? Color.WHITE : Color.BLACK) : null;
     }
 
-    // Keep this so you can still run locally without networking for testing
     public static void main(String[] args) {
         new GameRunner(null).start();
     }
 
     public void start() {
-        game    = new Game();
-        boardUI = new BoardUI(800, 800, 75, game);
+        game = new Game();
 
-        // If there's no network (local testing), nothing else to do
-        if (network == null) return;
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            if (network != null) {
+                boardUI = new BoardUI(800, 800, 75, game, network, localColor);
 
-        // Background thread: blocks waiting for opponent moves, applies them when they arrive
-        Thread listenerThread = new Thread(() -> {
-            while (!game.isGameOver()) {
-                int[] move = network.receiveMove(); // blocks here until opponent sends something
+                Thread listenerThread = new Thread(() -> {
+                    while (!game.isGameOver()) {
+                        int[] move = network.receiveMove();
 
-                if (move == null) {
-                    System.out.println("Opponent disconnected.");
-                    break;
-                }
-
-                int fr = move[0], fc = move[1], tr = move[2], tc = move[3];
-
-                // Touch the UI only from the Swing thread
-                javax.swing.SwingUtilities.invokeLater(() -> {
-                    boolean valid = game.makeMove(fr, fc, tr, tc);
-                    if (valid) {
-                        boardUI.redrawBoard();
-                        if (game.isGameOver()) {
-                            System.out.println("Game over!");
+                        if (move == null) {
+                            System.out.println("Opponent disconnected.");
+                            break;
                         }
-                    } else {
-                        System.out.println("WARNING: received invalid move " + fr + "," + fc + " -> " + tr + "," + tc);
-                    }
-                });
-            }
-            network.close();
-        });
 
-        listenerThread.setDaemon(true); //on disconnect
-        listenerThread.start();
+                        int fr = move[0], fc = move[1], tr = move[2], tc = move[3];
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            boolean valid = game.makeMove(fr, fc, tr, tc);
+                            if (valid) {
+                                boardUI.redrawBoard();
+                            } else {
+                                System.out.println("WARNING: invalid move received "
+                                    + fr + "," + fc + " -> " + tr + "," + tc);
+                            }
+                        });
+                    }
+                    network.close();
+                });
+
+                listenerThread.setDaemon(true);
+                listenerThread.start();
+
+            } else {
+                boardUI = new BoardUI(800, 800, 75, game);
+            }
+        });
     }
 }
