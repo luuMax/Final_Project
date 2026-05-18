@@ -1,41 +1,44 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.Socket;
 
-public class Client {
+public class Client
+{
 
-    public static void main(String[] args) {
-
-            //currently testing
-            String IPlocal = "172.18.231.34";
-            IPlocal = "localhost";
-            int port = 5000;
-
-            // connect to server computer
-            /* Socket socket = new Socket("192.168.1.5", 5000) */
-            
-            connect(IPlocal, port);
+    public static void main(String[] args)
+    {
+        String localIP = "172.18.231.33";
+        localIP = "localhos";
+        connect(localIP);
     }
 
 
-    public static void connect(String ip, int port) {
-        try {
-            System.out.println("Connecting to " + ip + ":" + port + "..");
 
-            Socket socket = new Socket(ip, port);
 
-            System.out.println("Connected to server!");
+    public static void connect(String hostIP) {
+        try
+        {
 
-            BufferedReader setupIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String assigned = setupIn.readLine();
-            boolean clientIsWhite = assigned.equals("WHITE");
+            Socket socket = new Socket(hostIP, 5000);
 
-            System.out.println("You are " + (clientIsWhite ? "WHITE" : "BLACK"));
-            
-            NetworkManager network = new NetworkManager(socket, false); 
-            new GameRunner(network).start();
+            System.out.println("Connected to server.");
+
+            // client is ALWAYS opposite color
+
+            boolean clientIsWhite = false;
+
+            NetworkManager network = new NetworkManager(socket, clientIsWhite);
+
+            System.out.println("Client is BLACK");
+
+            GameRunner runner = new GameRunner(network);
+
+            runner.start();
 
         }
-        catch (Exception e) {
+
+        catch (IOException e)
+        {
+
             e.printStackTrace();
         }
     }
