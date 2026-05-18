@@ -5,10 +5,12 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
         //currently testing connections; will fix/connect to mainmenuui later with gamelink approaproately. 
-        System.out.println("localhost");
-        System.out.println("172.18.231.34");
-        System.out.println("10.18.81.146");
-        System.out.println("input gamelink: ");
+        //does not work with modifiers, should rotate board btwn clinet and server
+        System.out.println("localhost"); //local
+        System.out.println("172.18.231.33"); //Alex
+        System.out.println("172.18.231.34"); //neel
+        System.out.println("10.18.81.146"); // max
+        System.out.print("input gamelink: ");
         Scanner scan = new Scanner(System.in);
         String hoster = scan.nextLine();
 
