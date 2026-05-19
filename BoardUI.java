@@ -366,6 +366,11 @@ public class BoardUI
         }
     }
 
+    private void showEndScreen()
+    {
+        
+    }
+
 
     void endGame()
     {
@@ -478,4 +483,6 @@ public class BoardUI
         board.revalidate();
         board.repaint();
     }
+
+
 }

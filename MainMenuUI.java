@@ -46,14 +46,15 @@ public class MainMenuUI extends JFrame
         // Start game button creation
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
         startButton.addActionListener(e -> {
-            Game game = new Game();
-            new BoardUI(800, 800, 75, game);
+            Server.connect();
             dispose();
         });
 
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
         joinButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "JoinGame");
+
+            //Client.connect();
         });
 
         // Settings page accessor button
@@ -150,6 +151,13 @@ public class MainMenuUI extends JFrame
     }
 
     public static void main(String[] args) {
-        MainMenuUI b = new MainMenuUI(800, 800);
+        //MainMenuUI b = new MainMenuUI(800, 800);
+        JFrame frame = new JFrame("Text Input Example");
+        JTextField textField = new JTextField("Type here...", 20); // 20 columns wide
+
+        frame.add(textField);
+        frame.setSize(300, 100);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 }
