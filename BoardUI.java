@@ -109,25 +109,64 @@ public class BoardUI extends JFrame
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
-        ImageIcon image = new ImageIcon("./PieceSprites/ForfeitIcon.png");
-        Image scaled = image.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon forfeitImage = new ImageIcon("./PieceSprites/ForfeitIcon.png");
+        Image scaled = forfeitImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
         JPanel buttonHolder = new JPanel(new GridLayout(1, 1));
         buttonHolder.setOpaque(false);
-        JButton backButton = new JButton(new ImageIcon(scaled));
-        backButton.setFont(new Font("Arial", Font.BOLD, 20));
-        backButton.setPreferredSize(new Dimension(70, 70));
-        backButton.setMargin(new Insets(0, 0, 0, 0));
-        backButton.setBackground(new Color(155, 200, 120));
-        backButton.setFocusPainted(false);
-        backButton.setOpaque(true);
-        backButton.setContentAreaFilled(true);
-        backButton.setBorderPainted(true);
-        backButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
-        backButton.addActionListener(e -> endGame());
-        c.fill = GridBagConstraints.BOTH;
-        buttonHolder.add(backButton);
+        JButton forfeitButton = new JButton(new ImageIcon(scaled));
+        forfeitButton.setFont(new Font("Arial", Font.BOLD, 20));
+        forfeitButton.setPreferredSize(new Dimension(70, 70));
+        forfeitButton.setMargin(new Insets(0, 0, 0, 0));
+        forfeitButton.setBackground(new Color(155, 200, 120));
+        forfeitButton.setFocusPainted(false);
+        forfeitButton.setOpaque(true);
+        forfeitButton.setContentAreaFilled(true);
+        forfeitButton.setBorderPainted(true);
+        forfeitButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
+        forfeitButton.addActionListener(e -> endGame());
+        buttonHolder.add(forfeitButton);
         backPanel.add(buttonHolder, BorderLayout.CENTER);
+
+        JPanel backPanel2 = new JPanel(new BorderLayout());
+        backPanel2.setBackground(BACKGROUND);
+
+        ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
+        scaled = drawImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+        JPanel buttonHolder2 = new JPanel(new GridLayout(6, 1));
+        buttonHolder2.setOpaque(false);
+        JButton drawButton = new JButton(new ImageIcon(scaled));
+        drawButton.setFont(new Font("Arial", Font.BOLD, 20));
+        drawButton.setPreferredSize(new Dimension(70, 70));
+        drawButton.setMargin(new Insets(0, 0, 0, 0));
+        drawButton.setBackground(new Color(226, 48, 32));
+        drawButton.setFocusPainted(false);
+        drawButton.setOpaque(true);
+        drawButton.setContentAreaFilled(true);
+        drawButton.setBorderPainted(true);
+        drawButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
+        drawButton.addActionListener(e -> endGame());
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 1;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 2;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 3;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 4;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 5;
+        buttonHolder2.add(drawButton, c);
+        backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -176,6 +215,16 @@ public class BoardUI extends JFrame
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.SOUTHEAST;
         add(backPanel, c);
+
+        c.gridx = 2;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.EAST;
+        add(backPanel2, c);
 
         setVisible(true);
     }
