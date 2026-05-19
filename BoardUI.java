@@ -1,5 +1,4 @@
 import javax.swing.*;
-
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,6 +44,10 @@ public class BoardUI extends JFrame
     // Game ending //
     private String endMessage = "";
     private boolean drawOffered = false;
+
+    // Chat/Gamelog //
+    JTextArea textBody = new JTextArea("Game started.\n");
+    JScrollPane scrollPane = new JScrollPane(textBody);
 
     // 4-param constructor for local play — delegates to full constructor //
     public BoardUI(int windowW, int windowL, int tileS, Game game)
@@ -162,7 +165,7 @@ public class BoardUI extends JFrame
         ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
         scaled = drawImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
-        JPanel buttonHolder2 = new JPanel(new GridLayout(6, 1));
+        JPanel buttonHolder2 = new JPanel(new GridBagLayout());
         buttonHolder2.setOpaque(false);
         JButton drawButton = new JButton(new ImageIcon(scaled));
         drawButton.setFont(new Font("Arial", Font.BOLD, 20));
@@ -182,26 +185,35 @@ public class BoardUI extends JFrame
             }
         });
 
+        textBody = new JTextArea();
+        textBody.setEditable(false);
+        textBody.setLineWrap(true);
+        textBody.setWrapStyleWord(true);
+        textBody.setFont(new Font("Arial", Font.PLAIN, 14));
+        textBody.setForeground(Color.WHITE);
+        textBody.setBackground(BACKGROUND);
+        textBody.setText("Game started.\n");
+
+        scrollPane = new JScrollPane(textBody);
+        scrollPane.setPreferredSize(new Dimension(220, 180));
+        scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 3));
         // adding the stuff to the big panel
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 0;
-        buttonHolder2.add(new JPanel(), c);
-        c.gridx = 0;
-        c.gridy = 1;
-        buttonHolder2.add(new JPanel(), c);
-        c.gridx = 0;
-        c.gridy = 2;
-        buttonHolder2.add(new JPanel(), c);
-        c.gridx = 0;
-        c.gridy = 3;
-        buttonHolder2.add(new JPanel(), c);
-        c.gridx = 0;
-        c.gridy = 4;
-        buttonHolder2.add(new JPanel(), c);
-        c.gridx = 0;
-        c.gridy = 5;
-        buttonHolder2.add(drawButton, c);
+
+        GridBagConstraints bc = new GridBagConstraints();
+        bc.insets = new Insets(0, 0, 0, 0);
+        bc.gridx = 0;
+        bc.weightx = 1;
+
+        bc.gridy = 0;
+        bc.weighty = 1;
+        bc.fill = GridBagConstraints.BOTH;
+        buttonHolder2.add(scrollPane, bc);
+
+        bc.gridy = 1;
+        bc.weighty = 0;
+        bc.fill = GridBagConstraints.BOTH;
+        bc.anchor = GridBagConstraints.CENTER;
+        buttonHolder2.add(drawButton, bc);
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
         c.gridwidth = 1;
@@ -209,14 +221,6 @@ public class BoardUI extends JFrame
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-
-        c.gridx = 2;
-        c.gridy = 1;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.gridheight = 3;
-        c.gridwidth = 1;
-        gamePanel.add(fillerTile1, c);
 
         c.gridx = 0;
         c.gridy = 1;
@@ -479,12 +483,14 @@ public class BoardUI extends JFrame
                 optionStrings,
                 optionStrings[0]);
         }
-
+        addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the " + chosen.substring(2) + "modifier");
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
         Modifier.Type selected = options[choice];
 
         if (selected == Modifier.Type.SANCTUARY)
         {
+
+            addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the sanctuary modifier");
             placingSanctuary = true;
             game.handleModifierChoice(options, choice);
             redrawBoard();
@@ -494,6 +500,7 @@ public class BoardUI extends JFrame
         if (selected == Modifier.Type.BRICK)
         {
             placingWall = true;
+            addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the brick modifier");
             return;
         }
 
@@ -543,4 +550,10 @@ public class BoardUI extends JFrame
         board.revalidate();
         board.repaint();
     }
+
+    private void addChatMessage(String message)
+    {
+        textBody.append(message + "\n");
+        textBody.setCaretPosition(textBody.getDocument().getLength());
+    }   
 }
