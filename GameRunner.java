@@ -32,15 +32,32 @@ public class GameRunner {
                         }
 
                         int fr = move[0], fc = move[1], tr = move[2], tc = move[3];
-                        javax.swing.SwingUtilities.invokeLater(() -> {
-                            boolean valid = game.makeMove(fr, fc, tr, tc);
-                            if (valid) {
-                                boardUI.redrawBoard();
-                            } else {
-                                System.out.println("WARNING: invalid move received "
-                                    + fr + "," + fc + " -> " + tr + "," + tc);
+
+                        // Apply move directly on listener thread — no EDT needed for state
+                        boolean valid = game.makeMove(fr, fc, tr, tc);
+
+                        if (!valid) {
+                            System.out.println("WARNING: invalid move received "
+                                + fr + "," + fc + " -> " + tr + "," + tc);
+                            continue;
+                        }
+
+                        // Check for modifier BEFORE handing off to EDT
+                        if (game.shouldOfferModifier()) {
+                            Modifier.Type[] options = network.receiveModifierOptions();
+                            if (options != null) {
+                                final Modifier.Type[] finalOptions = options;
+                                javax.swing.SwingUtilities.invokeLater(() -> {
+                                    boardUI.redrawBoard();
+                                    boardUI.showMods(finalOptions);
+                                });
                             }
-                        });
+                        } else {
+                            javax.swing.SwingUtilities.invokeLater(() -> {
+                                boardUI.redrawBoard();
+                                if (game.isGameOver()) boardUI.endGame();
+                            });
+                        }
                     }
                     network.close();
                 });

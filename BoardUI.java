@@ -324,19 +324,28 @@ public class BoardUI extends JFrame
                 }
                 else if (moved && game.shouldOfferModifier())
                 {
-                    Modifier.Type[] options = game.offeredModifiers();
-                    showMods(options);
-                }
-            }
-        }
+                    Modifier.Type[] options;
 
-        if (game.isGameOver())
-        {
-            endGame();
-        }
+                    // player who JUST moved generates modifiers
+                    options = game.offeredModifiers();
+
+                    if (network != null)
+                    {
+                        network.sendModifierOptions(options);
+                    }
+
+                    showMods(options);
+                                }
+                            }
+                        }
+
+                        if (game.isGameOver())
+                        {
+                            endGame();
+                        }
     }
 
-    private void endGame()
+    void endGame()
     {
         Color winner = game.winner();
         MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
@@ -348,33 +357,68 @@ public class BoardUI extends JFrame
         panel.setBackground(highLightColor);
     }
 
-    private void showMods(Modifier.Type[] options)
+    void showMods(Modifier.Type[] options)
+{
+    String[] optionStrings = new String[options.length];
+
+    for (int neel = 0; neel < options.length; neel++)
     {
-        String[] optionStrings = new String[options.length];
-        for (int neel = 0; neel < options.length; neel++)
+        optionStrings[neel] = (neel + 1) + ". " + options[neel];
+    }
+
+    String chosen = (String) JOptionPane.showInputDialog(
+        this,
+        "Choose a modifier:",
+        "Modifier",
+        JOptionPane.PLAIN_MESSAGE,
+        null,
+        optionStrings,
+        optionStrings[0]
+    );
+
+    // opponent is choosing
+    if (chosen == null && network != null)
+    {
+        Modifier.Type selected = network.receiveModifierChoice();
+
+        for (int i = 0; i < options.length; i++)
         {
-            optionStrings[neel] = (neel + 1) + ". " + options[neel];
-        }
-        String chosen = (String) JOptionPane.showInputDialog(
-            this,
-            "Choose a modifier:",
-            "Modifier",
-            JOptionPane.PLAIN_MESSAGE,
-            null,
-            optionStrings,
-            optionStrings[0]
-        );
-        if (chosen != null)
-        {
-            int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
-            if (options[choice] == Modifier.Type.SANCTUARY)
+            if (options[i] == selected)
             {
-                placingSanctuary = true;
+                if (selected == Modifier.Type.SANCTUARY)
+                {
+                    placingSanctuary = true;
+                }
+
+                game.handleModifierChoice(options, i);
+                redrawBoard();
+                return;
             }
-            game.handleModifierChoice(options, choice);
-            redrawBoard();
         }
     }
+
+    // local player chose
+    else if (chosen != null)
+    {
+        int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
+
+        Modifier.Type selected = options[choice];
+
+        if (selected == Modifier.Type.SANCTUARY)
+        {
+            placingSanctuary = true;
+        }
+
+        game.handleModifierChoice(options, choice);
+
+        if (network != null)
+        {
+            network.sendModifierChoice(selected);
+        }
+
+        redrawBoard();
+    }
+}
 
 /*     private boolean hasLabel(JPanel panel)
     {

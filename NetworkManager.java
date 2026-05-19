@@ -45,6 +45,57 @@ public class NetworkManager {
         }
     }
 
+    public void sendModifierOptions(Modifier.Type[] options)
+{
+    out.println(
+        options[0].name() + "," +
+        options[1].name() + "," +
+        options[2].name()
+    );
+}
+
+public Modifier.Type[] receiveModifierOptions()
+{
+    try
+    {
+        String line = in.readLine();
+
+        String[] p = line.split(",");
+
+        Modifier.Type[] options = new Modifier.Type[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            options[i] = Modifier.Type.valueOf(p[i]);
+        }
+
+        return options;
+    }
+    catch (IOException e)
+    {
+        return null;
+    }
+}
+
+public void sendModifierChoice(Modifier.Type type)
+{
+    out.println(type.name());
+}
+
+public Modifier.Type receiveModifierChoice()
+{
+    try
+    {
+        String line = in.readLine();
+
+        return Modifier.Type.valueOf(line);
+    }
+    catch (IOException e)
+    {
+        return null;
+    }
+}
+
     public boolean getIsWhite() { return isWhite; }
 
     public void close() {
