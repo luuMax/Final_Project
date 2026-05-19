@@ -369,9 +369,10 @@ public class BoardUI
 
     void endGame()
     {
-        Color winner = game.winner();
+        //currently useless
+        /* Color winner = game.winner();
         MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
-        dispose();
+        dispose(); */
     }
 
 

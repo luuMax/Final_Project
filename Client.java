@@ -19,6 +19,8 @@ public class Client
         String hoster = scan.nextLine();
 
         connect(hoster); // change to server's IP when on different machines
+
+        scan.close();
     }
 
 
