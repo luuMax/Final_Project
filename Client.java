@@ -14,6 +14,8 @@ public class Client
         System.out.println("172.18.231.33"); // Alex
         System.out.println("172.18.231.34"); // neel
         System.out.println("10.18.81.146"); // max
+        System.out.println("10.18.81.246"); //also max
+
         System.out.print("input gamelink: ");
         Scanner scan = new Scanner(System.in);
         String hoster = scan.nextLine();

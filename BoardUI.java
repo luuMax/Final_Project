@@ -31,6 +31,7 @@ public class BoardUI
 
     // Modifiers
     private boolean           placingSanctuary = false;
+    private boolean           placingWall = false;
 
     // Networking //
     private NetworkManager    network          = null;
@@ -320,6 +321,18 @@ public class BoardUI
             return;
         }
 
+        if (placingWall) {
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null) {
+                return; // can't place on an occupied square
+            }
+            boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
+            game.setModifierOfferedThisCycle(true);
+            placingWall = false;
+            redrawBoard();
+            return;
+        }
+
         if (pieceSelected == false)
         {
             Piece piece = boardgrid.getPieceAt(i, j);
@@ -416,11 +429,14 @@ public class BoardUI
         if (selected == Modifier.Type.SANCTUARY)
         {
             placingSanctuary = true;
-            // modifier is sent later when the square is clicked in
-            // handleTileClick
-            // nothing to send yet
             game.handleModifierChoice(options, choice);
             redrawBoard();
+            return;
+        }
+
+        if (selected == Modifier.Type.BRICK)
+        {
+            placingWall = true;
             return;
         }
 

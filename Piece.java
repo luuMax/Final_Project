@@ -6,7 +6,7 @@ import java.awt.*;
 public abstract class Piece
 {
 
-    public enum Type{PAWN, KING, KNIGHT, ROOK, QUEEN, BISHOP};
+    public enum Type{PAWN, KING, KNIGHT, ROOK, QUEEN, BISHOP, BRICK};
     public enum Side{WHITE, BLACK};
 
     protected boolean isFirstMove = true;

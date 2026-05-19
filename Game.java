@@ -397,6 +397,12 @@ public class Game
      */
     private boolean isBlockedByModifier(Piece piece, int toRow, int toCol)
     {
+        // check if blocked by a brick
+        if (board.getPieceAt(toRow, toCol) instanceof Brick) {
+            return true;
+        }
+
+        // cycle through active modifiers
         for (Modifier m : board.getActiveModifiers())
         {
             Class<?> required = m.affectedClass();
@@ -496,10 +502,17 @@ public class Game
                     + " is una esniper for 3 turns");
             addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
         }
+        else if (options[choice] == Modifier.Type.BRICK) {
+            setModifierOfferedThisCycle(true);
+        }
         else
         {
             addModifier(new Modifier(5, options[choice]));
         }
+    }
+
+    public void setModifierOfferedThisCycle(boolean state) {
+        modifierOfferedThisCycle = state;
     }
 
 
