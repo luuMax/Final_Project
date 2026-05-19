@@ -21,6 +21,8 @@ public class Server
 
             System.out.println("Server started. Waiting for connection...");
 
+            System.out.println("GameCode is: " + );
+
             Socket socket = serverSocket.accept();
 
             serverSocket.close();
