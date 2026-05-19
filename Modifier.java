@@ -6,8 +6,8 @@ public class Modifier {
         BACK_IT_UP, // All pawns must move backwards 1 square IF POSSIBLE
         SANCTUARY, // player chooses a square; Any piece that is on that square CANNOT be captured for the duration of the modifier
         EXPLODING_PIECE, // A random knight is chosen (of the side of the player choosing the modifier) and will explode in 10 turns (may change due to balancing)
-        SNIPER_BISHOP; // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
-        
+        SNIPER_BISHOP, // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
+        HORSE_RACE; // both players bet on a "horse race", whoever wins gets a powerup on a random knight on their side
         /**
          * Kinds of modifiers that are EASY to add:
          *

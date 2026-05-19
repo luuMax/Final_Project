@@ -3,6 +3,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Game {
     private Board board;
@@ -12,6 +14,10 @@ public class Game {
     private int moveCount = 0;
     private boolean modifierOfferedThisCycle = false;
     private Color winner = null;
+    private static final Map<String, String[]> HORSE_RACES = new HashMap<>();
+    static {
+        HORSE_RACES.put("PtESN2OWGhQ&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=23", new String[]{"Horse1", "Horse2", "Horse3", "Horse4"});
+    }
 
     public Game() {
         board = new Board(Board.BoardType.DEFAULT);
