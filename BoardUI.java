@@ -1,48 +1,56 @@
 import javax.swing.*;
+
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
 
-public class BoardUI
-    extends JFrame
+public class BoardUI extends JFrame
 {
     // General Sizes //
-    private int               windowWidth;
-    private int               windowLength;
-    private int               tileSize;
+    private int windowWidth;
+    private int windowLength;
+    private int tileSize;
 
     // Tile Colors //
     public static final Color VERY_LIGHT_BROWN = new Color(254, 228, 187);
-    public static final Color DARK_BROWN       = new Color(205, 154, 117);
-    public static final Color HIGHLIGHT        = new Color(247, 247, 105);
-    public static final Color BACKGROUND       = new Color(41, 41, 41);
-    public static final Color OUTLINE          = new Color(37, 28, 24);
+    public static final Color DARK_BROWN = new Color(205, 154, 117);
+    public static final Color HIGHLIGHT = new Color(247, 247, 105);
+    public static final Color BACKGROUND = new Color(41, 41, 41);
+    public static final Color OUTLINE = new Color(37, 28, 24);
 
     // Some useful stuff for UI logic //
-    private Game              game;
-    private Board             boardgrid;
-    private JPanel[][]        panelBoard       = new JPanel[8][8];
-    private JPanel            board            = new JPanel(new GridLayout(8, 8));
+    private Game game;
+    private Board boardgrid;
+    private JPanel[][] panelBoard = new JPanel[8][8];
+    private JPanel board = new JPanel(new GridLayout(8, 8));
+    private CardLayout cardLayout = new CardLayout();
+    private JPanel mainPanel = new JPanel(cardLayout);
+    private JPanel gamePanel = new JPanel(new GridBagLayout());
+    private JPanel endPanel = new JPanel(new GridBagLayout());
 
     // Mouse Inputs //
-    private int               selectedRow;
-    private int               selectedCol;
-    private boolean           pieceSelected    = false;
+    private int selectedRow;
+    private int selectedCol;
+    private boolean pieceSelected = false;
 
     // Modifiers
-    private boolean           placingSanctuary = false;
-    private boolean           placingWall = false;
+    private boolean placingSanctuary = false;
+    private boolean placingWall = false;
 
     // Networking //
-    private NetworkManager    network          = null;
-    private Color             localColor       = null;
+    private NetworkManager network = null;
+    private Color localColor = null;
+
+    // Game ending //
+    private String endMessage = "";
+    private boolean drawOffered = false;
 
     // 4-param constructor for local play — delegates to full constructor //
     public BoardUI(int windowW, int windowL, int tileS, Game game)
     {
         this(windowW, windowL, tileS, game, null, null);
     }
-
 
     // 6-param constructor for networked play //
     public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol)
@@ -78,7 +86,9 @@ public class BoardUI
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        gamePanel.setBackground(BACKGROUND);
+        
 
         // creating the board
         board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
@@ -104,7 +114,7 @@ public class BoardUI
         c.weighty = 1;
         c.fill = GridBagConstraints.NONE;
         board.setBorder(BorderFactory.createLineBorder(Color.BLACK, 6));
-        add(board, c);
+        gamePanel.add(board, c);
 
         // some filler panels, will be replaced with other thingies later
         JPanel fillerTile1 = new JPanel();
@@ -206,7 +216,7 @@ public class BoardUI
         c.weighty = 1;
         c.gridheight = 3;
         c.gridwidth = 1;
-        add(fillerTile1, c);
+        gamePanel.add(fillerTile1, c);
 
         c.gridx = 0;
         c.gridy = 1;
@@ -214,7 +224,7 @@ public class BoardUI
         c.weighty = 1;
         c.gridheight = 3;
         c.gridwidth = 1;
-        add(fillerTile2, c);
+        gamePanel.add(fillerTile2, c);
 
         c.gridx = 1;
         c.gridy = 0;
@@ -222,7 +232,7 @@ public class BoardUI
         c.weighty = 1;
         c.gridheight = 1;
         c.gridwidth = 3;
-        add(fillerTile3, c);
+        gamePanel.add(fillerTile3, c);
 
         c.gridx = 1;
         c.gridy = 2;
@@ -230,7 +240,7 @@ public class BoardUI
         c.weighty = 1;
         c.gridheight = 1;
         c.gridwidth = 3;
-        add(fillerTile4, c);
+        gamePanel.add(fillerTile4, c);
 
         c.gridx = 2;
         c.gridy = 2;
@@ -240,7 +250,7 @@ public class BoardUI
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.SOUTHEAST;
-        add(backPanel, c);
+        gamePanel.add(backPanel, c);
 
         c.gridx = 2;
         c.gridy = 1;
@@ -250,9 +260,34 @@ public class BoardUI
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.EAST;
-        add(backPanel2, c);
+        gamePanel.add(backPanel2, c);
 
         // Modifier panel
+        mainPanel.add(gamePanel, "Game");
+        mainPanel.add(endPanel, "End");
+
+        add(mainPanel, BorderLayout.CENTER);
+
+        cardLayout.show(mainPanel, "Game");
+
+        //////////////////////////
+        // Creating end screen  //
+        //////////////////////////
+        
+        endPanel.setBackground(new Color(36,34,32));
+        JButton backButton1 = MainMenuUI.makeButton("Return to main menu", 20, 500, 60, new Color(214,214,213));
+        backButton1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                MainMenuUI m = new MainMenuUI(windowWidth, windowLength);
+                dispose();
+            }
+        });
+        c.gridx = 0;
+        c.gridy = 1;
+        endPanel.add(backButton1, c);
+
 
         setVisible(true);
     }
@@ -384,11 +419,35 @@ public class BoardUI
     }
 
 
-    void endGame()
+    public void endGame()
     {
         Color winner = game.winner();
-        MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
-        dispose();
+        String result;
+        if(winner == null)
+        {
+            result = "The game ended in draw.";
+        }
+        else if(winner == Color.WHITE)
+        {
+            result = "White won by checkmate.";
+        }
+        else
+        {
+            result = "Black won by checkmate.";
+        }
+        JLabel outcome = new JLabel(result);
+        outcome.setFont(new Font("Sans", Font.BOLD, 20));
+        outcome.setForeground(new Color(214, 214, 213)); 
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(20, 20, 20, 20);
+        endPanel.add(outcome, c);
+
+        cardLayout.show(mainPanel, "End");
+
+        endPanel.revalidate();
+        endPanel.repaint();
     }
 
 
@@ -400,7 +459,7 @@ public class BoardUI
     // ------------------SHOW MODES METHOD -----------///
 
 
-    void showMods(Modifier.Type[] options)
+    public void showMods(Modifier.Type[] options)
     {
         String[] optionStrings = new String[options.length];
         for (int neel = 0; neel < options.length; neel++)
@@ -484,6 +543,4 @@ public class BoardUI
         board.revalidate();
         board.repaint();
     }
-
-
 }
