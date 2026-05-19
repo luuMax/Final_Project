@@ -24,10 +24,11 @@ public class Client
     }
 
 
-    public static void connect(String hostIP)
+    public static void connect(String gamecode)
     {
         try
         {
+            String hostIP = GameCode.decode(gamecode);
             Socket socket = new Socket(hostIP, 5000);
             System.out.println("Connected to server.");
 

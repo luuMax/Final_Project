@@ -1,4 +1,7 @@
-class GameCode {
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+class GameCode { //deals with the GameCode and the Networking with IP
 
     public static String encode(String ip) {
         String[] parts = ip.split("\\.");
@@ -16,5 +19,18 @@ class GameCode {
         long o3 = (packed >>  8) & 0xFF;
         long o4 =  packed        & 0xFF;
         return o1 + "." + o2 + "." + o3 + "." + o4;
+    }
+
+        public static String getIpAddress() {
+        try (final DatagramSocket socket = new DatagramSocket()) {
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            return socket.getLocalAddress().getHostAddress();
+        } catch (Exception e) {
+            return "127.0.0.1"; // Fallback to loopback
+        }
+    }
+
+    public static void main( String[] args) {
+        System.out.println(GameCode.encode(GameCode.getIpAddress()));
     }
 }
