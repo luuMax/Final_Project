@@ -57,7 +57,8 @@ public class BoardUI extends JFrame
     public JLabel getImage(Piece piece)
     {
         ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
-        if (image.getImage() == null) {
+        if (image.getImage() == null)
+        {
             System.out.println("Image not found: " + piece.toString());
             return null;
         }
@@ -75,10 +76,13 @@ public class BoardUI extends JFrame
         setResizable(false);
         setLayout(new GridBagLayout());
 
+        // creating the board
         board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
                 JPanel square = makeTile(i, j);
                 panelBoard[i][j] = square;
                 board.add(square);
@@ -87,6 +91,7 @@ public class BoardUI extends JFrame
 
         GridBagConstraints c = new GridBagConstraints();
 
+        // adding board to big panel
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 1;
@@ -97,6 +102,7 @@ public class BoardUI extends JFrame
         board.setBorder(BorderFactory.createLineBorder(Color.BLACK, 6));
         add(board, c);
 
+        // some filler panels, will be replaced with other thingies later
         JPanel fillerTile1 = new JPanel();
         fillerTile1.setBackground(BACKGROUND);
         JPanel fillerTile2 = new JPanel();
@@ -106,28 +112,81 @@ public class BoardUI extends JFrame
         JPanel fillerTile4 = new JPanel();
         fillerTile4.setBackground(BACKGROUND);
 
+        // creating the forfeit button
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
-        ImageIcon image = new ImageIcon("./PieceSprites/ForfeitIcon.png");
-        Image scaled = image.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        ImageIcon forfeitImage = new ImageIcon("./PieceSprites/ForfeitIcon.png");
+        Image scaled = forfeitImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
         JPanel buttonHolder = new JPanel(new GridLayout(1, 1));
         buttonHolder.setOpaque(false);
-        JButton backButton = new JButton(new ImageIcon(scaled));
-        backButton.setFont(new Font("Arial", Font.BOLD, 20));
-        backButton.setPreferredSize(new Dimension(70, 70));
-        backButton.setMargin(new Insets(0, 0, 0, 0));
-        backButton.setBackground(new Color(155, 200, 120));
-        backButton.setFocusPainted(false);
-        backButton.setOpaque(true);
-        backButton.setContentAreaFilled(true);
-        backButton.setBorderPainted(true);
-        backButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
-        backButton.addActionListener(e -> endGame());
-        c.fill = GridBagConstraints.BOTH;
-        buttonHolder.add(backButton);
+        JButton forfeitButton = new JButton(new ImageIcon(scaled));
+        forfeitButton.setFont(new Font("Arial", Font.BOLD, 20));
+        forfeitButton.setPreferredSize(new Dimension(70, 70));
+        forfeitButton.setMargin(new Insets(0, 0, 0, 0));
+        forfeitButton.setBackground(new Color(155, 200, 120));
+        forfeitButton.setFocusPainted(false);
+        forfeitButton.setOpaque(true);
+        forfeitButton.setContentAreaFilled(true);
+        forfeitButton.setBorderPainted(true);
+        forfeitButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
+        forfeitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                endGame();
+            }
+        });
+        buttonHolder.add(forfeitButton);
         backPanel.add(buttonHolder, BorderLayout.CENTER);
+
+        JPanel backPanel2 = new JPanel(new BorderLayout());
+        backPanel2.setBackground(BACKGROUND);
+
+        // creating draw button
+        ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
+        scaled = drawImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+        JPanel buttonHolder2 = new JPanel(new GridLayout(6, 1));
+        buttonHolder2.setOpaque(false);
+        JButton drawButton = new JButton(new ImageIcon(scaled));
+        drawButton.setFont(new Font("Arial", Font.BOLD, 20));
+        drawButton.setPreferredSize(new Dimension(70, 70));
+        drawButton.setMargin(new Insets(0, 0, 0, 0));
+        drawButton.setBackground(new Color(226, 48, 32));
+        drawButton.setFocusPainted(false);
+        drawButton.setOpaque(true);
+        drawButton.setContentAreaFilled(true);
+        drawButton.setBorderPainted(true);
+        drawButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
+        drawButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                endGame();
+            }
+        });
+
+        // adding the stuff to the big panel
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 1;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 2;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 3;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 4;
+        buttonHolder2.add(new JPanel(), c);
+        c.gridx = 0;
+        c.gridy = 5;
+        buttonHolder2.add(drawButton, c);
+        backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -177,6 +236,19 @@ public class BoardUI extends JFrame
         c.anchor = GridBagConstraints.SOUTHEAST;
         add(backPanel, c);
 
+        c.gridx = 2;
+        c.gridy = 1;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.EAST;
+        add(backPanel2, c);
+
+
+        // Modifier panel
+
         setVisible(true);
     }
 
@@ -206,9 +278,12 @@ public class BoardUI extends JFrame
     private void handleTileClick(int i, int j)
     {
         // Turn lock — ignore clicks when it's not your turn in a networked game
-        if (localColor != null && game.getCurrentTurn() != localColor) return;
-
-        if (placingSanctuary) {
+        if (localColor != null && game.getCurrentTurn() != localColor)
+        {
+            return;
+        }
+        if (placingSanctuary)
+        {
             Piece target = boardgrid.getPieceAt(i, j);
             if (target != null && target.getColor() != game.getCurrentTurn()) return;
             game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, i, j));
@@ -236,43 +311,29 @@ public class BoardUI extends JFrame
             {
                 boolean moved = game.makeMove(selectedRow, selectedCol, i, j);
 
-                if (moved && network != null) {
+                if (moved && network != null)
+                {
                     network.sendMove(selectedRow, selectedCol, i, j);
                 }
 
                 redrawBoard();
 
-                if (game.isGameOver()) {
+                if (game.isGameOver())
+                {
                     System.out.println(game.getCurrentTurn() == Color.WHITE ? "White wins!" : "Black wins!");
                 }
-                else if (moved && game.shouldOfferModifier()) {
+                else if (moved && game.shouldOfferModifier())
+                {
                     Modifier.Type[] options = game.offeredModifiers();
-                    String[] optionStrings = new String[options.length];
-                    for (int neel = 0; neel < options.length; neel++) {
-                        optionStrings[neel] = (neel + 1) + ". " + options[neel];
-                    }
-                    String chosen = (String) JOptionPane.showInputDialog(
-                        this,
-                        "Choose a modifier:",
-                        "Modifier",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        optionStrings,
-                        optionStrings[0]
-                    );
-                    if (chosen != null) {
-                        int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
-                        if (options[choice] == Modifier.Type.SANCTUARY) {
-                            placingSanctuary = true;
-                        }
-                        game.handleModifierChoice(options, choice);
-                        redrawBoard();
-                    }
+                    showMods(options);
                 }
             }
         }
 
-        if (game.isGameOver()) endGame();
+        if (game.isGameOver())
+        {
+            endGame();
+        }
     }
 
     private void endGame()
@@ -285,6 +346,34 @@ public class BoardUI extends JFrame
     private void highLightTile(JPanel panel, Color highLightColor)
     {
         panel.setBackground(highLightColor);
+    }
+
+    private void showMods(Modifier.Type[] options)
+    {
+        String[] optionStrings = new String[options.length];
+        for (int neel = 0; neel < options.length; neel++)
+        {
+            optionStrings[neel] = (neel + 1) + ". " + options[neel];
+        }
+        String chosen = (String) JOptionPane.showInputDialog(
+            this,
+            "Choose a modifier:",
+            "Modifier",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            optionStrings,
+            optionStrings[0]
+        );
+        if (chosen != null)
+        {
+            int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
+            if (options[choice] == Modifier.Type.SANCTUARY)
+            {
+                placingSanctuary = true;
+            }
+            game.handleModifierChoice(options, choice);
+            redrawBoard();
+        }
     }
 
 /*     private boolean hasLabel(JPanel panel)
@@ -313,13 +402,16 @@ public class BoardUI extends JFrame
     public void redrawBoard()
     {
         board.removeAll();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
                 JPanel square = makeTile(i, j);
                 panelBoard[i][j] = square;
                 board.add(square);
             }
         }
+        
         board.revalidate();
         board.repaint();
     }
