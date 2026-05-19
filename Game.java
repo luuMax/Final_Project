@@ -16,7 +16,9 @@ public class Game {
     private Color winner = null;
     private static final Map<String, String[]> HORSE_RACES = new HashMap<>();
     static {
-        HORSE_RACES.put("PtESN2OWGhQ&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=23", new String[]{"Horse1", "Horse2", "Horse3", "Horse4"});
+        HORSE_RACES.put("PtESN2OWGhQ&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=23", new String[]{"SUP", "ARG"});
+        HORSE_RACES.put("XcWeQRe_vzw&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=39", new String[]{"GRAY", "RED"});
+        HORSE_RACES.put("Xd2RyTwJALI&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=50", new String[]{"GREEN", "GRAY"});
     }
 
     public Game() {
