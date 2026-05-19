@@ -3,37 +3,38 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
 
-public class BoardUI extends JFrame
+public class BoardUI
+    extends JFrame
 {
-    // General Sizes    //
-    private int windowWidth;
-    private int windowLength;
-    private int tileSize;
+    // General Sizes //
+    private int               windowWidth;
+    private int               windowLength;
+    private int               tileSize;
 
-    // Tile Colors  //
-    public static final Color VERY_LIGHT_BROWN = new Color(254,228,187);
-    public static final Color DARK_BROWN = new Color(205,154,117);
-    public static final Color HIGHLIGHT = new Color(247, 247, 105);
-    public static final Color BACKGROUND = new Color(41, 41, 41);
-    public static final Color OUTLINE = new Color(37,28,24);
+    // Tile Colors //
+    public static final Color VERY_LIGHT_BROWN = new Color(254, 228, 187);
+    public static final Color DARK_BROWN       = new Color(205, 154, 117);
+    public static final Color HIGHLIGHT        = new Color(247, 247, 105);
+    public static final Color BACKGROUND       = new Color(41, 41, 41);
+    public static final Color OUTLINE          = new Color(37, 28, 24);
 
-    // Some useful stuff for UI logic   //
-    private Game game;
-    private Board boardgrid;
-    private JPanel[][] panelBoard = new JPanel[8][8];
-    private JPanel board = new JPanel(new GridLayout(8,8));
+    // Some useful stuff for UI logic //
+    private Game              game;
+    private Board             boardgrid;
+    private JPanel[][]        panelBoard       = new JPanel[8][8];
+    private JPanel            board            = new JPanel(new GridLayout(8, 8));
 
-    // Mouse Inputs    //
-    private int selectedRow;
-    private int selectedCol;
-    private boolean pieceSelected = false;
+    // Mouse Inputs //
+    private int               selectedRow;
+    private int               selectedCol;
+    private boolean           pieceSelected    = false;
 
     // Modifiers
-    private boolean placingSanctuary = false;
+    private boolean           placingSanctuary = false;
 
     // Networking //
-    private NetworkManager network = null;
-    private Color localColor = null;
+    private NetworkManager    network          = null;
+    private Color             localColor       = null;
 
     // 4-param constructor for local play — delegates to full constructor //
     public BoardUI(int windowW, int windowL, int tileS, Game game)
@@ -41,18 +42,20 @@ public class BoardUI extends JFrame
         this(windowW, windowL, tileS, game, null, null);
     }
 
+
     // 6-param constructor for networked play //
     public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol)
     {
-        windowWidth  = windowW;
+        windowWidth = windowW;
         windowLength = windowL;
-        tileSize     = tileS;
-        this.game      = game;
-        this.network   = net;
+        tileSize = tileS;
+        this.game = game;
+        this.network = net;
         this.localColor = loCol;
         boardgrid = game.getBoard();
         initialize();
     }
+
 
     public JLabel getImage(Piece piece)
     {
@@ -65,6 +68,7 @@ public class BoardUI extends JFrame
         Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
         return new JLabel(new ImageIcon(scaled));
     }
+
 
     public void initialize()
     {
@@ -133,7 +137,8 @@ public class BoardUI extends JFrame
         forfeitButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
         forfeitButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 endGame();
             }
         });
@@ -161,7 +166,8 @@ public class BoardUI extends JFrame
         drawButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
         drawButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 endGame();
             }
         });
@@ -246,11 +252,11 @@ public class BoardUI extends JFrame
         c.anchor = GridBagConstraints.EAST;
         add(backPanel2, c);
 
-
         // Modifier panel
 
         setVisible(true);
     }
+
 
     private JPanel makeTile(int i, int j)
     {
@@ -259,7 +265,8 @@ public class BoardUI extends JFrame
         square.setPreferredSize(new Dimension(tileSize, tileSize));
 
         Piece piece = boardgrid.getPieceAt(i, j);
-        if (piece != null) {
+        if (piece != null)
+        {
             JLabel label = getImage(piece);
             label.setHorizontalAlignment(SwingConstants.CENTER);
             square.add(label, BorderLayout.CENTER);
@@ -267,7 +274,8 @@ public class BoardUI extends JFrame
 
         square.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 handleTileClick(i, j);
             }
         });
@@ -275,9 +283,9 @@ public class BoardUI extends JFrame
         return square;
     }
 
+
     private void handleTileClick(int i, int j)
     {
-        // Turn lock — ignore clicks when it's not your turn in a networked game
         if (localColor != null && game.getCurrentTurn() != localColor)
         {
             return;
@@ -285,8 +293,28 @@ public class BoardUI extends JFrame
         if (placingSanctuary)
         {
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null && target.getColor() != game.getCurrentTurn()) return;
+            if (target != null && target.getColor() != game.getCurrentTurn())
+                return;
             game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, i, j));
+            if (network != null)
+            {
+                // sanctuary modifier was just added — send it immediately
+                Modifier sanctuaryMod = null;
+                for (Modifier m : game.getBoard().getActiveModifiers())
+                {
+                    if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i
+                        && m.getAffectedCol() == j)
+                    {
+                        sanctuaryMod = m;
+                        break;
+                    }
+                }
+                if (sanctuaryMod != null)
+                {
+                    final Modifier toSend = sanctuaryMod;
+                    new Thread(() -> network.sendModifier(toSend)).start();
+                }
+            }
             placingSanctuary = false;
             redrawBoard();
             return;
@@ -295,7 +323,8 @@ public class BoardUI extends JFrame
         if (pieceSelected == false)
         {
             Piece piece = boardgrid.getPieceAt(i, j);
-            if (piece == null || piece.getColor() != game.getCurrentTurn()) return;
+            if (piece == null || piece.getColor() != game.getCurrentTurn())
+                return;
 
             selectedRow = i;
             selectedCol = j;
@@ -304,7 +333,9 @@ public class BoardUI extends JFrame
         }
         else
         {
-            highLightTile(panelBoard[selectedRow][selectedCol], tileColor(selectedRow, selectedCol));
+            highLightTile(
+                panelBoard[selectedRow][selectedCol],
+                tileColor(selectedRow, selectedCol));
             pieceSelected = false;
 
             if (selectedRow != i || selectedCol != j)
@@ -320,30 +351,21 @@ public class BoardUI extends JFrame
 
                 if (game.isGameOver())
                 {
-                    System.out.println(game.getCurrentTurn() == Color.WHITE ? "White wins!" : "Black wins!");
+                    endGame();
                 }
                 else if (moved && game.shouldOfferModifier())
                 {
-                    Modifier.Type[] options;
-
-                    // player who JUST moved generates modifiers
-                    options = game.offeredModifiers();
-
+                    Modifier.Type[] options = game.offeredModifiers();
                     if (network != null)
                     {
                         network.sendModifierOptions(options);
                     }
-
                     showMods(options);
-                                }
-                            }
-                        }
-
-                        if (game.isGameOver())
-                        {
-                            endGame();
-                        }
+                }
+            }
+        }
     }
+
 
     void endGame()
     {
@@ -352,96 +374,92 @@ public class BoardUI extends JFrame
         dispose();
     }
 
+
     private void highLightTile(JPanel panel, Color highLightColor)
     {
         panel.setBackground(highLightColor);
     }
 
+    // ------------------SHOW MODES METHOD -----------///
+
+
     void showMods(Modifier.Type[] options)
-{
-    String[] optionStrings = new String[options.length];
-
-    for (int neel = 0; neel < options.length; neel++)
     {
-        optionStrings[neel] = (neel + 1) + ". " + options[neel];
-    }
-
-    String chosen = (String) JOptionPane.showInputDialog(
-        this,
-        "Choose a modifier:",
-        "Modifier",
-        JOptionPane.PLAIN_MESSAGE,
-        null,
-        optionStrings,
-        optionStrings[0]
-    );
-
-    // opponent is choosing
-    if (chosen == null && network != null)
-    {
-        Modifier.Type selected = network.receiveModifierChoice();
-
-        for (int i = 0; i < options.length; i++)
+        String[] optionStrings = new String[options.length];
+        for (int neel = 0; neel < options.length; neel++)
         {
-            if (options[i] == selected)
-            {
-                if (selected == Modifier.Type.SANCTUARY)
-                {
-                    placingSanctuary = true;
-                }
-
-                game.handleModifierChoice(options, i);
-                redrawBoard();
-                return;
-            }
+            optionStrings[neel] = (neel + 1) + ". " + options[neel];
         }
-    }
 
-    // local player chose
-    else if (chosen != null)
-    {
+        String chosen = null;
+        while (chosen == null)
+        {
+            chosen = (String)JOptionPane.showInputDialog(
+                this,
+                "Choose a modifier:",
+                "Modifier",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                optionStrings,
+                optionStrings[0]);
+        }
+
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
-
         Modifier.Type selected = options[choice];
 
         if (selected == Modifier.Type.SANCTUARY)
         {
             placingSanctuary = true;
+            // modifier is sent later when the square is clicked in
+            // handleTileClick
+            // nothing to send yet
+            game.handleModifierChoice(options, choice);
+            redrawBoard();
+            return;
         }
 
+        // apply locally
         game.handleModifierChoice(options, choice);
+        redrawBoard();
 
         if (network != null)
         {
-            network.sendModifierChoice(selected);
-        }
-
-        redrawBoard();
-    }
-}
-
-/*     private boolean hasLabel(JPanel panel)
-    {
-        for (Component comp : panel.getComponents()) {
-            if (comp instanceof JLabel) return true;
-        }
-        return false;
-    } */
-
-/*     private Component getLabel(JPanel panel)
-    {
-        if (hasLabel(panel)) {
-            for (Component comp : panel.getComponents()) {
-                if (comp instanceof JLabel) return comp;
+            // find the modifier that was just added and send it
+            // it will be the most recently added one of the chosen type
+            Modifier justAdded = null;
+            for (Modifier m : game.getBoard().getActiveModifiers())
+            {
+                if (m.getType() == selected)
+                {
+                    justAdded = m;
+                }
+            }
+            if (justAdded != null)
+            {
+                final Modifier toSend = justAdded;
+                new Thread(() -> network.sendModifier(toSend)).start();
             }
         }
-        return null;
-    } */
+    }
+
+    /*
+     * private boolean hasLabel(JPanel panel) { for (Component comp :
+     * panel.getComponents()) { if (comp instanceof JLabel) return true; }
+     * return false; }
+     */
+
+    /*
+     * private Component getLabel(JPanel panel) { if (hasLabel(panel)) { for
+     * (Component comp : panel.getComponents()) { if (comp instanceof JLabel)
+     * return comp; } } return null; }
+     */
+
 
     private Color tileColor(int i, int j)
     {
         return ((i + j) % 2 == 0) ? VERY_LIGHT_BROWN : DARK_BROWN;
     }
+
 
     public void redrawBoard()
     {
@@ -455,7 +473,7 @@ public class BoardUI extends JFrame
                 board.add(square);
             }
         }
-        
+
         board.revalidate();
         board.repaint();
     }
