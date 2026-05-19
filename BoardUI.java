@@ -57,6 +57,16 @@ public class BoardUI
         initialize();
     }
 
+    public BoardUI(int tileS, Game game, int windowW, int windowL)
+    {
+        windowWidth = windowW;
+        windowLength = windowL;
+        tileSize = tileS;
+        this.game = game;
+        boardgrid = game.getBoard();
+        initialize();
+    }
+
 
     public JLabel getImage(Piece piece)
     {
@@ -387,10 +397,9 @@ public class BoardUI
 
     void endGame()
     {
-        //currently useless
-        /* Color winner = game.winner();
+        Color winner = game.winner();
         MainMenuUI newMenu = new MainMenuUI(windowWidth, windowLength);
-        dispose(); */
+        dispose();
     }
 
 

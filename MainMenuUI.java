@@ -19,7 +19,6 @@ public class MainMenuUI extends JFrame
     }
 
     public void initialize()
-    
     {
         setTitle("The Menu");
         setSize(windowLength,windowWidth);
@@ -43,14 +42,17 @@ public class MainMenuUI extends JFrame
         titleLeft.setFont(new Font("Sans", Font.BOLD, 80));
         titleLeft.setForeground(new Color(214, 214, 213)); 
 
-        // Start game button creation
+        // Main page buttons creation
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
-        
-        JPanel startPage = new JPanel(new GridBagLayout());
         startButton.addActionListener(e -> {
-            cardLayout.show(startPage, "StartPage");
-            Server.connect();
+            Game g = new Game();
+            BoardUI b = new BoardUI(70, g, 800, 800);
             dispose();
+        });
+
+        JButton hostButton = makeButton("Host Game", 34, 300, 55, fontColor);
+        hostButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "HostGame");
         });
 
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
@@ -58,91 +60,89 @@ public class MainMenuUI extends JFrame
             cardLayout.show(mainPanel, "JoinGame");
         });
 
-        // Settings page accessor button
-        JButton settingsButton = makeButton("Settings", 34, 300, 55, fontColor);
-        settingsButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "Settings");
-        });
-
-        c.gridy = 0;
         c.gridx = 0;
+        c.gridy = 0;
         mainpage.add(titleLeft, c);
-
-
         c.fill = GridBagConstraints.NONE;
         c.gridy = 1;
         c.gridx = 0;
         mainpage.add(startButton, c);
-        
         c.gridy = 2;
+        c.gridx = 0;
+        mainpage.add(hostButton, c);
+        c.gridy = 3;
         mainpage.add(joinButton, c);
 
-        c.gridy = 3;
-        mainpage.add(settingsButton, c);
+        ImageIcon image = new ImageIcon("./PieceSprites/new_knight_white.png");
+        Image scaled = image.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
 
-        JPanel settingsPage = new JPanel(new GridBagLayout());
-        settingsPage.setBackground(new Color(36,34,32));
-
-        ImageIcon imagen = new ImageIcon("./PieceSprites/new_knight_white.png");
-        Image scaled = imagen.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+        // Making the host page //
         JLabel horsey1 = new JLabel(new ImageIcon(scaled));
+        JPanel hostPage = new JPanel(new GridBagLayout());
+        hostPage.setBackground(new Color(36,34,32));
 
-        JLabel snap1 = new JLabel("Aw snap... looks like we didn't make this page yet :(");
-        snap1.setFont(new Font("Sans", Font.BOLD, 20));
-        snap1.setForeground(new Color(214, 214, 213)); 
+        JLabel yay = new JLabel("Game created.");
+        yay.setFont(new Font("Sans", Font.BOLD, 20));
+        yay.setForeground(new Color(214, 214, 213)); 
+        JLabel gameCode = new JLabel("Game Code(share with other player):");
+        gameCode.setFont(new Font("Sans", Font.BOLD, 20));
+        gameCode.setForeground(new Color(214, 214, 213)); 
+        JLabel gameCode1 = new JLabel(GameCode.encode(GameCode.getIpAddress()));
+        gameCode1.setFont(new Font("Sans", Font.BOLD, 30));
+        gameCode1.setForeground(new Color(214, 214, 213)); 
 
-        JButton backButton1 = makeButton("<- Back", 34, 300, 55, fontColor);
-        backButton1.addActionListener(e -> {
-            cardLayout.show(mainPanel, "MainPage");
-        });
-
-        c.gridy = 0;
         c.gridx = 0;
-        settingsPage.add(horsey1, c);
+        c.gridy = 0;
+        hostPage.add(yay, c);
+        c.gridx = 0;
         c.gridy = 1;
-        settingsPage.add(snap1, c);
+        hostPage.add(horsey1, c);
+        c.gridx = 0;
         c.gridy = 2;
-        settingsPage.add(backButton1, c);
-        
+        hostPage.add(gameCode, c);
+        c.gridx = 0;
+        c.gridy = 3;
+        hostPage.add(gameCode1, c);
+
+
+        // Join page creation //
         JLabel horsey2 = new JLabel(new ImageIcon(scaled));
-
-        JLabel snap2 = new JLabel("Enter gamelink here:");
-        snap2.setFont(new Font("Sans", Font.BOLD, 20));
-        snap2.setForeground(new Color(214, 214, 213)); 
-
-        JPanel codePanel = new JPanel(new GridLayout(1,2));
+        JLabel prompt = new JLabel("Enter gamelink here:");
+        prompt.setFont(new Font("Sans", Font.BOLD, 20));
+        prompt.setForeground(new Color(214, 214, 213)); 
+        JPanel codePanel = new JPanel(new FlowLayout());
         codePanel.setOpaque(false);
-        JTextField gameCodeField = new JTextField(6);
-        JButton enterButton = makeButton("Enter", 34, 300, 55, fontColor);
+        JTextField gameCodeField = new JTextField(5);
+        JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
         enterButton.addActionListener(e -> {
-            String gameCode = gameCodeField.getText();
-            Client.connect(gameCode);
-
+            String code = gameCodeField.getText();
+            Client.connect(GameCode.decode(code));
         });
         codePanel.add(gameCodeField);
         codePanel.add(enterButton);
 
         JPanel joinPage = new JPanel(new GridBagLayout());
         joinPage.setBackground(new Color(36,34,32));
-        JButton backButton2 = makeButton("<- Back", 34, 300, 55, fontColor);
-        backButton2.addActionListener(e -> {
+        JButton backButton = makeButton("<- Back", 34, 300, 55, fontColor);
+        backButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "MainPage");
         });
 
-
         c.gridy = 0;
         c.gridx = 0; 
+        c.anchor = GridBagConstraints.CENTER;
         joinPage.add(horsey2, c);
         c.gridy = 1;
-        joinPage.add(codePanel, c);
+        joinPage.add(prompt, c);
         c.gridy = 2;
-        joinPage.add(backButton2, c);
-        c.gridx = 1;
-        c.gridy = 1;
+        joinPage.add(codePanel, c);
+        c.gridy = 3;
+        joinPage.add(backButton, c);
 
         mainPanel.add(mainpage, "MainPage");
-        mainPanel.add(settingsPage, "Settings");
         mainPanel.add(joinPage, "JoinGame");
+        mainPanel.add(hostPage, "HostGame");
+
 
         add(mainPanel);
 
