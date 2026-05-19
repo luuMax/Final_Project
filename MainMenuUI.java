@@ -53,8 +53,6 @@ public class MainMenuUI extends JFrame
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
         joinButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "JoinGame");
-
-            //Client.connect();
         });
 
         // Settings page accessor button
@@ -112,7 +110,7 @@ public class MainMenuUI extends JFrame
         JPanel codePanel = new JPanel(new GridLayout(1,2));
         codePanel.setOpaque(false);
         JTextField gameCodeField = new JTextField(6);
-        JButton enterButton = makeButton("<- Back", 34, 300, 55, fontColor);
+        JButton enterButton = makeButton("Enter", 34, 300, 55, fontColor);
         enterButton.addActionListener(e -> {
             String gameCode = gameCodeField.getText();
             Client.connect(gameCode);
