@@ -355,6 +355,7 @@ public class BoardUI extends JFrame
                 }
             }
             placingSanctuary = false;
+            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the sanctuary placement.");
             redrawBoard();
             return;
         }
@@ -367,6 +368,7 @@ public class BoardUI extends JFrame
             boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
             game.setModifierOfferedThisCycle(true);
             placingWall = false;
+            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has placed a brick.");
             redrawBoard();
             return;
         }
@@ -483,14 +485,12 @@ public class BoardUI extends JFrame
                 optionStrings,
                 optionStrings[0]);
         }
-        addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the " + chosen.substring(2) + "modifier");
+        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the " + chosen.substring(2) + "modifier");
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
         Modifier.Type selected = options[choice];
 
         if (selected == Modifier.Type.SANCTUARY)
         {
-
-            addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the sanctuary modifier");
             placingSanctuary = true;
             game.handleModifierChoice(options, choice);
             redrawBoard();
@@ -500,7 +500,6 @@ public class BoardUI extends JFrame
         if (selected == Modifier.Type.BRICK)
         {
             placingWall = true;
-            addChatMessage(game.getCurrentTurn() == Color.WHITE ? "White" : "Black" + " has chosen the brick modifier");
             return;
         }
 
