@@ -1,7 +1,7 @@
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.*;
-/* import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent; */
 
 public class MainMenuUI extends JFrame 
 {
@@ -105,9 +105,22 @@ public class MainMenuUI extends JFrame
         
         JLabel horsey2 = new JLabel(new ImageIcon(scaled));
 
-        JLabel snap2 = new JLabel("Aw snap... looks like we didn't make this page yet :(");
+        JLabel snap2 = new JLabel("Enter gamelink here:");
         snap2.setFont(new Font("Sans", Font.BOLD, 20));
         snap2.setForeground(new Color(214, 214, 213)); 
+
+        JPanel codePanel = new JPanel(new GridLayout(1,2));
+        codePanel.setOpaque(false);
+        JTextField gameCodeField = new JTextField(6);
+        JButton enterButton = makeButton("<- Back", 34, 300, 55, fontColor);
+        enterButton.addActionListener(e -> {
+            String gameCode = gameCodeField.getText();
+            Client.connect(gameCode);
+
+        });
+        codePanel.add(gameCodeField);
+        codePanel.add(enterButton);
+
         JPanel joinPage = new JPanel(new GridBagLayout());
         joinPage.setBackground(new Color(36,34,32));
         JButton backButton2 = makeButton("<- Back", 34, 300, 55, fontColor);
@@ -115,15 +128,16 @@ public class MainMenuUI extends JFrame
             cardLayout.show(mainPanel, "MainPage");
         });
 
+
         c.gridy = 0;
-        c.gridx = 0;
+        c.gridx = 0; 
         joinPage.add(horsey2, c);
         c.gridy = 1;
-        joinPage.add(snap2, c);
+        joinPage.add(codePanel, c);
         c.gridy = 2;
         joinPage.add(backButton2, c);
-
-
+        c.gridx = 1;
+        c.gridy = 1;
 
         mainPanel.add(mainpage, "MainPage");
         mainPanel.add(settingsPage, "Settings");
@@ -151,13 +165,6 @@ public class MainMenuUI extends JFrame
     }
 
     public static void main(String[] args) {
-        //MainMenuUI b = new MainMenuUI(800, 800);
-        JFrame frame = new JFrame("Text Input Example");
-        JTextField textField = new JTextField("Type here...", 20); // 20 columns wide
-
-        frame.add(textField);
-        frame.setSize(300, 100);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        MainMenuUI b = new MainMenuUI(800, 800);
     }
 }
