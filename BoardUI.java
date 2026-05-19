@@ -448,19 +448,6 @@ public class BoardUI
         }
     }
 
-    /*
-     * private boolean hasLabel(JPanel panel) { for (Component comp :
-     * panel.getComponents()) { if (comp instanceof JLabel) return true; }
-     * return false; }
-     */
-
-    /*
-     * private Component getLabel(JPanel panel) { if (hasLabel(panel)) { for
-     * (Component comp : panel.getComponents()) { if (comp instanceof JLabel)
-     * return comp; } } return null; }
-     */
-
-
     private Color tileColor(int i, int j)
     {
         return ((i + j) % 2 == 0) ? VERY_LIGHT_BROWN : DARK_BROWN;

@@ -45,7 +45,10 @@ public class MainMenuUI extends JFrame
 
         // Start game button creation
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
+        
+        JPanel startPage = new JPanel(new GridBagLayout());
         startButton.addActionListener(e -> {
+            cardLayout.show(startPage, "StartPage");
             Server.connect();
             dispose();
         });
