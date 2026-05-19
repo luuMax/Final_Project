@@ -57,17 +57,6 @@ public class BoardUI
         initialize();
     }
 
-    public BoardUI(int tileS, Game game, int windowW, int windowL)
-    {
-        windowWidth = windowW;
-        windowLength = windowL;
-        tileSize = tileS;
-        this.game = game;
-        boardgrid = game.getBoard();
-        initialize();
-    }
-
-
     public JLabel getImage(Piece piece)
     {
         ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");

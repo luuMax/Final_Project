@@ -37,16 +37,20 @@ public class MainMenuUI extends JFrame
         c.gridx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        // Title Creation
+        //////////////////////
+        // Title Creation   //
+        //////////////////////
         JLabel titleLeft = new JLabel("Chess", SwingConstants.CENTER);
         titleLeft.setFont(new Font("Sans", Font.BOLD, 80));
         titleLeft.setForeground(new Color(214, 214, 213)); 
 
-        // Main page buttons creation
+        //////////////////////////////////
+        // Main page buttons creation   //
+        //////////////////////////////////
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
         startButton.addActionListener(e -> {
             Game g = new Game();
-            BoardUI b = new BoardUI(70, g, 800, 800);
+            BoardUI b = new BoardUI(800, 800, 34, g);
             dispose();
         });
 
@@ -76,7 +80,9 @@ public class MainMenuUI extends JFrame
         ImageIcon image = new ImageIcon("./PieceSprites/new_knight_white.png");
         Image scaled = image.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
 
+        //////////////////////////
         // Making the host page //
+        //////////////////////////
         JLabel horsey1 = new JLabel(new ImageIcon(scaled));
         JPanel hostPage = new JPanel(new GridBagLayout());
         hostPage.setBackground(new Color(36,34,32));
@@ -104,8 +110,9 @@ public class MainMenuUI extends JFrame
         c.gridy = 3;
         hostPage.add(gameCode1, c);
 
-
-        // Join page creation //
+        //////////////////////////
+        // Join page creation   //
+        //////////////////////////
         JLabel horsey2 = new JLabel(new ImageIcon(scaled));
         JLabel prompt = new JLabel("Enter gamelink here:");
         prompt.setFont(new Font("Sans", Font.BOLD, 20));
