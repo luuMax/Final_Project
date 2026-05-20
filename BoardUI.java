@@ -46,6 +46,7 @@ public class BoardUI extends JFrame
     // Game ending //
     private String endMessage = "";
     private boolean drawOffered = false;
+    private boolean drawRequested = false;
 
     // Chat/Gamelog //
     JTextArea textBody = new JTextArea("Game started.\n");
@@ -154,7 +155,8 @@ public class BoardUI extends JFrame
             @Override
             public void mousePressed(MouseEvent e)
             {
-                endGame();
+                game.setWinner(game.getCurrentTurn() == Color.WHITE ? Color.BLACK : Color.WHITE);
+                endGameForfeit();
             }
         });
         buttonHolder.add(forfeitButton);
@@ -183,7 +185,19 @@ public class BoardUI extends JFrame
             @Override
             public void mousePressed(MouseEvent e)
             {
-                endGame();
+                if (localColor != null && game.getCurrentTurn() != localColor)
+                {
+                    return;
+                }
+                else
+                {
+                    if(drawRequested == true)
+                    {
+                        endGame();
+                    }
+                    drawRequested = true;
+                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. " + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White")+ " must click draw to accept.");
+                }
             }
         });
 
@@ -437,11 +451,6 @@ public class BoardUI extends JFrame
         }
     }
 
-    private void showEndScreen()
-    {
-        
-    }
-
 
     public void endGame()
     {
@@ -473,6 +482,34 @@ public class BoardUI extends JFrame
         endPanel.revalidate();
         endPanel.repaint();
     }
+
+    public void endGameForfeit()
+    {
+        Color winner = game.winner();
+        String result;
+        if(winner == Color.WHITE)
+        {
+            result = "Black forfeit.";
+        }
+        else
+        {
+            result = "White forfeit.";
+        }
+        JLabel outcome = new JLabel(result);
+        outcome.setFont(new Font("Sans", Font.BOLD, 20));
+        outcome.setForeground(new Color(214, 214, 213)); 
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(20, 20, 20, 20);
+        endPanel.add(outcome, c);
+
+        cardLayout.show(mainPanel, "End");
+
+        endPanel.revalidate();
+        endPanel.repaint();
+    }
+
 
 
     private void highLightTile(JPanel panel, Color highLightColor)

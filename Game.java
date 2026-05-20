@@ -64,6 +64,11 @@ public class Game
         return winner;
     }
 
+    public void setWinner(Color winner)
+    {
+        this.winner = winner;
+    }
+
 
     // ==================== CORE GAME LOGIC ====================
     /**
