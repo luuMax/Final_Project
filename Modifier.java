@@ -7,8 +7,9 @@ public class Modifier {
         SANCTUARY, // player chooses a square; Any piece that is on that square CANNOT be captured for the duration of the modifier
         EXPLODING_PIECE, // A random knight is chosen (of the side of the player choosing the modifier) and will explode in 10 turns (may change due to balancing)
         SNIPER_BISHOP, // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
-        HORSE_RACE, // both players bet on a "horse race", whoever wins gets a powerup on a random knight on their side
-        BRICK; // player creates a brick on a chosen empty square. No pieces may enter the square or move through it
+        //HORSE_RACE, // both players bet on a "horse race", whoever wins gets a powerup on a random knight on their side
+        BRICK, // player creates a brick on a chosen empty square. No pieces may enter the square or move through it
+        PORTAL; // Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.
         /**
          * Kinds of modifiers that are EASY to add:
          *
@@ -119,8 +120,9 @@ public class Modifier {
             case SANCTUARY: return "Choose a square. Whatever piece is on that square is invincible for 5 turns";
             case EXPLODING_PIECE: return "A random knight on your side will explode in 10 turns";
             case SNIPER_BISHOP: return "A random bishop on your side can see through pieces for 5 turns";
-            case HORSE_RACE: return "Bet on a horse race for an advantage";
+            //case HORSE_RACE: return "Bet on a horse race for an advantage";
             case BRICK: return "Choose an empty square. No pieces can move to it or move through it for the rest of the game";
+            case PORTAL: return "Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.";
             default: return null;
         }
     }

@@ -31,7 +31,9 @@ public class BoardUI
 
     // Modifiers
     private boolean           placingSanctuary = false;
-    private boolean           placingWall = false;
+    private boolean           placingWall      = false;
+    private boolean           placingPortal1   = false;
+    private boolean           placingPortal2   = false;
 
     // Networking //
     private NetworkManager    network          = null;
@@ -332,6 +334,23 @@ public class BoardUI
             return;
         }
 
+        if (placingPortal1) {
+            game.setPortal1Pos(i, j);
+            placingPortal1 = false;
+            placingPortal2 = true;
+            redrawBoard();
+            return;
+        }
+
+        if (placingPortal2) {
+            game.setPortal2Pos(i, j);
+            game.setPortalsActive(true);
+            game.setModifierOfferedThisCycle(true);
+            placingPortal2 = false;
+            redrawBoard();
+            return;
+        }
+
         if (pieceSelected == false)
         {
             Piece piece = boardgrid.getPieceAt(i, j);
@@ -435,6 +454,11 @@ public class BoardUI
         if (selected == Modifier.Type.BRICK)
         {
             placingWall = true;
+            return;
+        }
+
+        if (selected == Modifier.Type.PORTAL) {
+            placingPortal1 = true;
             return;
         }
 

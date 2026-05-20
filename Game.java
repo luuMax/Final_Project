@@ -16,6 +16,12 @@ public class Game
     private boolean                            modifierOfferedThisCycle = false;
     private Color                              winner                   = null;
     private static final Map<String, String[]> HORSE_RACES              = new HashMap<>();
+
+    // Portals
+    private int[] Portal1 = {-1, -1};
+    private int[] Portal2 = {-1, -1};
+    private boolean portalsActive = false;
+
     static
     {
         HORSE_RACES.put(
@@ -114,6 +120,12 @@ public class Game
         if (checkKingsAlive())
         {
             return true;
+        }
+
+        if (portalsActive && (currentTurn == Color.BLACK)) {
+            Piece temp = board.getPieceAt(Portal1[0], Portal1[1]);
+            board.setPieceAt(board.getPieceAt(Portal2[0], Portal2[1]), Portal1[0], Portal1[1]);
+            board.setPieceAt(temp, Portal2[0], Portal2[1]);
         }
 
         if (currentTurn == Color.WHITE)
@@ -462,6 +474,19 @@ public class Game
         }
     }
 
+    public void setPortal1Pos(int row, int col) {
+        Portal1[0] = row;
+        Portal1[1] = col;
+    }
+
+    public void setPortal2Pos(int row, int col) {
+        Portal2[0] = row;
+        Portal2[1] = col;
+    }
+
+    public void setPortalsActive(boolean state) {
+        portalsActive = true;
+    }
 
     /**
      * Handles the modifier choice chosen by the player
