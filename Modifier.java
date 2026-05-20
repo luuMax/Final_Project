@@ -11,6 +11,8 @@ public class Modifier {
         BRICK, // player creates a brick on a chosen empty square. No pieces may enter the square or move through it
         PORTAL, // Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.
         FILE_SWAP; // Two random files swap
+        
+
         /**
          * Kinds of modifiers that are EASY to add:
          *

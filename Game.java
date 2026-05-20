@@ -384,6 +384,7 @@ public class Game
             }
             return;
         }
+        
         else if (modifier.getType() == Modifier.Type.FILE_SWAP) {
             Random rand = new Random();
             Piece tempPiece;
