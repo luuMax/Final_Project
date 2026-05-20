@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Game
 {
@@ -381,6 +382,26 @@ public class Game
                     }
                 }
             }
+            return;
+        }
+        else if (modifier.getType() == Modifier.Type.FILE_SWAP) {
+            Random rand = new Random();
+            Piece tempPiece;
+            int file1 = rand.nextInt(8);
+            int file2;
+
+            // makes sure file2 isn't the same as file1
+            do {
+                file2 = rand.nextInt(8);
+            } while(file2 == file1);
+
+            // goes down the file row by row and swaps pieces
+            for (int row = 0; row < board.getBoard().length; row++) {
+                tempPiece = board.getPieceAt(row, file1);
+                board.setPieceAt(board.getPieceAt(row, file2), row, file1);
+                board.setPieceAt(tempPiece, row, file2);
+            }
+            return;
         }
         board.addModifier(modifier);
         modifierOfferedThisCycle = true; // prevents infinite loop of modifiers

@@ -9,7 +9,8 @@ public class Modifier {
         SNIPER_BISHOP, // A random bishop is chosen (of the side of the player choosing the modifier). This bishop can move through pieces
         //HORSE_RACE, // both players bet on a "horse race", whoever wins gets a powerup on a random knight on their side
         BRICK, // player creates a brick on a chosen empty square. No pieces may enter the square or move through it
-        PORTAL; // Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.
+        PORTAL, // Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.
+        FILE_SWAP; // Two random files swap
         /**
          * Kinds of modifiers that are EASY to add:
          *
@@ -123,6 +124,7 @@ public class Modifier {
             //case HORSE_RACE: return "Bet on a horse race for an advantage";
             case BRICK: return "Choose an empty square. No pieces can move to it or move through it for the rest of the game";
             case PORTAL: return "Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.";
+            case FILE_SWAP: return "Two random files swap";
             default: return null;
         }
     }
