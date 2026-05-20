@@ -7,6 +7,7 @@ public class MainMenuUI extends JFrame
 {
     private int windowWidth;
     private int windowLength;
+    private static final int preferredTileSize = 75;
 
     private static Color fontColor = new Color(214,214,213);
 
@@ -50,7 +51,7 @@ public class MainMenuUI extends JFrame
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
         startButton.addActionListener(e -> {
             Game g = new Game();
-            BoardUI b = new BoardUI(800, 800, 34, g);
+            BoardUI b = new BoardUI(800, 800, preferredTileSize, g);
             dispose();
         });
 
@@ -159,7 +160,7 @@ public class MainMenuUI extends JFrame
         setVisible(true);
     }
 
-    private JButton makeButton(String name, int size, int width, int height, Color fontColor)
+    public static JButton makeButton(String name, int size, int width, int height, Color fontColor)
     {
         JButton button = new JButton(name);
         button.setFont(new Font(name, Font.BOLD, size));
