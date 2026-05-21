@@ -328,6 +328,8 @@ public class Game
                 return !hasPieceOfType(Bishop.class);
             case FILE_SWAP:
                 return false; // always available
+            case RESURRECTION:
+                return !getCapturedPieces(getCurrentTurn()).isEmpty();
             default:
                 return false;
         }
