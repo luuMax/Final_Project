@@ -318,7 +318,7 @@ public class BoardUI extends JFrame
             @Override
             public void mousePressed(MouseEvent e)
             {
-                MainMenuUI m = new MainMenuUI(800, 800);
+                new MainMenuUI(800, 800);
                 dispose();
             }
         });
@@ -523,11 +523,11 @@ public class BoardUI extends JFrame
         String result;
         if(winner == Color.WHITE)
         {
-            result = "Black forfeit.";
+            result = "White Wins due to Resignation.";
         }
         else
         {
-            result = "White forfeit.";
+            result = "Black Wins due to Resignation.";
         }
         JLabel outcome = new JLabel(result);
         outcome.setFont(new Font("Sans", Font.BOLD, 20));
@@ -551,7 +551,7 @@ public class BoardUI extends JFrame
         panel.setBackground(highLightColor);
     }
 
-    // ------------------SHOW MODES METHOD -----------///
+    // ------------------SHOW MODS METHOD -----------///
 
 
     public void showMods(Modifier.Type[] options)
