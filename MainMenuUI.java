@@ -190,8 +190,4 @@ public class MainMenuUI extends JFrame
         button.setBorderPainted(false);
         return button;
     }
-
-    public static void main(String[] args) { //tester
-        new MainMenuUI(800, 800);
-    }
 }
