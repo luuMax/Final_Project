@@ -94,7 +94,13 @@ public class MainMenuUI extends JFrame
         JLabel gameCode = new JLabel("Game Code(share with other player):");
         gameCode.setFont(new Font("Sans", Font.BOLD, 20));
         gameCode.setForeground(new Color(214, 214, 213)); 
-        JLabel gameCode1 = new JLabel(GameCode.encode(GameCode.getIpAddress()));
+        String ip = GameCode.getIpAddress();
+        String encodedCode = GameCode.encode(ip);
+
+        System.out.println("Host IP: " + ip);
+        System.out.println("Encoded code: " + encodedCode);
+
+        JLabel gameCode1 = new JLabel(encodedCode);
         gameCode1.setFont(new Font("Sans", Font.BOLD, 30));
         gameCode1.setForeground(new Color(214, 214, 213)); 
 
@@ -123,8 +129,12 @@ public class MainMenuUI extends JFrame
         JTextField gameCodeField = new JTextField(10);
         JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
         enterButton.addActionListener(e -> {
-            String code = gameCodeField.getText();
-            Client.connect(GameCode.decode(code));
+            String code = gameCodeField.getText().trim();
+            String ips = GameCode.decode(code);
+            if(ips != null)
+            {
+                Client.connect(ip);
+            }
         });
         codePanel.add(gameCodeField);
         codePanel.add(enterButton);
