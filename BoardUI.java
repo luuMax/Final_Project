@@ -1,5 +1,5 @@
 import javax.swing.*;
-import java.awt.event.ActionListener;
+/* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
@@ -627,7 +627,7 @@ public class BoardUI extends JFrame
     }
 
 
-    public void redrawBoard()
+    public void redrawBoard() //Our main source of lag/delay
     {
         board.removeAll();
         for (int i = 0; i < 8; i++)
