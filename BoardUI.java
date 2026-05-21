@@ -23,7 +23,6 @@ public class BoardUI extends JFrame
         {"a3", "b3","c3", "d3","e3", "f3", "g3", "h3"}
     };
 
-
     // Tile Colors //
     public static final Color VERY_LIGHT_BROWN = new Color(254, 228, 187);
     public static final Color DARK_BROWN = new Color(205, 154, 117);
