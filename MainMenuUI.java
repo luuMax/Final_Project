@@ -105,7 +105,7 @@ public class MainMenuUI extends JFrame
         gameCode1.setForeground(new Color(214, 214, 213));
         JButton makeGame = makeButton("Connecting...", 25, 300, 55, fontColor);
         makeGame.addActionListener(e -> {
-            Server.connect();
+            new Thread(() -> Server.connect()).start();
         }); 
         JButton backButton1 = makeButton("<- Back", 20, 300, 55, fontColor);
         backButton1.addActionListener(e -> {
@@ -142,7 +142,7 @@ public class MainMenuUI extends JFrame
         JButton enterButton = makeButton("Enter", 25, 150, 40, fontColor);
         enterButton.addActionListener(e -> {
             String code = gameCodeField.getText().trim();
-            Client.connect(code);
+            new Thread(() -> Client.connect(code)).start();
         });
         codePanel.add(gameCodeField);
         codePanel.add(enterButton);
