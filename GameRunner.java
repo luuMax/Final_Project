@@ -28,7 +28,7 @@ public class GameRunner
         javax.swing.SwingUtilities.invokeLater(() -> {
             if (network != null)
             {
-                boardUI = new BoardUI(800, 800, 75, game, network, localColor);
+                boardUI = new BoardUI(800, 1200, 75, game, network, localColor);
 
                 Thread listenerThread = new Thread(() -> {
                     while (!game.isGameOver())
@@ -112,7 +112,7 @@ public class GameRunner
             }
             else
             {
-                boardUI = new BoardUI(800, 800, 75, game);
+                boardUI = new BoardUI(800, 1200, 75, game);
             }
         });
     }
