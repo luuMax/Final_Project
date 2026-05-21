@@ -2,6 +2,7 @@ import javax.swing.*;
 /* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.awt.*;
 
 public class BoardUI extends JFrame
@@ -334,13 +335,53 @@ public class BoardUI extends JFrame
         JPanel square = new JPanel(new BorderLayout());
         square.setBackground(tileColor(i, j));
         square.setPreferredSize(new Dimension(tileSize, tileSize));
-
+        
         Piece piece = boardgrid.getPieceAt(i, j);
-        if (piece != null)
+        ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
+
+        int idx = 0;
+        if(piece != null)
         {
+            JPanel imagePanel = new JPanel(null);
+            imagePanel.setOpaque(false);
+            imagePanel.setPreferredSize(new Dimension(tileSize, tileSize));
+
             JLabel label = getImage(piece);
-            label.setHorizontalAlignment(SwingConstants.CENTER);
-            square.add(label, BorderLayout.CENTER);
+            label.setBounds(0, 0, tileSize, tileSize);
+            imagePanel.add(label);
+
+            for (Modifier mod : modifiers)
+            {
+                if (mod.getType() == Modifier.Type.EXPLODING_PIECE
+                        && mod.getAffectedCol() == j
+                        && mod.getAffectedRow() == i)
+                {
+                    System.out.println("Adding bomb at " + i + ", " + j);
+
+                    ImageIcon image = new ImageIcon("./PieceSprites/mi bombo.png");
+
+                    if (image.getIconWidth() == -1)
+                    {
+                        System.out.println("Bomb image not found.");
+                        break;
+                    }
+
+                    Image scaled = image.getImage().getScaledInstance(
+                        tileSize / 2,
+                        tileSize / 2,
+                        Image.SCALE_SMOOTH
+                    );
+
+                    JLabel bombo = new JLabel(new ImageIcon(scaled));
+                    bombo.setBounds(tileSize / 2, 0, tileSize / 2, tileSize / 2);
+
+                    imagePanel.add(bombo);
+                    imagePanel.setComponentZOrder(bombo, 0);
+
+                    break;
+                }
+            }
+            square.add(imagePanel, BorderLayout.CENTER);
         }
 
         square.addMouseListener(new MouseAdapter() {

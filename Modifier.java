@@ -101,7 +101,7 @@ public class Modifier {
 
     public int getAffectedRow() {
         return affectedRow;
-    }
+    }    
 
     public int getAffectedCol() {
         return affectedCol;
