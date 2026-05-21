@@ -56,10 +56,9 @@ public class BoardUI extends JFrame
     private Color localColor = null;
 
     // Game ending //
-    private String endMessage = "";
-    private Color drawRequestedBy = null;
     private boolean drawRequested = false;
     private Color decider = null;
+
 
     // Chat/Gamelog //
     JTextArea textBody = new JTextArea("Game started.\n");
@@ -210,7 +209,7 @@ public class BoardUI extends JFrame
                     }
                     decider = game.getCurrentTurn();
                     drawRequested = true;
-                    drawRequestedBy = localColor;
+                    
                     addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. " + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White")+ " must click draw to accept");
                 }
             }
@@ -476,7 +475,7 @@ public class BoardUI extends JFrame
                 if(drawRequested == true &&  game.getCurrentTurn() == decider)
                 {
                     drawRequested = false;
-                    drawRequestedBy = null;
+                    
                     addChatMessage((game.getCurrentTurn() == Color.WHITE ? "Black" : "White") + " declined draw offer");
                 }
             }
