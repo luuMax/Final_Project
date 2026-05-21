@@ -15,13 +15,13 @@ public class GameRunner
     }
 
 
-    public static void main(String[] args)
-    {
-        new GameRunner(null).start();
-    }
-
-
-    public void start()
+    /* 
+    Gamerunner handles all listening thread logic, used for BoardUI to handle updates between Client-Server. 
+    Currenlty, MainMenuUI bypasses gameRunner for local games (singleplayer), but Gamerunner (more like NetworkRunner) is used 
+    when a Network is active. 
+    
+    */
+    public void start() 
     {
         game = new Game();
 
