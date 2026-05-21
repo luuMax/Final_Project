@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -561,21 +560,12 @@ public class Game
     {
         if (options[choice] == Modifier.Type.EXPLODING_PIECE)
         {
-            try
-            {
-                Desktop.getDesktop().browse(
-                    new URI(
-                        "https://www.youtube.com/watch?v=lXM-ICTFID0&list=PLlh10_vdG5NnhKND1R8XYZv9PfGMLvvML&index=1"));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            
             int[] square = getBoard().randomSquare(Knight.class, getCurrentTurn());
             Piece knight = getBoard().getPieceAt(square[0], square[1]);
             System.out.println(
                 "The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8)
-                    + " is about to explode mi bomboclat in 3 turns");
+                    + " is about to explode mi bomboclat in 5 turns");
             addModifier(new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight));
         }
         else if (options[choice] == Modifier.Type.SNIPER_BISHOP)
@@ -584,7 +574,7 @@ public class Game
             Piece bishop = getBoard().getPieceAt(square[0], square[1]);
             System.out.println(
                 "The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8)
-                    + " is una esniper for 3 turns");
+                    + " is una esniper for 5 turns");
             addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
         }
         else if (options[choice] == Modifier.Type.BRICK) {
