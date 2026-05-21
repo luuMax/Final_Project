@@ -635,8 +635,17 @@ public class BoardUI extends JFrame
         {
             for (int j = 0; j < 8; j++)
             {
-                JPanel square = makeTile(i, j);
-                panelBoard[i][j] = square;
+                int viewedRow = i;
+                int viewedCol = j;
+
+                if(localColor == Color.BLACK)
+                {
+                    viewedRow = 7 - i;
+                    viewedCol = 7 - j;
+                }
+
+                JPanel square = makeTile(viewedRow, viewedCol);
+                panelBoard[viewedRow][viewedCol] = square;
                 board.add(square);
             }
         }
