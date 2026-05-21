@@ -63,7 +63,6 @@ public class MainMenuUI extends JFrame
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
         joinButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "JoinGame");
-            Server.connect();
         });
 
         c.gridx = 0;
@@ -103,7 +102,15 @@ public class MainMenuUI extends JFrame
 
         JLabel gameCode1 = new JLabel(encodedCode);
         gameCode1.setFont(new Font("Sans", Font.BOLD, 30));
-        gameCode1.setForeground(new Color(214, 214, 213)); 
+        gameCode1.setForeground(new Color(214, 214, 213));
+        JButton makeGame = makeButton("Start connecting", 25, 300, 55, fontColor);
+        makeGame.addActionListener(e -> {
+            Server.connect();
+        }); 
+        JButton backButton1 = makeButton("<- Back", 20, 300, 55, fontColor);
+        backButton1.addActionListener(e -> {
+            cardLayout.show(mainPanel, "MainPage");
+        });
 
         c.gridx = 0;
         c.gridy = 0;
@@ -117,6 +124,10 @@ public class MainMenuUI extends JFrame
         c.gridx = 0;
         c.gridy = 3;
         hostPage.add(gameCode1, c);
+        c.gridy = 4;
+        hostPage.add(makeGame, c);
+        c.gridy = 6;
+        hostPage.add(backButton1, c);
 
         //////////////////////////
         // Join page creation   //
@@ -127,8 +138,8 @@ public class MainMenuUI extends JFrame
         prompt.setForeground(new Color(214, 214, 213)); 
         JPanel codePanel = new JPanel(new FlowLayout());
         codePanel.setOpaque(false);
-        JTextField gameCodeField = new JTextField(10);
-        JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
+        JTextField gameCodeField = new JTextField(8);
+        JButton enterButton = makeButton("Enter", 25, 150, 40, fontColor);
         enterButton.addActionListener(e -> {
             String code = gameCodeField.getText().trim();
             Client.connect(code);
@@ -138,7 +149,7 @@ public class MainMenuUI extends JFrame
 
         JPanel joinPage = new JPanel(new GridBagLayout());
         joinPage.setBackground(new Color(36,34,32));
-        JButton backButton = makeButton("<- Back", 34, 300, 55, fontColor);
+        JButton backButton = makeButton("<- Back", 20, 300, 55, fontColor);
         backButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "MainPage");
         });
