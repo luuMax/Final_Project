@@ -1,5 +1,8 @@
 import java.util.ArrayList;
-public class Move { //a recipt for a move, contains all info about move. 
+
+/* A receipt of a move made on the board. Used for move history and chess Notation. */
+public class Move { 
+    
     public enum MoveType {
         NORMAL, PROMOTION, EN_PASSANT, SHORT_CASTLE, LONG_CASTLE
     }

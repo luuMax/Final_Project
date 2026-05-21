@@ -14,7 +14,6 @@ public class Server
 
     public static void connect()
     {
-
         try
         {
 
@@ -37,7 +36,6 @@ public class Server
             System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
 
             new GameRunner(network).start();
-
         }
         catch (IOException e)
         {

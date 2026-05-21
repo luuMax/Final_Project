@@ -1,9 +1,11 @@
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-class GameCode { //deals with the GameCode and the Networking with IP
 
-    public static String encode(String ip) { // Takes in computer IP, creates a String gamecode out of it that is decodable
+/* Helper class for handling the creation of game codes from IP, used for Client and Server*/
+class GameCode { 
+
+    public static String encode(String ip) { 
         String[] parts = ip.split("\\.");
         long packed = (Long.parseLong(parts[0]) << 24)
                     | (Long.parseLong(parts[1]) << 16)
@@ -12,7 +14,7 @@ class GameCode { //deals with the GameCode and the Networking with IP
         return Long.toString(packed, 36).toUpperCase();
     }
 
-    public static String decode(String code) { // Decodes the gamecode into appropriate IP to join as client. 
+    public static String decode(String code) { 
         long packed = Long.parseLong(code.toLowerCase(), 36);
         long o1 = (packed >> 24) & 0xFF;
         long o2 = (packed >> 16) & 0xFF;
@@ -21,12 +23,12 @@ class GameCode { //deals with the GameCode and the Networking with IP
         return o1 + "." + o2 + "." + o3 + "." + o4;
     }
 
-        public static String getIpAddress() { //gets computer IP
+        public static String getIpAddress() { 
         try (final DatagramSocket socket = new DatagramSocket()) {
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
             return socket.getLocalAddress().getHostAddress();
         } catch (Exception e) {
-            return "127.0.0.1"; // Fallback to loopback
+            return "127.0.0.1";
         }
     }
 
