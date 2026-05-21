@@ -120,7 +120,7 @@ public class MainMenuUI extends JFrame
         prompt.setForeground(new Color(214, 214, 213)); 
         JPanel codePanel = new JPanel(new FlowLayout());
         codePanel.setOpaque(false);
-        JTextField gameCodeField = new JTextField(5);
+        JTextField gameCodeField = new JTextField(10);
         JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
         enterButton.addActionListener(e -> {
             String code = gameCodeField.getText();
