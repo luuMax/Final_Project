@@ -86,7 +86,6 @@ public class NetworkManager
         }
     }
 
-
     // Sends everything needed to reconstruct a modifier on the other side:
     // type, turnsRemaining, pieceRow, pieceCol, affectedRow, affectedCol
     // pieceRow/pieceCol = -1 if no piece target
@@ -104,7 +103,6 @@ public class NetworkManager
             m.getType().name() + "," + m.getTurnsRemaining() + "," + pieceRow + "," + pieceCol + ","
                 + m.getAffectedRow() + "," + m.getAffectedCol());
     }
-
 
     // Returns a ModifierData record — raw data only, no Piece object
     // GameRunner resolves the piece from the board using pieceRow/pieceCol
@@ -136,12 +134,10 @@ public class NetworkManager
         }
     }
 
-
     public boolean getIsWhite()
     {
         return isWhite;
     }
-
 
     public void close()
     {
@@ -154,7 +150,7 @@ public class NetworkManager
         }
     }
 
-    // Simple data carrier — no game logic
+    // Simple data carrier w/out game logic
     public static class ModifierData
     {
         public final Modifier.Type type;

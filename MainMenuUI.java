@@ -11,7 +11,7 @@ public class MainMenuUI extends JFrame
 
     private static Color fontColor = new Color(214,214,213);
 
-
+    //Start of prgm screen
     public MainMenuUI(int windowW, int windowL)
     {
         windowWidth = windowW;

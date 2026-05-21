@@ -1,10 +1,8 @@
 import java.awt.*;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
 import java.util.Random;
 
 public class Game
@@ -16,21 +14,12 @@ public class Game
     private int                                moveCount                = 0;
     private boolean                            modifierOfferedThisCycle = false;
     private Color                              winner                   = null;
-    private static final Map<String, String[]> HORSE_RACES              = new HashMap<>();
-
+    private Stack<Piece> capturedWhitePieces = new Stack<>();
+    private Stack<Piece> capturedBlackPieces = new Stack<>();
     // Portals
     private int[] Portal1 = {-1, -1};
     private int[] Portal2 = {-1, -1};
     private boolean portalsActive = false;
-
-    static
-    {
-        HORSE_RACES.put(
-            "PtESN2OWGhQ&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=23",
-            new String[] { "SUP", "ARG"});
-        HORSE_RACES.put("XcWeQRe_vzw&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=39", new String[]{"GRAY", "RED"});
-        HORSE_RACES.put("Xd2RyTwJALI&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=50", new String[]{"GREEN", "GRAY" });
-    }
 
     public Game()
     {
@@ -227,6 +216,12 @@ public class Game
         Piece capturedPiece = board.getPieceAt(toRow, toCol);
         if (capturedPiece != null)
         {
+            if (capturedPiece.getColor() == Color.WHITE) {
+                capturedWhitePieces.push(capturedPiece);
+            }
+            else {
+                capturedBlackPieces.push(capturedPiece);
+            }
             for (int i = 0; i < board.getActiveModifiers().size(); i++)
             {
                 Modifier m = board.getActiveModifiers().get(i);
@@ -332,6 +327,8 @@ public class Game
                 return !hasPieceOfType(Bishop.class);
             case FILE_SWAP:
                 return false; // always available
+            case RESURRECTION:
+                return !getCapturedPieces(getCurrentTurn()).isEmpty();
             default:
                 return false;
         }
@@ -535,6 +532,7 @@ public class Game
             }
         }
     }
+
     public void setPortal1Pos(int row, int col) {
         Portal1[0] = row;
         Portal1[1] = col;
@@ -562,21 +560,12 @@ public class Game
     {
         if (options[choice] == Modifier.Type.EXPLODING_PIECE)
         {
-            try
-            {
-                Desktop.getDesktop().browse(
-                    new URI(
-                        "https://www.youtube.com/watch?v=lXM-ICTFID0&list=PLlh10_vdG5NnhKND1R8XYZv9PfGMLvvML&index=1"));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            
             int[] square = getBoard().randomSquare(Knight.class, getCurrentTurn());
             Piece knight = getBoard().getPieceAt(square[0], square[1]);
             System.out.println(
                 "The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8)
-                    + " is about to explode mi bomboclat in 3 turns");
+                    + " is about to explode mi bomboclat in 5 turns");
             addModifier(new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight));
         }
         else if (options[choice] == Modifier.Type.SNIPER_BISHOP)
@@ -585,7 +574,7 @@ public class Game
             Piece bishop = getBoard().getPieceAt(square[0], square[1]);
             System.out.println(
                 "The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8)
-                    + " is una esniper for 3 turns");
+                    + " is una esniper for 5 turns");
             addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
         }
         else if (options[choice] == Modifier.Type.BRICK) {
@@ -654,6 +643,13 @@ public class Game
         return false;
     }
 
+
+    public Stack<Piece> getCapturedPieces(Color color) {
+        if (color == Color.WHITE) {
+            return capturedWhitePieces;
+        }
+        return capturedBlackPieces;
+    }
 
     /**
      * Checks whether there is a piece of a given type on the board

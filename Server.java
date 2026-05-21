@@ -17,7 +17,7 @@ public class Server
         try
         {
 
-            ServerSocket serverSocket = new ServerSocket(5000);
+            ServerSocket serverSocket = new ServerSocket(4999);
 
             System.out.println("Server started. Waiting for connection...");
             System.out.println("GameCode is: ");

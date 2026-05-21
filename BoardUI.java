@@ -51,6 +51,7 @@ public class BoardUI extends JFrame
     private boolean           placingWall      = false;
     private boolean           placingPortal1   = false;
     private boolean           placingPortal2   = false;
+    private boolean           placingResurrection = false;
 
     // Networking //
     private NetworkManager network = null;
@@ -446,19 +447,44 @@ public class BoardUI extends JFrame
         }
 
         if (placingPortal1) {
+            System.out.println("Place portal 1");
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null) {
+                System.out.println("You cannot place a portal on an occupied square");
+                return; // can't place on an occupied square
+            }
             game.setPortal1Pos(i, j);
             placingPortal1 = false;
             placingPortal2 = true;
             redrawBoard();
+            System.out.println("Portal 1 placed at " + i + " " + j);
             return;
         }
 
         if (placingPortal2) {
+            System.out.println("Place portal 2");
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null) {
+                System.out.println("You cannot place a portal on an occupied square");
+                return; // can't place on an occupied square
+            }
             game.setPortal2Pos(i, j);
             game.setPortalsActive(true);
             game.setModifierOfferedThisCycle(true);
             placingPortal2 = false;
             redrawBoard();
+            System.out.println("Portal 2 placed at " + i + " " + j);
+            return;
+        }
+
+        if (placingResurrection) {
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null) {
+                return; // can't place on an occupied square
+            }
+            game.getBoard().setPieceAt(game.getCapturedPieces(game.getCurrentTurn()).pop(), i, j);
+            redrawBoard();
+            placingResurrection = false;
             return;
         }
 
@@ -623,6 +649,10 @@ public class BoardUI extends JFrame
             game.handleModifierChoice(options, choice);
             redrawBoard();
             return;
+        }
+
+        if (selected == Modifier.Type.RESURRECTION && !game.getCapturedPieces(game.getCurrentTurn()).isEmpty()) {
+            placingResurrection = true;
         }
 
         if (selected == Modifier.Type.BRICK)

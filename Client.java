@@ -28,7 +28,7 @@ public class Client
         try
         {
             String hostIP = GameCode.decode(gamecode);
-            Socket socket = new Socket(hostIP, 5000);
+            Socket socket = new Socket(hostIP, 4999);
             System.out.println("Connected to server.");
 
             NetworkManager network = new NetworkManager(socket, false);

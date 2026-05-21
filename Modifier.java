@@ -10,7 +10,8 @@ public class Modifier {
         //HORSE_RACE, // both players bet on a "horse race", whoever wins gets a powerup on a random knight on their side
         BRICK, // player creates a brick on a chosen empty square. No pieces may enter the square or move through it
         PORTAL, // Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.
-        FILE_SWAP; // Two random files swap
+        FILE_SWAP, // Two random files swap
+        RESURRECTION; // Player chooses an empty square to place their piece that was last captured 
         
 
         /**
@@ -127,6 +128,7 @@ public class Modifier {
             case BRICK: return "Choose an empty square. No pieces can move to it or move through it for the rest of the game";
             case PORTAL: return "Player chooses two squares. At the end of black's turn, the pieces on the portals swap. Replaces any existing portal.";
             case FILE_SWAP: return "Two random files swap";
+            case RESURRECTION: return "Choose a square. Your last captured piece respawns there";
             default: return null;
         }
     }
