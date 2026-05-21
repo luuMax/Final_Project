@@ -58,6 +58,7 @@ public class MainMenuUI extends JFrame
         JButton hostButton = makeButton("Host Game", 34, 300, 55, fontColor);
         hostButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "HostGame");
+            new Thread(Server::connect).start();
         });
 
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
@@ -124,7 +125,7 @@ public class MainMenuUI extends JFrame
         JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
         enterButton.addActionListener(e -> {
             String code = gameCodeField.getText();
-            Client.connect(GameCode.decode(code));
+            new Thread(() -> Client.connect(code)).start();
         });
         codePanel.add(gameCodeField);
         codePanel.add(enterButton);
