@@ -299,7 +299,6 @@ public class BoardUI extends JFrame
         c.anchor = GridBagConstraints.EAST;
         gamePanel.add(backPanel2, c);
 
-        // Modifier panel
         mainPanel.add(gamePanel, "Game");
         mainPanel.add(endPanel, "End");
 
