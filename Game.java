@@ -87,6 +87,7 @@ public class Game
      */
     public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol)
     {
+        validateActiveModifiers();
         if (gameOver)
         {
             System.out.println("Game is already over.");
@@ -197,7 +198,6 @@ public class Game
         }
         return moveType;
     }
-
 
     /**
      * Applies the move to the board
@@ -313,38 +313,38 @@ public class Game
      * @return an array of Modifier.Type that contains the three random
      *         modifiers chosen
      */
+
     public Modifier.Type[] offeredModifiers()
     {
-        ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
-        pool.removeIf(type -> {
-            switch (type)
-            {
-                case PAWNS_ONLY:
-                    return !hasPieceOfType(Pawn.class);
-                /*
-                 * case KNIGHTS_ONLY: return !hasPieceOfType(Knight.class); case
-                 * BISHOPS_ONLY: return !hasPieceOfType(Bishop.class); case
-                 * ROOKS_ONLY: return !hasPieceOfType(Rook.class); case
-                 * QUEENS_ONLY: return !hasPieceOfType(Queen.class); case
-                 * KINGS_ONLY: return !hasPieceOfType(King.class);
-                 */
-                case EXPLODING_PIECE:
-                    return !hasPieceOfType(Knight.class);
-                case SNIPER_BISHOP:
-                    return !hasPieceOfType(Bishop.class);
-                default:
-                    return false;
-            }
-        });
-
-        Collections.shuffle(pool);
-        Modifier.Type[] offered = new Modifier.Type[Math.min(3, pool.size())];
-        for (int i = 0; i < offered.length; i++)
+    ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
+    pool.removeIf(type -> {
+        switch (type)
         {
-            offered[i] = pool.get(i);
+            case PAWNS_ONLY:
+                return !hasPieceOfType(Pawn.class) 
+                    || !hasPieceOfTypeForColor(Pawn.class, getOpponentColor());
+            case INVINCIBLE_PAWNS:
+            case BACK_IT_UP:
+                return !hasPieceOfType(Pawn.class);
+            case EXPLODING_PIECE:
+                return !hasPieceOfType(Knight.class);
+            case SNIPER_BISHOP:
+                return !hasPieceOfType(Bishop.class);
+            case FILE_SWAP:
+                return false; // always available
+            default:
+                return false;
         }
-        return offered;
+    });
+
+    Collections.shuffle(pool);
+    Modifier.Type[] offered = new Modifier.Type[Math.min(3, pool.size())];
+    for (int i = 0; i < offered.length; i++)
+    {
+        offered[i] = pool.get(i);
     }
+    return offered;
+}
 
 
     /**
@@ -501,6 +501,40 @@ public class Game
         }
     }
 
+    private Color getOpponentColor() {
+        return currentTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
+    }
+
+    private boolean hasPieceOfTypeForColor(Class<?> pieceClass, Color color) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = board.getPieceAt(r, c);
+                if (p != null && p.getColor() == color && pieceClass.isInstance(p))
+                    return true;
+            }
+        }
+        return false;
+    }  
+
+    private void validateActiveModifiers() {
+        for (int i = 0; i < board.getActiveModifiers().size(); i++) {
+            Modifier m = board.getActiveModifiers().get(i);
+            boolean shouldRemove = false;
+            switch (m.getType()) {
+                case PAWNS_ONLY:
+                    shouldRemove = !hasPieceOfType(Pawn.class) 
+                        || !hasPieceOfTypeForColor(Pawn.class, getOpponentColor());
+                    break;
+                // add more cases as needed
+                default:
+                    break;
+            }
+            if (shouldRemove) {
+                board.getActiveModifiers().remove(i);
+                i--;
+            }
+        }
+    }
     public void setPortal1Pos(int row, int col) {
         Portal1[0] = row;
         Portal1[1] = col;
