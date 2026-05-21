@@ -58,6 +58,7 @@ public class MainMenuUI extends JFrame
         JButton hostButton = makeButton("Host Game", 34, 300, 55, fontColor);
         hostButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "HostGame");
+            new Thread(() -> Server.connect()).start();
         });
 
         JButton joinButton = makeButton("Join Game", 34, 300, 55, fontColor);
@@ -103,10 +104,6 @@ public class MainMenuUI extends JFrame
         JLabel gameCode1 = new JLabel(encodedCode);
         gameCode1.setFont(new Font("Sans", Font.BOLD, 30));
         gameCode1.setForeground(new Color(214, 214, 213));
-        JButton makeGame = makeButton("Connecting...", 25, 300, 55, fontColor);
-        makeGame.addActionListener(e -> {
-            new Thread(() -> Server.connect()).start();
-        }); 
         JButton backButton1 = makeButton("<- Back", 20, 300, 55, fontColor);
         backButton1.addActionListener(e -> {
             cardLayout.show(mainPanel, "MainPage");
@@ -124,9 +121,7 @@ public class MainMenuUI extends JFrame
         c.gridx = 0;
         c.gridy = 3;
         hostPage.add(gameCode1, c);
-        c.gridy = 4;
-        hostPage.add(makeGame, c);
-        c.gridy = 6;
+        c.gridy = 5;
         hostPage.add(backButton1, c);
 
         //////////////////////////
