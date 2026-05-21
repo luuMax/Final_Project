@@ -11,6 +11,19 @@ public class BoardUI extends JFrame
     private int windowLength;
     private int tileSize;
 
+    // Chess notation //
+    String chessNotation[][] = {
+        {"a8", "b8","c8", "d8","e8", "f8", "g8", "h8"},
+        {"a7", "b7","c7", "d7","e7", "f7", "g7", "h7"},
+        {"a6", "b6","c6", "d6","e6", "f6", "g6", "h6"},
+        {"a5", "b5","c5", "d5","e5", "f5", "g5", "h5"},
+        {"a4", "b4","c4", "d4","e4", "f4", "g4", "h4"},
+        {"a3", "b3","c3", "d3","e3", "f3", "g3", "h3"},
+        {"a4", "b4","c4", "d4","e4", "f4", "g4", "h4"},
+        {"a3", "b3","c3", "d3","e3", "f3", "g3", "h3"}
+    };
+
+
     // Tile Colors //
     public static final Color VERY_LIGHT_BROWN = new Color(254, 228, 187);
     public static final Color DARK_BROWN = new Color(205, 154, 117);
@@ -144,7 +157,7 @@ public class BoardUI extends JFrame
         buttonHolder.setOpaque(false);
         JButton forfeitButton = new JButton(new ImageIcon(scaled));
         forfeitButton.setFont(new Font("Arial", Font.BOLD, 20));
-        forfeitButton.setPreferredSize(new Dimension(70, 70));
+        forfeitButton.setPreferredSize(new Dimension(140, 100));
         forfeitButton.setMargin(new Insets(0, 0, 0, 0));
         forfeitButton.setBackground(new Color(155, 200, 120));
         forfeitButton.setFocusPainted(false);
@@ -174,7 +187,7 @@ public class BoardUI extends JFrame
         buttonHolder2.setOpaque(false);
         JButton drawButton = new JButton(new ImageIcon(scaled));
         drawButton.setFont(new Font("Arial", Font.BOLD, 20));
-        drawButton.setPreferredSize(new Dimension(70, 70));
+        drawButton.setPreferredSize(new Dimension(140, 100));
         drawButton.setMargin(new Insets(0, 0, 0, 0));
         drawButton.setBackground(new Color(226, 48, 32));
         drawButton.setFocusPainted(false);
@@ -199,7 +212,7 @@ public class BoardUI extends JFrame
                     decider = game.getCurrentTurn();
                     drawRequested = true;
                     drawRequestedBy = localColor;
-                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. " + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White")+ " must click draw to accept.");
+                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. " + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White")+ " must click draw to accept");
                 }
             }
         });
@@ -209,12 +222,14 @@ public class BoardUI extends JFrame
         textBody.setLineWrap(true);
         textBody.setWrapStyleWord(true);
         textBody.setFont(new Font("Arial", Font.PLAIN, 14));
+        textBody.setMargin(new Insets(10, 15, 10, 15)); 
         textBody.setForeground(Color.WHITE);
         textBody.setBackground(BACKGROUND);
-        textBody.setText("Game started.\n");
+        textBody.setText("Game started.\n|\n");
 
         scrollPane = new JScrollPane(textBody);
         scrollPane.setPreferredSize(new Dimension(220, 180));
+        scrollPane.setBorder(BorderFactory.createLineBorder(BACKGROUND, 10));
         scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 3));
         // adding the stuff to the big panel
 
@@ -230,9 +245,10 @@ public class BoardUI extends JFrame
 
         bc.gridy = 1;
         bc.weighty = 0;
-        bc.fill = GridBagConstraints.BOTH;
-        bc.anchor = GridBagConstraints.CENTER;
+        bc.fill = GridBagConstraints.NONE;
+        bc.anchor = GridBagConstraints.SOUTHEAST;
         buttonHolder2.add(drawButton, bc);
+        bc.anchor = GridBagConstraints.CENTER;
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
         c.gridwidth = 1;
@@ -271,7 +287,7 @@ public class BoardUI extends JFrame
         c.gridwidth = 1;
         c.weightx = 1;
         c.weighty = 1;
-        c.fill = GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.SOUTHEAST;
         gamePanel.add(backPanel, c);
 
@@ -303,7 +319,7 @@ public class BoardUI extends JFrame
             @Override
             public void mousePressed(MouseEvent e)
             {
-                MainMenuUI m = new MainMenuUI(windowWidth, windowLength);
+                MainMenuUI m = new MainMenuUI(800, 800);
                 dispose();
             }
         });
@@ -374,7 +390,7 @@ public class BoardUI extends JFrame
                 }
             }
             placingSanctuary = false;
-            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the sanctuary placement.");
+            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the sanctuary placement");
             redrawBoard();
             return;
         }
@@ -428,12 +444,19 @@ public class BoardUI extends JFrame
 
             if (selectedRow != i || selectedCol != j)
             {
+                Color current = game.getCurrentTurn();
+                Piece piece = game.getBoard().getPieceAt(selectedRow, selectedCol);
                 boolean moved = game.makeMove(selectedRow, selectedCol, i, j);
 
-                if (moved && network != null)
+                if (moved)
                 {
-                    network.sendMove(selectedRow, selectedCol, i, j);
+                    addChatMessage((current == Color.WHITE ? "White" : "Black") + " has moved " + piece.toString().split("_")[0] + " to " + chessNotation[i][j]);
+                    if(network != null)
+                    {
+                        network.sendMove(selectedRow, selectedCol, i, j);
+                    }
                 }
+                
 
                 redrawBoard();
 
@@ -455,11 +478,12 @@ public class BoardUI extends JFrame
                 {
                     drawRequested = false;
                     drawRequestedBy = null;
-                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "Black" : "White") + " declined draw offer.");
+                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "Black" : "White") + " declined draw offer");
                 }
             }
 
         }
+
     }
 
 
@@ -623,7 +647,7 @@ public class BoardUI extends JFrame
 
     private void addChatMessage(String message)
     {
-        textBody.append(message + "\n");
-        textBody.setCaretPosition(textBody.getDocument().getLength());
+        textBody.append(message + "\n|\n");
+        textBody.setCaretPosition(textBody.getDocument().getLength());// Just sets where the next append will be, so rn at the end of all msgs
     }   
 }

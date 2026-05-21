@@ -51,7 +51,7 @@ public class MainMenuUI extends JFrame
         JButton startButton = makeButton("Start", 34, 300, 55, fontColor);
         startButton.addActionListener(e -> {
             Game g = new Game();
-            BoardUI b = new BoardUI(800, 800, preferredTileSize, g);
+            BoardUI b = new BoardUI(800, 1200, preferredTileSize, g);
             dispose();
         });
 
