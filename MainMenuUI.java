@@ -91,7 +91,7 @@ public class MainMenuUI extends JFrame
         JLabel yay = new JLabel("Game created.");
         yay.setFont(new Font("Sans", Font.BOLD, 20));
         yay.setForeground(new Color(214, 214, 213)); 
-        JLabel gameCode = new JLabel("Game Code(share with other player):");
+        JLabel gameCode = new JLabel("Game Code (share with other player):");
         gameCode.setFont(new Font("Sans", Font.BOLD, 20));
         gameCode.setForeground(new Color(214, 214, 213)); 
         String ip = GameCode.getIpAddress();
@@ -103,7 +103,7 @@ public class MainMenuUI extends JFrame
         JLabel gameCode1 = new JLabel(encodedCode);
         gameCode1.setFont(new Font("Sans", Font.BOLD, 30));
         gameCode1.setForeground(new Color(214, 214, 213));
-        JButton makeGame = makeButton("Start connecting", 25, 300, 55, fontColor);
+        JButton makeGame = makeButton("Connecting...", 25, 300, 55, fontColor);
         makeGame.addActionListener(e -> {
             Server.connect();
         }); 
