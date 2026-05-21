@@ -130,10 +130,8 @@ public class MainMenuUI extends JFrame
         JButton enterButton = makeButton("Enter", 20, 100, 40, fontColor);
         enterButton.addActionListener(e -> {
             String code = gameCodeField.getText().trim();
-            if(ips != null)
-            {
-                Client.connect(code);
-            }
+            Client.connect(code);
+
         });
         codePanel.add(gameCodeField);
         codePanel.add(enterButton);
