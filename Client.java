@@ -6,10 +6,7 @@ public class Client
 {
     public static void main(String[] args)
     {
-        // currently testing connections; will fix/connect to mainmenuui later
-        // with gamelink approaproately.
-        // does not work with modifiers, should rotate board btwn clinet and
-        // server
+        
         System.out.println("localhost"); // local
         System.out.println("172.18.231.33"); // Alex
         System.out.println("172.18.231.34"); // neel
@@ -20,7 +17,7 @@ public class Client
         Scanner scan = new Scanner(System.in);
         String hoster = scan.nextLine();
 
-        connect(hoster); // change to server's IP when on different machines
+        connect(hoster); 
 
         scan.close();
     }
@@ -34,10 +31,8 @@ public class Client
             Socket socket = new Socket(hostIP, 5000);
             System.out.println("Connected to server.");
 
-            NetworkManager network = new NetworkManager(socket, false); // color
-                                                                        // set
-                                                                        // by
-                                                                        // readSetup
+            NetworkManager network = new NetworkManager(socket, false);
+                                                                        
             String assigned = network.readSetup();
             network.isWhite = assigned.equals("WHITE");
 
