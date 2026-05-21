@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 
 public class Server
 {
@@ -29,8 +30,8 @@ public class Server
 
             System.out.println("Client connected.");
 
-            // SERVER IS ALWAYS WHITE
-            boolean serverIsWhite = true;
+            // SERVER COLOR IS NOW RANDOM
+            boolean serverIsWhite = new Random().nextBoolean();
 
             NetworkManager network = new NetworkManager(socket, serverIsWhite);
 
@@ -38,9 +39,9 @@ public class Server
              * IMPORTANT: Send the OPPOSITE color to the client. Server = WHITE
              * Client = BLACK
              */
-            network.sendSetup("BLACK");
+            network.sendSetup(serverIsWhite ? "BLACK" : "WHITE");
 
-            System.out.println("Server is WHITE");
+            System.out.println("Server is " + (serverIsWhite ? "WHITE" : "BLACK"));
 
             new GameRunner(network).start();
 
