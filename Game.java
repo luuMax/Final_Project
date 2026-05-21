@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.Random;
 
 public class Game
@@ -16,21 +17,12 @@ public class Game
     private int                                moveCount                = 0;
     private boolean                            modifierOfferedThisCycle = false;
     private Color                              winner                   = null;
-    private static final Map<String, String[]> HORSE_RACES              = new HashMap<>();
-
+    private Stack<Piece> capturedWhitePieces = new Stack<>();
+    private Stack<Piece> capturedBlackPieces = new Stack<>();
     // Portals
     private int[] Portal1 = {-1, -1};
     private int[] Portal2 = {-1, -1};
     private boolean portalsActive = false;
-
-    static
-    {
-        HORSE_RACES.put(
-            "PtESN2OWGhQ&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=23",
-            new String[] { "SUP", "ARG"});
-        HORSE_RACES.put("XcWeQRe_vzw&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=39", new String[]{"GRAY", "RED"});
-        HORSE_RACES.put("Xd2RyTwJALI&list=PLW3UBgL80zUlT9-f0QTIXXps3sdUjko6g&index=50", new String[]{"GREEN", "GRAY" });
-    }
 
     public Game()
     {
@@ -227,6 +219,12 @@ public class Game
         Piece capturedPiece = board.getPieceAt(toRow, toCol);
         if (capturedPiece != null)
         {
+            if (capturedPiece.getColor() == Color.WHITE) {
+                capturedWhitePieces.push(capturedPiece);
+            }
+            else {
+                capturedBlackPieces.push(capturedPiece);
+            }
             for (int i = 0; i < board.getActiveModifiers().size(); i++)
             {
                 Modifier m = board.getActiveModifiers().get(i);
@@ -535,6 +533,7 @@ public class Game
             }
         }
     }
+
     public void setPortal1Pos(int row, int col) {
         Portal1[0] = row;
         Portal1[1] = col;
@@ -654,6 +653,13 @@ public class Game
         return false;
     }
 
+
+    public Stack<Piece> getCapturedPieces(Color color) {
+        if (color == Color.WHITE) {
+            return capturedWhitePieces;
+        }
+        return capturedBlackPieces;
+    }
 
     /**
      * Checks whether there is a piece of a given type on the board

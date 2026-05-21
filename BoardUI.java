@@ -50,6 +50,7 @@ public class BoardUI extends JFrame
     private boolean           placingWall      = false;
     private boolean           placingPortal1   = false;
     private boolean           placingPortal2   = false;
+    private boolean           placingResurrection = false;
 
     // Networking //
     private NetworkManager network = null;
@@ -421,6 +422,17 @@ public class BoardUI extends JFrame
             return;
         }
 
+        if (placingResurrection) {
+            Piece target = boardgrid.getPieceAt(i, j);
+            if (target != null) {
+                return; // can't place on an occupied square
+            }
+            game.getBoard().setPieceAt(game.getCapturedPieces(game.getCurrentTurn()).pop(), i, j);
+            redrawBoard();
+            placingResurrection = false;
+            return;
+        }
+
         if (pieceSelected == false)
         {
             Piece piece = boardgrid.getPieceAt(i, j);
@@ -582,6 +594,10 @@ public class BoardUI extends JFrame
             game.handleModifierChoice(options, choice);
             redrawBoard();
             return;
+        }
+
+        if (selected == Modifier.Type.RESURRECTION && !game.getCapturedPieces(game.getCurrentTurn()).isEmpty()) {
+            placingResurrection = true;
         }
 
         if (selected == Modifier.Type.BRICK)
