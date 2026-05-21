@@ -191,7 +191,7 @@ public class MainMenuUI extends JFrame
         return button;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //tester
         MainMenuUI b = new MainMenuUI(800, 800);
     }
 }
