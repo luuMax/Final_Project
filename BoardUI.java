@@ -325,7 +325,7 @@ public class BoardUI extends JFrame
         c.gridy = 1;
         endPanel.add(backButton1, c);
 
-
+        redrawBoard();
         setVisible(true);
     }
 
