@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+
 /* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -338,51 +340,38 @@ public class BoardUI extends JFrame
         square.setPreferredSize(new Dimension(tileSize, tileSize));
         
         Piece piece = boardgrid.getPieceAt(i, j);
-        ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
 
-        int idx = 0;
         if(piece != null)
         {
-            JPanel imagePanel = new JPanel(null);
-            imagePanel.setOpaque(false);
-            imagePanel.setPreferredSize(new Dimension(tileSize, tileSize));
-
-            JLabel label = getImage(piece);
-            label.setBounds(0, 0, tileSize, tileSize);
-            imagePanel.add(label);
+            String modPath = null;
+            ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
 
             for (Modifier mod : modifiers)
             {
-                if (mod.getType() == Modifier.Type.EXPLODING_PIECE
-                        && mod.getAffectedCol() == j
-                        && mod.getAffectedRow() == i)
+                if(mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece))
                 {
-                    System.out.println("Adding bomb at " + i + ", " + j);
-
-                    ImageIcon image = new ImageIcon("./PieceSprites/mi bombo.png");
-
-                    if (image.getIconWidth() == -1)
+                    if ((mod.getType().toString()).equals("Mi Bomboclart"))
                     {
-                        System.out.println("Bomb image not found.");
+                        System.out.println("Adding bomb at " + i + ", " + j);
+                        modPath = "./PieceSprites/bombo.png";
                         break;
                     }
-
-                    Image scaled = image.getImage().getScaledInstance(
-                        tileSize / 2,
-                        tileSize / 2,
-                        Image.SCALE_SMOOTH
-                    );
-
-                    JLabel bombo = new JLabel(new ImageIcon(scaled));
-                    bombo.setBounds(tileSize / 2, 0, tileSize / 2, tileSize / 2);
-
-                    imagePanel.add(bombo);
-                    imagePanel.setComponentZOrder(bombo, 0);
-
-                    break;
+                    else if ((mod.getType().toString()).equals("Sniper Bishop"))
+                    {
+                        modPath = "./PieceSprites/aguabishop.png";
+                        break;
+                    }
+                    else if ((mod.getType().toString()).equals("[Title Card] Pawns"))
+                    {
+                        modPath = "./PieceSprites/invincible_pawn.png";
+                        break;
+                    }
                 }
+
+
             }
-            square.add(imagePanel, BorderLayout.CENTER);
+            JPanel sprite = makeModifiedPieceSprite(piece, modPath);
+            square.add(sprite, BorderLayout.CENTER);
         }
 
         square.addMouseListener(new MouseAdapter() {
@@ -726,5 +715,36 @@ public class BoardUI extends JFrame
     {
         textBody.append(message + "\n|\n");
         textBody.setCaretPosition(textBody.getDocument().getLength());// Just sets where the next append will be, so rn at the end of all msgs
-    }   
+    }  
+    
+    private JPanel makeModifiedPieceSprite(Piece piece, String modPath)
+    {
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(tileSize,tileSize));
+        ImageIcon image1 = new ImageIcon("./PieceSprites/new_" + piece.toString() +".png");
+
+        Image scaled1 = image1.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
+        JLabel pieceSprite = new JLabel(new ImageIcon(scaled1));
+        pieceSprite.setOpaque(false);
+        pieceSprite.setBounds(0,0,tileSize,tileSize);
+        layeredPane.add(pieceSprite, JLayeredPane.DEFAULT_LAYER);
+
+        JLabel modifierLabel = new JLabel();
+        if(modPath != null)
+        {
+            ImageIcon image2 = new ImageIcon(modPath);
+
+            Image scaled2 = image2.getImage().getScaledInstance(tileSize/3, tileSize/3, Image.SCALE_SMOOTH);
+            modifierLabel = new JLabel(new ImageIcon(scaled2));
+            modifierLabel.setOpaque(false);
+            modifierLabel.setBounds((int)(0.6 * tileSize),0,tileSize/2,tileSize/2);
+            layeredPane.add(modifierLabel, JLayeredPane.DRAG_LAYER); 
+        } 
+
+        JPanel sprite = new JPanel(new BorderLayout());
+        sprite.setOpaque(false);
+        sprite.add(layeredPane, BorderLayout.CENTER);
+
+        return sprite;
+    }
 }
