@@ -16,6 +16,7 @@ public class Game
     private Color                              winner                   = null;
     private Stack<Piece> capturedWhitePieces = new Stack<>();
     private Stack<Piece> capturedBlackPieces = new Stack<>();
+
     // Portals
     private int[] Portal1 = {-1, -1};
     private int[] Portal2 = {-1, -1};
@@ -118,23 +119,15 @@ public class Game
             return true;
         }
 
+        switchTurn();
+
         if (portalsActive && (currentTurn == Color.BLACK)) {
             Piece temp = board.getPieceAt(Portal1[0], Portal1[1]);
             board.setPieceAt(board.getPieceAt(Portal2[0], Portal2[1]), Portal1[0], Portal1[1]);
             board.setPieceAt(temp, Portal2[0], Portal2[1]);
         }
 
-        if (currentTurn == Color.WHITE)
-        {
-            currentTurn = Color.BLACK;
-        }
-        else
-        {
-            currentTurn = Color.WHITE;
-        }
 
-        moveCount++;
-        modifierOfferedThisCycle = false;
         // for (Modifier m : board.getActiveModifiers()) {
         // System.out.println(m.getType().toString() + " - turns remaining: " +
         // m.getTurnsRemaining());
@@ -328,7 +321,7 @@ public class Game
             case FILE_SWAP:
                 return false; // always available
             case RESURRECTION:
-                return !getCapturedPieces(getCurrentTurn()).isEmpty();
+                return getCapturedPieces(getCurrentTurn()).isEmpty();
             default:
                 return false;
         }
@@ -538,13 +531,26 @@ public class Game
         Portal1[1] = col;
     }
 
+    public int[] getPortal1() {
+        return new int[]{Portal1[0], Portal1[1]};
+    }
+
+    public int[] getPortal2() {
+        return new int[]{Portal2[0], Portal2[1]};
+    }
+
     public void setPortal2Pos(int row, int col) {
         Portal2[0] = row;
         Portal2[1] = col;
     }
 
+
     public void setPortalsActive(boolean state) {
         portalsActive = true;
+    }
+
+    public boolean arePortalsActive() {
+        return portalsActive;
     }
 
     /**
@@ -589,7 +595,6 @@ public class Game
     public void setModifierOfferedThisCycle(boolean state) {
         modifierOfferedThisCycle = state;
     }
-
 
     // ==================== GAME STATE ====================
     /**
@@ -643,6 +648,16 @@ public class Game
         return false;
     }
 
+    private void endTurn() {
+        if (currentTurn == Color.WHITE) {
+            currentTurn = Color.BLACK;
+        } else {
+            currentTurn = Color.WHITE;
+        }
+        moveCount++;
+        modifierOfferedThisCycle = false;
+    }
+
 
     public Stack<Piece> getCapturedPieces(Color color) {
         if (color == Color.WHITE) {
@@ -651,6 +666,11 @@ public class Game
         return capturedBlackPieces;
     }
 
+    public void switchTurn() {
+        currentTurn = (currentTurn == Color.WHITE) ? Color.BLACK : Color.WHITE;
+        moveCount++;
+        modifierOfferedThisCycle = false;
+    }
     /**
      * Checks whether there is a piece of a given type on the board
      * 

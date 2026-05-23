@@ -55,6 +55,8 @@ public class BoardUI extends JFrame
     private boolean           placingWall      = false;
     private boolean           placingPortal1   = false;
     private boolean           placingPortal2   = false;
+    private boolean           portal1Placed    = false; // for updating the tile sprites 
+    private boolean           portal2Placed    = false; // for updating the tile sprites
     private boolean           placingResurrection = false;
 
     // Networking //
@@ -408,21 +410,31 @@ public class BoardUI extends JFrame
         JPanel square = new JPanel(new BorderLayout());
         square.setBackground(tileColor(i, j));
         square.setPreferredSize(new Dimension(tileSize, tileSize));
-        
+
+        int[] p1 = game.getPortal1();
+        int[] p2 = game.getPortal2();
+        boolean isPortalSquare = (portal1Placed && i == p1[0] && j == p1[1]) ||
+                                (portal2Placed && i == p2[0] && j == p2[1]);
+
+        boolean isSanctuarySquare = false;
+        for (Modifier m : boardgrid.getActiveModifiers()) {
+            if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i && m.getAffectedCol() == j) {
+                isSanctuarySquare = true;
+                break;
+            }
+        }
+
         Piece piece = boardgrid.getPieceAt(i, j);
 
-        if(piece != null)
+        String modPath = null;
+        if (piece != null)
         {
-            String modPath = null;
-            ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
-
-            for (Modifier mod : modifiers)
+            for (Modifier mod : boardgrid.getActiveModifiers())
             {
-                if(mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece))
+                if (mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece))
                 {
                     if ((mod.getType().toString()).equals("Mi Bomboclart"))
                     {
-                        System.out.println("Adding bomb at " + i + ", " + j);
                         modPath = "./PieceSprites/bombo.png";
                         break;
                     }
@@ -438,6 +450,32 @@ public class BoardUI extends JFrame
                     }
                 }
             }
+        }
+
+        if (isPortalSquare || isSanctuarySquare)
+        {
+            JLayeredPane layered = new JLayeredPane();
+            layered.setPreferredSize(new Dimension(tileSize, tileSize));
+
+            String bgPath = isPortalSquare ? "./PieceSprites/portal.png" : "./PieceSprites/sanctuary.png";
+            ImageIcon bgImage = new ImageIcon(bgPath);
+            Image scaledBg = bgImage.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
+            JLabel bgLabel = new JLabel(new ImageIcon(scaledBg));
+            bgLabel.setBounds(0, 0, tileSize, tileSize);
+            layered.add(bgLabel, JLayeredPane.DEFAULT_LAYER);
+
+            if (piece != null)
+            {
+                JPanel sprite = makeModifiedPieceSprite(piece, modPath);
+                sprite.setOpaque(false);
+                sprite.setBounds(0, 0, tileSize, tileSize);
+                layered.add(sprite, JLayeredPane.PALETTE_LAYER);
+            }
+
+            square.add(layered, BorderLayout.CENTER);
+        }
+        else if (piece != null)
+        {
             JPanel sprite = makeModifiedPieceSprite(piece, modPath);
             square.add(sprite, BorderLayout.CENTER);
         }
@@ -494,7 +532,7 @@ public class BoardUI extends JFrame
 
         if (placingWall) {
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null) {
+            if (target != null && game.getPortal1()[0] != i && game.getPortal1()[1] != j && game.getPortal2()[0] != i && game.getPortal2()[1] != i) {
                 return; // can't place on an occupied square
             }
             boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
@@ -515,6 +553,7 @@ public class BoardUI extends JFrame
             game.setPortal1Pos(i, j);
             placingPortal1 = false;
             placingPortal2 = true;
+            portal1Placed = true;
             redrawBoard();
             System.out.println("Portal 1 placed at " + i + " " + j);
             return;
@@ -531,6 +570,7 @@ public class BoardUI extends JFrame
             game.setPortalsActive(true);
             game.setModifierOfferedThisCycle(true);
             placingPortal2 = false;
+            portal2Placed = true;
             updateActiveModifiersPanel();
             redrawBoard();
             System.out.println("Portal 2 placed at " + i + " " + j);
