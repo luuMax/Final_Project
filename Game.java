@@ -119,7 +119,7 @@ public class Game
             return true;
         }
 
-        switchTurn();
+        moveCount++;
 
         if (portalsActive && (currentTurn == Color.BLACK)) {
             Piece temp = board.getPieceAt(Portal1[0], Portal1[1]);
@@ -377,6 +377,7 @@ public class Game
                     }
                 }
             }
+            modifierOfferedThisCycle = true;
             return;
         }
         
@@ -397,6 +398,7 @@ public class Game
                 board.setPieceAt(board.getPieceAt(row, file2), row, file1);
                 board.setPieceAt(tempPiece, row, file2);
             }
+            modifierOfferedThisCycle = true;
             return;
         }
         board.addModifier(modifier);
@@ -413,7 +415,7 @@ public class Game
      */
     public boolean shouldOfferModifier()
     {
-        return (moveCount >= 5 && moveCount % 5 == 0 && !modifierOfferedThisCycle);
+        return (moveCount > 0 && moveCount % 5 == 0 && !modifierOfferedThisCycle);
     }
 
 
@@ -603,6 +605,11 @@ public class Game
      * 
      * @return true if the game is over, false if the game is still going
      */
+
+    public int getMoveCount() {
+        return moveCount;
+    }
+
     private boolean checkKingsAlive()
     {
         boolean whiteKingAlive = false;
@@ -648,16 +655,6 @@ public class Game
         return false;
     }
 
-    private void endTurn() {
-        if (currentTurn == Color.WHITE) {
-            currentTurn = Color.BLACK;
-        } else {
-            currentTurn = Color.WHITE;
-        }
-        moveCount++;
-        modifierOfferedThisCycle = false;
-    }
-
 
     public Stack<Piece> getCapturedPieces(Color color) {
         if (color == Color.WHITE) {
@@ -667,8 +664,8 @@ public class Game
     }
 
     public void switchTurn() {
+        System.out.println("switchTurn called, before: " + currentTurn);
         currentTurn = (currentTurn == Color.WHITE) ? Color.BLACK : Color.WHITE;
-        moveCount++;
         modifierOfferedThisCycle = false;
     }
     /**
