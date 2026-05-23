@@ -42,6 +42,8 @@ public class BoardUI extends JFrame
     private JPanel mainPanel = new JPanel(cardLayout);
     private JPanel gamePanel = new JPanel(new GridBagLayout());
     private JPanel endPanel = new JPanel(new GridBagLayout());
+    private JPanel modifierPanel;
+    private JTextArea activeModifiersText;
 
     // Mouse Inputs //
     private int selectedRow;
@@ -247,16 +249,30 @@ public class BoardUI extends JFrame
         ////////////////////////////
         // Active Modifiers Panel //
         ////////////////////////////
-        JPanel modifierPanel = new JPanel(new BorderLayout());
+        modifierPanel = new JPanel(new BorderLayout());
         modifierPanel.setBackground(BACKGROUND);
         modifierPanel.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
         modifierPanel.setPreferredSize(new Dimension(100,380));
 
         JLabel modPanelTitle = new JLabel("Active Modifers", SwingConstants.CENTER);
-        modPanelTitle.setFont(new Font("Sans", Font.BOLD, 10));
+        modPanelTitle.setFont(new Font("Sans", Font.BOLD, 20));
         modPanelTitle.setForeground(new Color(214, 214, 213));
 
-        modifierPanel.add(modPanelTitle, BorderLayout.NORTH);
+        JLabel activeModsTitle = new JLabel("Active Modifiers", SwingConstants.CENTER);
+        activeModsTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        activeModsTitle.setForeground(Color.WHITE);
+
+        activeModifiersText = new JTextArea("None");
+        activeModifiersText.setEditable(false);
+        activeModifiersText.setLineWrap(true);
+        activeModifiersText.setWrapStyleWord(true);
+        activeModifiersText.setFont(new Font("Arial", Font.PLAIN, 13));
+        activeModifiersText.setForeground(Color.WHITE);
+        activeModifiersText.setBackground(BACKGROUND);
+        activeModifiersText.setMargin(new Insets(8, 8, 8, 8));
+
+        modifierPanel.add(activeModsTitle, BorderLayout.NORTH);
+        modifierPanel.add(activeModifiersText, BorderLayout.CENTER);
 
         //////////////////////////////////////////////
         // Right side panels(theres a lot going on) //
@@ -314,7 +330,9 @@ public class BoardUI extends JFrame
 
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
-
+        /////////////////////
+        // Everything else //
+        /////////////////////
         c.gridwidth = 1;
         c.gridheight = 1;
         c.weightx = 1;
@@ -344,16 +362,6 @@ public class BoardUI extends JFrame
         c.gridheight = 1;
         c.gridwidth = 3;
         gamePanel.add(fillerTile4, c);
-
-        c.gridx = 2;
-        c.gridy = 2;
-        c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.SOUTHEAST;
-        //gamePanel.add(backPanel, c);
 
         c.gridx = 2;
         c.gridy = 1;
@@ -389,10 +397,8 @@ public class BoardUI extends JFrame
         c.gridy = 1;
         endPanel.add(backButton1, c);
 
-        
-
-
         redrawBoard();
+        updateActiveModifiersPanel();
         setVisible(true);
     }
 
@@ -481,6 +487,7 @@ public class BoardUI extends JFrame
             }
             placingSanctuary = false;
             addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the sanctuary placement at " + chessNotation[i][j]);
+            updateActiveModifiersPanel();
             redrawBoard();
             return;
         }
@@ -493,6 +500,7 @@ public class BoardUI extends JFrame
             boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
             game.setModifierOfferedThisCycle(true);
             placingWall = false;
+            updateActiveModifiersPanel();
             redrawBoard();
             return;
         }
@@ -523,6 +531,7 @@ public class BoardUI extends JFrame
             game.setPortalsActive(true);
             game.setModifierOfferedThisCycle(true);
             placingPortal2 = false;
+            updateActiveModifiersPanel();
             redrawBoard();
             System.out.println("Portal 2 placed at " + i + " " + j);
             return;
@@ -536,6 +545,7 @@ public class BoardUI extends JFrame
             game.getBoard().setPieceAt(game.getCapturedPieces(game.getCurrentTurn()).pop(), i, j);
             redrawBoard();
             placingResurrection = false;
+            updateActiveModifiersPanel();
             return;
         }
 
@@ -598,6 +608,7 @@ public class BoardUI extends JFrame
             }
 
         }
+        updateActiveModifiersPanel();
 
     }
 
@@ -739,6 +750,7 @@ public class BoardUI extends JFrame
                 new Thread(() -> network.sendModifier(toSend)).start();
             }
         }
+        updateActiveModifiersPanel();
     }
 
     private Color tileColor(int i, int j)
@@ -771,6 +783,7 @@ public class BoardUI extends JFrame
 
         board.revalidate();
         board.repaint();
+        updateActiveModifiersPanel();
     }
 
     private void addChatMessage(String message)
@@ -809,4 +822,36 @@ public class BoardUI extends JFrame
 
         return sprite;
     }
+
+    private void updateActiveModifiersPanel()
+{
+    ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
+
+    if (modifiers.isEmpty())
+    {
+        activeModifiersText.setText("None");
+        return;
+    }
+
+    String text = "";
+
+    for (Modifier mod : modifiers)
+    {
+        text += "- " + mod.getType();
+
+        if (mod.getAffectedPiece() != null)
+        {
+            text += " on " + mod.getAffectedPiece();
+        }
+
+        if(mod.getTurnsRemaining() > 0)
+        {
+            text += " for " + mod.getTurnsRemaining() + " more turns";
+        }
+
+        text += "\n";
+    }
+
+    activeModifiersText.setText(text);
+}
 }
