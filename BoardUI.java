@@ -26,7 +26,7 @@ public class BoardUI extends JFrame
         {"a1", "b1","c1", "d1","e1", "f1", "g1", "h1"}
     };
 
-    // Tile Colors //
+    // Statics //
     public static final Color VERY_LIGHT_BROWN = new Color(254, 228, 187);
     public static final Color DARK_BROWN = new Color(205, 154, 117);
     public static final Color HIGHLIGHT = new Color(247, 247, 105);
@@ -111,8 +111,9 @@ public class BoardUI extends JFrame
         setLayout(new BorderLayout());
         gamePanel.setBackground(BACKGROUND);
         
-
-        // creating the board
+        ///////////
+        // Board //
+        ///////////
         board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
 
         for (int i = 0; i < 8; i++)
@@ -127,7 +128,9 @@ public class BoardUI extends JFrame
 
         GridBagConstraints c = new GridBagConstraints();
 
-        // adding board to big panel
+        ///////////////////////////
+        // Adding board to frame //
+        ///////////////////////////
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 1;
@@ -148,18 +151,20 @@ public class BoardUI extends JFrame
         JPanel fillerTile4 = new JPanel();
         fillerTile4.setBackground(BACKGROUND);
 
-        // creating the forfeit button
+        ////////////////////
+        // Forfeit Button //
+        ////////////////////
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
         ImageIcon forfeitImage = new ImageIcon("./PieceSprites/ForfeitIcon.png");
-        Image scaled = forfeitImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        Image scaled = forfeitImage.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
         JPanel buttonHolder = new JPanel(new GridLayout(1, 1));
         buttonHolder.setOpaque(false);
         JButton forfeitButton = new JButton(new ImageIcon(scaled));
         forfeitButton.setFont(new Font("Arial", Font.BOLD, 20));
-        forfeitButton.setPreferredSize(new Dimension(140, 100));
+        forfeitButton.setPreferredSize(new Dimension(150, 150));
         forfeitButton.setMargin(new Insets(0, 0, 0, 0));
         forfeitButton.setBackground(new Color(155, 200, 120));
         forfeitButton.setFocusPainted(false);
@@ -175,23 +180,25 @@ public class BoardUI extends JFrame
                 endGameForfeit();
             }
         });
-        buttonHolder.add(forfeitButton);
-        backPanel.add(buttonHolder, BorderLayout.CENTER);
+        //buttonHolder.add(forfeitButton);
+        //backPanel.add(buttonHolder, BorderLayout.CENTER);
 
         JPanel backPanel2 = new JPanel(new BorderLayout());
         backPanel2.setBackground(BACKGROUND);
 
-        // creating draw button
+        /////////////////
+        // Draw Button //
+        /////////////////
         ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
-        scaled = drawImage.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        scaled = drawImage.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
         JPanel buttonHolder2 = new JPanel(new GridBagLayout());
         buttonHolder2.setOpaque(false);
         JButton drawButton = new JButton(new ImageIcon(scaled));
         drawButton.setFont(new Font("Arial", Font.BOLD, 20));
-        drawButton.setPreferredSize(new Dimension(140, 100));
+        drawButton.setPreferredSize(new Dimension(150, 150));
         drawButton.setMargin(new Insets(0, 0, 0, 0));
-        drawButton.setBackground(new Color(226, 48, 32));
+        drawButton.setBackground(new Color(224, 47, 31));
         drawButton.setFocusPainted(false);
         drawButton.setOpaque(true);
         drawButton.setContentAreaFilled(true);
@@ -219,6 +226,9 @@ public class BoardUI extends JFrame
             }
         });
 
+        //////////////
+        // Game log //
+        //////////////
         textBody = new JTextArea();
         textBody.setEditable(false);
         textBody.setLineWrap(true);
@@ -232,26 +242,78 @@ public class BoardUI extends JFrame
         scrollPane = new JScrollPane(textBody);
         scrollPane.setPreferredSize(new Dimension(220, 180));
         scrollPane.setBorder(BorderFactory.createLineBorder(BACKGROUND, 10));
-        scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 3));
-        // adding the stuff to the big panel
+        scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
 
-        GridBagConstraints bc = new GridBagConstraints();
-        bc.insets = new Insets(0, 0, 0, 0);
-        bc.gridx = 0;
+        ////////////////////////////
+        // Active Modifiers Panel //
+        ////////////////////////////
+        JPanel modifierPanel = new JPanel(new BorderLayout());
+        modifierPanel.setBackground(BACKGROUND);
+        modifierPanel.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
+        modifierPanel.setPreferredSize(new Dimension(100,380));
+
+        JLabel modPanelTitle = new JLabel("Active Modifers", SwingConstants.CENTER);
+        modPanelTitle.setFont(new Font("Sans", Font.BOLD, 10));
+        modPanelTitle.setForeground(new Color(214, 214, 213));
+
+        modifierPanel.add(modPanelTitle, BorderLayout.NORTH);
+
+        //////////////////////////////////////////////
+        // Right side panels(theres a lot going on) //
+        //////////////////////////////////////////////
+        GridBagConstraints bc = new GridBagConstraints(); // made a different Gridbagcontraints object cause i keep screwing the other stuff up :(
+        bc.insets = new Insets(4, 5, 4, 5);
+        bc.weighty = 1;
         bc.weightx = 1;
 
+        // Game log
+        bc.gridx = 0;
         bc.gridy = 0;
+        bc.gridwidth = 2;
+        bc.gridheight = 2;
+        bc.weightx = 1;
         bc.weighty = 1;
         bc.fill = GridBagConstraints.BOTH;
+        bc.anchor = GridBagConstraints.CENTER;
         buttonHolder2.add(scrollPane, bc);
 
-        bc.gridy = 1;
+        // Active modifier panel
+        bc.insets = new Insets(0, 5, 4, 5);
+        bc.gridx = 0;
+        bc.gridy = 2;
+        bc.gridwidth = 1;
+        bc.gridheight = 2;
+        bc.weightx = 1;
+        bc.weighty = 1;
+        bc.fill = GridBagConstraints.HORIZONTAL;
+        bc.anchor = GridBagConstraints.NORTHWEST;
+        buttonHolder2.add(modifierPanel, bc);
+
+        // Draw button
+        bc.insets = new Insets(0, 5, 0, 5);
+        bc.gridx = 1;
+        bc.gridy = 2;
+        bc.gridwidth = 1;
+        bc.gridheight = 1;
+        bc.weightx = 0;
         bc.weighty = 0;
         bc.fill = GridBagConstraints.NONE;
-        bc.anchor = GridBagConstraints.SOUTHEAST;
-        buttonHolder2.add(drawButton, bc);
         bc.anchor = GridBagConstraints.CENTER;
+        buttonHolder2.add(drawButton, bc);
+
+        // Forfeit button
+        bc.gridx = 1;
+        bc.gridy = 3;
+        bc.gridwidth = 1;
+        bc.gridheight = 1;
+        bc.weightx = 0;
+        bc.weighty = 0;
+        bc.fill = GridBagConstraints.NONE;
+        bc.anchor = GridBagConstraints.CENTER;
+        buttonHolder2.add(forfeitButton, bc);
+
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
+
 
         c.gridwidth = 1;
         c.gridheight = 1;
@@ -291,11 +353,11 @@ public class BoardUI extends JFrame
         c.weighty = 1;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.SOUTHEAST;
-        gamePanel.add(backPanel, c);
+        //gamePanel.add(backPanel, c);
 
         c.gridx = 2;
         c.gridy = 1;
-        c.gridheight = 1;
+        c.gridheight = 3;
         c.gridwidth = 1;
         c.weightx = 1;
         c.weighty = 1;
@@ -313,7 +375,6 @@ public class BoardUI extends JFrame
         //////////////////////////
         // Creating end screen  //
         //////////////////////////
-        
         endPanel.setBackground(new Color(36,34,32));
         JButton backButton1 = MainMenuUI.makeButton("Return to main menu", 20, 500, 60, new Color(214,214,213));
         backButton1.addMouseListener(new MouseAdapter() {
@@ -327,6 +388,9 @@ public class BoardUI extends JFrame
         c.gridx = 0;
         c.gridy = 1;
         endPanel.add(backButton1, c);
+
+        
+
 
         redrawBoard();
         setVisible(true);
@@ -626,7 +690,7 @@ public class BoardUI extends JFrame
                 optionStrings,
                 optionStrings[0]);
         }
-        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the " + chosen.substring(2) + "modifier");
+        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the" + chosen.substring(3) + " modifier");
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
         Modifier.Type selected = options[choice];
 
