@@ -99,6 +99,7 @@ public class BoardUI extends JFrame {
     }
 
     public void initialize() {
+        System.out.println("GAME OBJECT ID = " + System.identityHashCode(game));
         setTitle("The Game");
         getContentPane().setBackground(BACKGROUND);
         setSize(windowLength, windowWidth);
@@ -464,6 +465,8 @@ public class BoardUI extends JFrame {
     }
 
     private void handleTileClick(int i, int j) {
+        System.out.println("TURN CHECK: " + game.getCurrentTurn() + " local=" + localColor);
+        System.out.println("CLICK at " + i + "," + j);
         if (choosingModifier) return;
         if (localColor != null && game.getCurrentTurn() != localColor) {
             return;
@@ -579,6 +582,8 @@ public class BoardUI extends JFrame {
                 Color current = game.getCurrentTurn();
                 Piece piece = game.getBoard().getPieceAt(selectedRow, selectedCol);
                 boolean moved = game.makeMove(selectedRow, selectedCol, i, j);
+                System.out.println("MOVE RESULT = " + moved);
+                System.out.println("BEFORE SWITCH: " + game.getCurrentTurn());
                 if (moved) {
                     addChatMessage((current == Color.WHITE ? "White" : "Black") + " has moved "
                             + piece.toString().split("_")[0] + " to " + chessNotation[i][j]);
@@ -587,20 +592,15 @@ public class BoardUI extends JFrame {
                         network.sendMove(selectedRow, selectedCol, i, j);
                     }
 
-                    System.out.println("Move made. currentTurn=" + game.getCurrentTurn()
-                            + " moveCount=" + game.getMoveCount()
-                            + " shouldOffer=" + game.shouldOfferModifier());
 
                     if (game.shouldOfferModifier()) {
                         showMods(game.offeredModifiers());
                     }
-
-                    // Only switch turns if no placement interaction is pending
-                    if (!isPlacementModifierActive() && !choosingModifier) {
-                        game.switchTurn();
+                    if (!isPlacementModifierActive()) {
+                    game.switchTurn();
                     }
 
-                    System.out.println("After switchTurn. currentTurn=" + game.getCurrentTurn());
+
 
                     redrawBoard();
 

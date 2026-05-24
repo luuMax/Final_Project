@@ -43,7 +43,11 @@ public class GameRunner
 
                         int fr = move[0], fc = move[1], tr = move[2], tc = move[3];
 
+                        System.out.println("BEFORE APPLY: TURN = " + game.getCurrentTurn());
+
                         boolean valid = game.makeMove(fr, fc, tr, tc);
+
+                        System.out.println("AFTER APPLY: TURN = " + game.getCurrentTurn());
 
                         if (!valid)
                         {
@@ -52,6 +56,7 @@ public class GameRunner
                                     + "," + tc);
                             continue;
                         }
+                        
 
                         javax.swing.SwingUtilities.invokeLater(() -> {
                             boardUI.redrawBoard();

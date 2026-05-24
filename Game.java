@@ -109,8 +109,6 @@ public class Game
         piece = applyMove(fromRow, fromCol, toRow, toCol, moveType, piece);
         updateEnPassantFlags(piece, fromRow, toRow, moveType);
 
-        // System.out.println(moveHistory.get(moveHistory.size() -
-        // 1).getNotation());
         ArrayList<Modifier> expiredModifiers = board.decrementModifiers();
         handleExpiredModifiers(expiredModifiers);
 
@@ -126,12 +124,6 @@ public class Game
             board.setPieceAt(board.getPieceAt(Portal2[0], Portal2[1]), Portal1[0], Portal1[1]);
             board.setPieceAt(temp, Portal2[0], Portal2[1]);
         }
-
-
-        // for (Modifier m : board.getActiveModifiers()) {
-        // System.out.println(m.getType().toString() + " - turns remaining: " +
-        // m.getTurnsRemaining());
-        // }
         return true;
     }
 
@@ -548,7 +540,7 @@ public class Game
 
 
     public void setPortalsActive(boolean state) {
-        portalsActive = true;
+        portalsActive = state;
     }
 
     public boolean arePortalsActive() {
@@ -664,9 +656,12 @@ public class Game
     }
 
     public void switchTurn() {
-        System.out.println("switchTurn called, before: " + currentTurn);
+        System.out.println("switchTurn called");
+        System.out.println("before = " + currentTurn);
         currentTurn = (currentTurn == Color.WHITE) ? Color.BLACK : Color.WHITE;
         modifierOfferedThisCycle = false;
+        System.out.println("TURN IS NOW: " + currentTurn);
+        
     }
     /**
      * Checks whether there is a piece of a given type on the board
