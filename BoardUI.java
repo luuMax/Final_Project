@@ -398,8 +398,9 @@ public class BoardUI extends JFrame {
 
         int[] p1 = game.getPortal1();
         int[] p2 = game.getPortal2();
-        boolean isPortalSquare = (portal1Placed && i == p1[0] && j == p1[1]) ||
-                (portal2Placed && i == p2[0] && j == p2[1]);
+        boolean showActivePortals = game.arePortalsActive();
+        boolean isPortalSquare = ((portal1Placed || showActivePortals) && i == p1[0] && j == p1[1]) ||
+                ((portal2Placed || showActivePortals) && i == p2[0] && j == p2[1]);
 
         boolean isSanctuarySquare = false;
         for (Modifier m : boardgrid.getActiveModifiers()) {
@@ -505,6 +506,15 @@ public class BoardUI extends JFrame {
             }
             boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
             game.setModifierOfferedThisCycle(true);
+            if (network != null) {
+                new Thread(() -> network.sendModifierData(
+                        Modifier.Type.BRICK,
+                        0,
+                        -1,
+                        -1,
+                        i,
+                        j)).start();
+            }
             placingWall = false;
             updateActiveModifiersPanel();
             redrawBoard();
@@ -538,6 +548,17 @@ public class BoardUI extends JFrame {
             game.setPortal2Pos(i, j);
             game.setPortalsActive(true);
             game.setModifierOfferedThisCycle(true);
+            if (network != null) {
+                int[] portal1 = game.getPortal1();
+                int[] portal2 = game.getPortal2();
+                new Thread(() -> network.sendModifierData(
+                        Modifier.Type.PORTAL,
+                        0,
+                        portal1[0],
+                        portal1[1],
+                        portal2[0],
+                        portal2[1])).start();
+            }
             placingPortal2 = false;
             portal2Placed = true;
             updateActiveModifiersPanel();
@@ -553,6 +574,16 @@ public class BoardUI extends JFrame {
                 return; // can't place on an occupied square
             }
             game.getBoard().setPieceAt(game.getCapturedPieces(game.getCurrentTurn()).pop(), i, j);
+            game.setModifierOfferedThisCycle(true);
+            if (network != null) {
+                new Thread(() -> network.sendModifierData(
+                        Modifier.Type.RESURRECTION,
+                        0,
+                        -1,
+                        -1,
+                        i,
+                        j)).start();
+            }
             redrawBoard();
             game.switchTurn();
             placingResurrection = false;
@@ -592,7 +623,11 @@ public class BoardUI extends JFrame {
                             + " shouldOffer=" + game.shouldOfferModifier());
 
                     if (game.shouldOfferModifier()) {
-                        showMods(game.offeredModifiers());
+                        Modifier.Type[] options = game.offeredModifiers();
+                        if (network != null) {
+                            network.sendModifierOptions(options);
+                        }
+                        showMods(options);
                     }
 
                     // Only switch turns if no placement interaction is pending
@@ -726,20 +761,12 @@ public class BoardUI extends JFrame {
         }
 
         // apply locally
-        game.handleModifierChoice(options, choice);
+        Modifier appliedModifier = game.handleModifierChoice(options, choice);
         redrawBoard();
 
         if (network != null) {
-            // find the modifier that was just added and send it
-            // it will be the most recently added one of the chosen type
-            Modifier justAdded = null;
-            for (Modifier m : game.getBoard().getActiveModifiers()) {
-                if (m.getType() == selected) {
-                    justAdded = m;
-                }
-            }
-            if (justAdded != null) {
-                final Modifier toSend = justAdded;
+            if (appliedModifier != null) {
+                final Modifier toSend = appliedModifier;
                 new Thread(() -> network.sendModifier(toSend)).start();
             }
         }

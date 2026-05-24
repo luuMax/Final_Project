@@ -384,13 +384,17 @@ public class Game
         else if (modifier.getType() == Modifier.Type.FILE_SWAP) {
             Random rand = new Random();
             Piece tempPiece;
-            int file1 = rand.nextInt(8);
-            int file2;
+            int file1 = modifier.getAffectedRow();
+            int file2 = modifier.getAffectedCol();
 
-            // makes sure file2 isn't the same as file1
-            do {
-                file2 = rand.nextInt(8);
-            } while(file2 == file1);
+            if (file1 < 0 || file1 > 7 || file2 < 0 || file2 > 7 || file1 == file2) {
+                file1 = rand.nextInt(8);
+
+                // makes sure file2 isn't the same as file1
+                do {
+                    file2 = rand.nextInt(8);
+                } while(file2 == file1);
+            }
 
             // goes down the file row by row and swaps pieces
             for (int row = 0; row < board.getBoard().length; row++) {
@@ -564,8 +568,9 @@ public class Game
      *            The choice is the index of options that was selected by the
      *            player
      */
-    public void handleModifierChoice(Modifier.Type[] options, int choice)
+    public Modifier handleModifierChoice(Modifier.Type[] options, int choice)
     {
+        Modifier modifier;
         if (options[choice] == Modifier.Type.EXPLODING_PIECE)
         {
             
@@ -574,7 +579,7 @@ public class Game
             System.out.println(
                 "The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8)
                     + " is about to explode mi bomboclat in 5 turns");
-            addModifier(new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight));
+            modifier = new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight);
         }
         else if (options[choice] == Modifier.Type.SNIPER_BISHOP)
         {
@@ -583,15 +588,30 @@ public class Game
             System.out.println(
                 "The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8)
                     + " is una esniper for 5 turns");
-            addModifier(new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop));
+            modifier = new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop);
         }
         else if (options[choice] == Modifier.Type.BRICK) {
             setModifierOfferedThisCycle(true);
+            return new Modifier(0, Modifier.Type.BRICK);
+        }
+        else if (options[choice] == Modifier.Type.FILE_SWAP) {
+            Random rand = new Random();
+            int file1 = rand.nextInt(8);
+            int file2;
+
+            do {
+                file2 = rand.nextInt(8);
+            } while (file2 == file1);
+
+            modifier = new Modifier(0, Modifier.Type.FILE_SWAP, file1, file2);
         }
         else
         {
-            addModifier(new Modifier(5, options[choice]));
+            modifier = new Modifier(5, options[choice]);
         }
+
+        addModifier(modifier);
+        return modifier;
     }
 
     public void setModifierOfferedThisCycle(boolean state) {

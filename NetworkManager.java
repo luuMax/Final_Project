@@ -104,6 +104,20 @@ public class NetworkManager
                 + m.getAffectedRow() + "," + m.getAffectedCol());
     }
 
+
+    public void sendModifierData(
+        Modifier.Type type,
+        int turnsRemaining,
+        int pieceRow,
+        int pieceCol,
+        int affectedRow,
+        int affectedCol)
+    {
+        out.println(
+            type.name() + "," + turnsRemaining + "," + pieceRow + "," + pieceCol + ","
+                + affectedRow + "," + affectedCol);
+    }
+
     // Returns a ModifierData record — raw data only, no Piece object
     // GameRunner resolves the piece from the board using pieceRow/pieceCol
     public ModifierData receiveModifier()
