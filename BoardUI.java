@@ -72,12 +72,14 @@ public class BoardUI extends JFrame {
     JScrollPane scrollPane = new JScrollPane(textBody);
 
     // 4-param constructor for local play — delegates to full constructor //
-    public BoardUI(int windowW, int windowL, int tileS, Game game) {
+    public BoardUI(int windowW, int windowL, int tileS, Game game)
+    {
         this(windowW, windowL, tileS, game, null, null);
     }
 
     // 6-param constructor for networked play //
-    public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol) {
+    public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol)
+    {
         windowWidth = windowW;
         windowLength = windowL;
         tileSize = tileS;
@@ -88,9 +90,11 @@ public class BoardUI extends JFrame {
         initialize();
     }
 
-    public JLabel getImage(Piece piece) {
+    public JLabel getImage(Piece piece)
+    {
         ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
-        if (image.getImage() == null) {
+        if (image.getImage() == null)
+        {
             System.out.println("Image not found: " + piece.toString());
             return null;
         }
@@ -98,7 +102,8 @@ public class BoardUI extends JFrame {
         return new JLabel(new ImageIcon(scaled));
     }
 
-    public void initialize() {
+    public void initialize()
+    {
         setTitle("The Game");
         getContentPane().setBackground(BACKGROUND);
         setSize(windowLength, windowWidth);
@@ -108,13 +113,15 @@ public class BoardUI extends JFrame {
         setLayout(new BorderLayout());
         gamePanel.setBackground(BACKGROUND);
 
-        /////////
+        ///////////
         // Board //
-        /////////
+        ///////////
         board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
                 JPanel square = makeTile(i, j);
                 panelBoard[i][j] = square;
                 board.add(square);
@@ -123,9 +130,9 @@ public class BoardUI extends JFrame {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        /////////////////////////
+        ///////////////////////////
         // Adding board to frame //
-        /////////////////////////
+        ///////////////////////////
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 1;
@@ -146,9 +153,9 @@ public class BoardUI extends JFrame {
         JPanel fillerTile4 = new JPanel();
         fillerTile4.setBackground(BACKGROUND);
 
-        //////////////////
+        ////////////////////
         // Forfeit Button //
-        //////////////////
+        ////////////////////
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
@@ -167,22 +174,22 @@ public class BoardUI extends JFrame {
         forfeitButton.setContentAreaFilled(true);
         forfeitButton.setBorderPainted(true);
         forfeitButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
-        forfeitButton.addMouseListener(new MouseAdapter() {
+        forfeitButton.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 game.setWinner(game.getCurrentTurn() == Color.WHITE ? Color.BLACK : Color.WHITE);
                 endGameForfeit();
             }
         });
-        // buttonHolder.add(forfeitButton);
-        // backPanel.add(buttonHolder, BorderLayout.CENTER);
 
         JPanel backPanel2 = new JPanel(new BorderLayout());
         backPanel2.setBackground(BACKGROUND);
 
-        ///////////////
+        /////////////////
         // Draw Button //
-        ///////////////
+        /////////////////
         ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
         scaled = drawImage.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
@@ -198,28 +205,32 @@ public class BoardUI extends JFrame {
         drawButton.setContentAreaFilled(true);
         drawButton.setBorderPainted(true);
         drawButton.setBorder(BorderFactory.createLineBorder(OUTLINE, 4));
-        drawButton.addMouseListener(new MouseAdapter() {
+        drawButton.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mousePressed(MouseEvent e) {
-                if (localColor != null && game.getCurrentTurn() != localColor) {
+            public void mousePressed(MouseEvent e)
+            {
+                if (localColor != null && game.getCurrentTurn() != localColor)
+                {
                     return;
-                } else {
-                    if (drawRequested == true) {
+                }
+                else
+                {
+                    if (drawRequested == true)
+                    {
                         endGame();
                     }
                     decider = game.getCurrentTurn();
                     drawRequested = true;
 
-                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. "
-                            + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White")
-                            + " must click draw to accept");
+                    addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has offered to draw. " + (game.getCurrentTurn() == Color.WHITE ? "Black" : "White") + " must click draw to accept");
                 }
             }
         });
 
-        ////////////
+        //////////////
         // Game log //
-        ////////////
+        //////////////
         textBody = new JTextArea();
         textBody.setEditable(false);
         textBody.setLineWrap(true);
@@ -235,9 +246,9 @@ public class BoardUI extends JFrame {
         scrollPane.setBorder(BorderFactory.createLineBorder(BACKGROUND, 10));
         scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
 
-        //////////////////////////
+        ////////////////////////////
         // Active Modifiers Panel //
-        //////////////////////////
+        ////////////////////////////
         modifierPanel = new JPanel(new BorderLayout());
         modifierPanel.setBackground(BACKGROUND);
         modifierPanel.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
@@ -263,11 +274,10 @@ public class BoardUI extends JFrame {
         modifierPanel.add(activeModsTitle, BorderLayout.NORTH);
         modifierPanel.add(activeModifiersText, BorderLayout.CENTER);
 
-        ////////////////////////////////////////////
+        //////////////////////////////////////////////
         // Right side panels(theres a lot going on) //
-        ////////////////////////////////////////////
-        GridBagConstraints bc = new GridBagConstraints(); // made a different Gridbagcontraints object cause i keep
-                                                          // screwing the other stuff up :(
+        //////////////////////////////////////////////
+        GridBagConstraints bc = new GridBagConstraints(); // made a different Gridbagcontraints object cause i keep screwing the other stuff up :(
         bc.insets = new Insets(4, 5, 4, 5);
         bc.weighty = 1;
         bc.weightx = 1;
@@ -320,9 +330,9 @@ public class BoardUI extends JFrame {
 
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
-        ///////////////////
+        /////////////////////
         // Everything else //
-        ///////////////////
+        /////////////////////
         c.gridwidth = 1;
         c.gridheight = 1;
         c.weightx = 1;
@@ -370,14 +380,16 @@ public class BoardUI extends JFrame {
 
         cardLayout.show(mainPanel, "Game");
 
-        ////////////////////////
+        /////////////////////////
         // Creating end screen //
-        ////////////////////////
+        /////////////////////////
         endPanel.setBackground(new Color(36, 34, 32));
         JButton backButton1 = MainMenuUI.makeButton("Return to main menu", 20, 500, 60, new Color(214, 214, 213));
-        backButton1.addMouseListener(new MouseAdapter() {
+        backButton1.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 new MainMenuUI(800, 800);
                 dispose();
             }
@@ -391,7 +403,8 @@ public class BoardUI extends JFrame {
         setVisible(true);
     }
 
-    private JPanel makeTile(int i, int j) {
+    private JPanel makeTile(int i, int j)
+    {
         JPanel square = new JPanel(new BorderLayout());
         square.setBackground(tileColor(i, j));
         square.setPreferredSize(new Dimension(tileSize, tileSize));
@@ -399,12 +412,13 @@ public class BoardUI extends JFrame {
         int[] p1 = game.getPortal1();
         int[] p2 = game.getPortal2();
         boolean showActivePortals = game.arePortalsActive();
-        boolean isPortalSquare = ((portal1Placed || showActivePortals) && i == p1[0] && j == p1[1]) ||
-                ((portal2Placed || showActivePortals) && i == p2[0] && j == p2[1]);
+        boolean isPortalSquare = ((portal1Placed || showActivePortals) && i == p1[0] && j == p1[1]) || ((portal2Placed || showActivePortals) && i == p2[0] && j == p2[1]);
 
         boolean isSanctuarySquare = false;
-        for (Modifier m : boardgrid.getActiveModifiers()) {
-            if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i && m.getAffectedCol() == j) {
+        for (Modifier m : boardgrid.getActiveModifiers())
+        {
+            if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i && m.getAffectedCol() == j)
+            {
                 isSanctuarySquare = true;
                 break;
             }
@@ -413,16 +427,24 @@ public class BoardUI extends JFrame {
         Piece piece = boardgrid.getPieceAt(i, j);
 
         String modPath = null;
-        if (piece != null) {
-            for (Modifier mod : boardgrid.getActiveModifiers()) {
-                if (mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece)) {
-                    if ((mod.getType().toString()).equals("Mi Bomboclart")) {
+        if (piece != null)
+        {
+            for (Modifier mod : boardgrid.getActiveModifiers())
+            {
+                if (mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece))
+                {
+                    if ((mod.getType().toString()).equals("Mi Bomboclart"))
+                    {
                         modPath = "./PieceSprites/bombo.png";
                         break;
-                    } else if ((mod.getType().toString()).equals("Sniper Bishop")) {
+                    }
+                    else if ((mod.getType().toString()).equals("Sniper Bishop"))
+                    {
                         modPath = "./PieceSprites/aguabishop.png";
                         break;
-                    } else if ((mod.getType().toString()).equals("[Title Card] Pawns")) {
+                    }
+                    else if ((mod.getType().toString()).equals("[Title Card] Pawns"))
+                    {
                         modPath = "./PieceSprites/invincible_pawn.png";
                         break;
                     }
@@ -430,7 +452,8 @@ public class BoardUI extends JFrame {
             }
         }
 
-        if (isPortalSquare || isSanctuarySquare) {
+        if (isPortalSquare || isSanctuarySquare)
+        {
             JLayeredPane layered = new JLayeredPane();
             layered.setPreferredSize(new Dimension(tileSize, tileSize));
 
@@ -441,7 +464,8 @@ public class BoardUI extends JFrame {
             bgLabel.setBounds(0, 0, tileSize, tileSize);
             layered.add(bgLabel, JLayeredPane.DEFAULT_LAYER);
 
-            if (piece != null) {
+            if (piece != null)
+            {
                 JPanel sprite = makeModifiedPieceSprite(piece, modPath);
                 sprite.setOpaque(false);
                 sprite.setBounds(0, 0, tileSize, tileSize);
@@ -449,14 +473,18 @@ public class BoardUI extends JFrame {
             }
 
             square.add(layered, BorderLayout.CENTER);
-        } else if (piece != null) {
+        }
+        else if (piece != null)
+        {
             JPanel sprite = makeModifiedPieceSprite(piece, modPath);
             square.add(sprite, BorderLayout.CENTER);
         }
 
-        square.addMouseListener(new MouseAdapter() {
+        square.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(MouseEvent e)
+            {
                 handleTileClick(i, j);
             }
         });
@@ -464,56 +492,58 @@ public class BoardUI extends JFrame {
         return square;
     }
 
-    private void handleTileClick(int i, int j) {
-        if (choosingModifier) return;
-        if (localColor != null && game.getCurrentTurn() != localColor) {
+    private void handleTileClick(int i, int j) 
+    {
+        if (choosingModifier)
+            return;
+        if (localColor != null && game.getCurrentTurn() != localColor)
+        {
             return;
         }
-        if (placingSanctuary) {
+        if (placingSanctuary)
+        {
             Piece target = boardgrid.getPieceAt(i, j);
             if (target != null && target.getColor() != game.getCurrentTurn())
                 return;
             game.addModifier(new Modifier(5, Modifier.Type.SANCTUARY, i, j));
-            if (network != null) {
+            if (network != null)
+            {
                 // sanctuary modifier was just added — send it immediately
                 Modifier sanctuaryMod = null;
-                for (Modifier m : game.getBoard().getActiveModifiers()) {
-                    if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i
-                            && m.getAffectedCol() == j) {
+                for (Modifier m : game.getBoard().getActiveModifiers())
+                {
+                    if (m.getType() == Modifier.Type.SANCTUARY && m.getAffectedRow() == i && m.getAffectedCol() == j)
+                    {
                         sanctuaryMod = m;
                         break;
                     }
                 }
-                if (sanctuaryMod != null) {
+                if (sanctuaryMod != null)
+                {
                     final Modifier toSend = sanctuaryMod;
                     new Thread(() -> network.sendModifier(toSend)).start();
                 }
             }
             placingSanctuary = false;
-            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black")
-                    + " has chosen the sanctuary placement at " + chessNotation[i][j]);
+            addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the sanctuary placement at " + chessNotation[i][j]);
             updateActiveModifiersPanel();
             redrawBoard();
             game.switchTurn();
             return;
         }
 
-        if (placingWall) {
+        if (placingWall)
+        {
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null && game.getPortal1()[0] != i && game.getPortal1()[1] != j && game.getPortal2()[0] != i
-                    && game.getPortal2()[1] != i) {
+            if (target != null && game.getPortal1()[0] != i && game.getPortal1()[1] != j && game.getPortal2()[0] != i && game.getPortal2()[1] != i)
+            {
                 return; // can't place on an occupied square
             }
             boardgrid.setPieceAt(new Brick(Color.GRAY, i, j), i, j);
             game.setModifierOfferedThisCycle(true);
-            if (network != null) {
-                new Thread(() -> network.sendModifierData(
-                        Modifier.Type.BRICK,
-                        0,
-                        -1,
-                        -1,
-                        i,
-                        j)).start();
+            if (network != null)
+            {
+                new Thread(() -> network.sendModifierData(Modifier.Type.BRICK, 0, -1, -1, i, j)).start();
             }
             placingWall = false;
             updateActiveModifiersPanel();
@@ -522,10 +552,12 @@ public class BoardUI extends JFrame {
             return;
         }
 
-        if (placingPortal1) {
+        if (placingPortal1)
+        {
             System.out.println("Place portal 1");
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null) {
+            if (target != null)
+            {
                 System.out.println("You cannot place a portal on an occupied square");
                 return; // can't place on an occupied square
             }
@@ -538,26 +570,23 @@ public class BoardUI extends JFrame {
             return;
         }
 
-        if (placingPortal2) {
+        if (placingPortal2)
+        {
             System.out.println("Place portal 2");
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null) {
+            if (target != null)
+            {
                 System.out.println("You cannot place a portal on an occupied square");
                 return; // can't place on an occupied square
             }
             game.setPortal2Pos(i, j);
             game.setPortalsActive(true);
             game.setModifierOfferedThisCycle(true);
-            if (network != null) {
+            if (network != null)
+            {
                 int[] portal1 = game.getPortal1();
                 int[] portal2 = game.getPortal2();
-                new Thread(() -> network.sendModifierData(
-                        Modifier.Type.PORTAL,
-                        0,
-                        portal1[0],
-                        portal1[1],
-                        portal2[0],
-                        portal2[1])).start();
+                new Thread(() -> network.sendModifierData(Modifier.Type.PORTAL, 0, portal1[0], portal1[1], portal2[0], portal2[1])).start();
             }
             placingPortal2 = false;
             portal2Placed = true;
@@ -568,21 +597,18 @@ public class BoardUI extends JFrame {
             return;
         }
 
-        if (placingResurrection) {
+        if (placingResurrection)
+        {
             Piece target = boardgrid.getPieceAt(i, j);
-            if (target != null) {
+            if (target != null)
+            {
                 return; // can't place on an occupied square
             }
             game.getBoard().setPieceAt(game.getCapturedPieces(game.getCurrentTurn()).pop(), i, j);
             game.setModifierOfferedThisCycle(true);
-            if (network != null) {
-                new Thread(() -> network.sendModifierData(
-                        Modifier.Type.RESURRECTION,
-                        0,
-                        -1,
-                        -1,
-                        i,
-                        j)).start();
+            if (network != null)
+            {
+                new Thread(() -> network.sendModifierData(Modifier.Type.RESURRECTION, 0, -1, -1, i, j)).start();
             }
             redrawBoard();
             game.switchTurn();
@@ -591,7 +617,8 @@ public class BoardUI extends JFrame {
             return;
         }
 
-        if (pieceSelected == false) {
+        if (pieceSelected == false)
+        {
             Piece piece = boardgrid.getPieceAt(i, j);
             if (piece == null || piece.getColor() != game.getCurrentTurn())
                 return;
@@ -600,38 +627,41 @@ public class BoardUI extends JFrame {
             selectedCol = j;
             pieceSelected = true;
             highLightTile(panelBoard[i][j], HIGHLIGHT);
-        } else {
-            highLightTile(
-                    panelBoard[selectedRow][selectedCol],
-                    tileColor(selectedRow, selectedCol));
+        }
+        else 
+        {
+            highLightTile(panelBoard[selectedRow][selectedCol], tileColor(selectedRow, selectedCol)); 
             pieceSelected = false;
 
-            if (selectedRow != i || selectedCol != j) {
+            if (selectedRow != i || selectedCol != j)
+            {
                 Color current = game.getCurrentTurn();
                 Piece piece = game.getBoard().getPieceAt(selectedRow, selectedCol);
                 boolean moved = game.makeMove(selectedRow, selectedCol, i, j);
-                if (moved) {
-                    addChatMessage((current == Color.WHITE ? "White" : "Black") + " has moved "
-                            + piece.toString().split("_")[0] + " to " + chessNotation[i][j]);
+                if (moved)
+                {
+                    addChatMessage((current == Color.WHITE ? "White" : "Black") + " has moved " + piece.toString().split("_")[0] + " to " + chessNotation[i][j]);
 
-                    if (network != null) {
+                    if (network != null)
+                    {
                         network.sendMove(selectedRow, selectedCol, i, j);
                     }
 
-                    System.out.println("Move made. currentTurn=" + game.getCurrentTurn()
-                            + " moveCount=" + game.getMoveCount()
-                            + " shouldOffer=" + game.shouldOfferModifier());
+                    System.out.println("Move made. currentTurn=" + game.getCurrentTurn() + " moveCount=" + game.getMoveCount() + " shouldOffer=" + game.shouldOfferModifier());
 
-                    if (game.shouldOfferModifier()) {
+                    if (game.shouldOfferModifier())
+                    {
                         Modifier.Type[] options = game.offeredModifiers();
-                        if (network != null) {
+                        if (network != null)
+                        {
                             network.sendModifierOptions(options);
                         }
                         showMods(options);
                     }
 
                     // Only switch turns if no placement interaction is pending
-                    if (!isPlacementModifierActive() && !choosingModifier) {
+                    if (!isPlacementModifierActive() && !choosingModifier)
+                    {
                         game.switchTurn();
                     }
 
@@ -639,14 +669,15 @@ public class BoardUI extends JFrame {
 
                     redrawBoard();
 
-                    if (game.isGameOver()) {
+                    if (game.isGameOver())
+                    {
                         endGame();
                     }
 
-                    if (drawRequested && current == decider) {
+                    if (drawRequested && current == decider)
+                    {
                         drawRequested = false;
-                        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black")
-                                + " declined draw offer by moving");
+                        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " declined draw offer by moving");
                     }
                 }
             }
@@ -655,14 +686,18 @@ public class BoardUI extends JFrame {
 
     }
 
-    public void endGame() {
+    public void endGame()
+    {
         Color winner = game.winner();
         String result;
-        if (winner == null) {
+        if (winner == null)
+        {
             result = "The game ended in draw.";
         } else if (winner == Color.WHITE) {
             result = "White won by checkmate.";
-        } else {
+        }
+        else
+        {
             result = "Black won by checkmate.";
         }
         JLabel outcome = new JLabel(result);
@@ -680,12 +715,16 @@ public class BoardUI extends JFrame {
         endPanel.repaint();
     }
 
-    public void endGameForfeit() {
+    public void endGameForfeit()
+    {
         Color winner = game.winner();
         String result;
-        if (winner == Color.WHITE) {
+        if (winner == Color.WHITE)
+        {
             result = "White Wins due to Resignation.";
-        } else {
+        } 
+        else 
+        {
             result = "Black Wins due to Resignation.";
         }
         JLabel outcome = new JLabel(result);
@@ -703,22 +742,26 @@ public class BoardUI extends JFrame {
         endPanel.repaint();
     }
 
-    private void highLightTile(JPanel panel, Color highLightColor) {
+    private void highLightTile(JPanel panel, Color highLightColor)
+    {
         panel.setBackground(highLightColor);
     }
 
     // ------------------SHOW MODS METHOD -----------///
 
-    public void showMods(Modifier.Type[] options) {
+    public void showMods(Modifier.Type[] options)
+    {
         redrawBoard();
         choosingModifier = true;
         String[] optionStrings = new String[options.length];
-        for (int neel = 0; neel < options.length; neel++) {
+        for (int neel = 0; neel < options.length; neel++)
+        {
             optionStrings[neel] = (neel + 1) + ". " + options[neel];
         }
 
         String chosen = null;
-        while (chosen == null) {
+        while (chosen == null)
+        {
             chosen = (String) JOptionPane.showInputDialog(
                     this,
                     "Choose a modifier:",
@@ -728,12 +771,12 @@ public class BoardUI extends JFrame {
                     optionStrings,
                     optionStrings[0]);
         }
-        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the "
-                + chosen.substring(3) + " modifier");
+        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the " + chosen.substring(3) + " modifier");
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
         Modifier.Type selected = options[choice];
 
-        if (selected == Modifier.Type.SANCTUARY) {
+        if (selected == Modifier.Type.SANCTUARY)
+        {
             placingSanctuary = true;
             game.handleModifierChoice(options, choice);
             redrawBoard();
@@ -742,18 +785,21 @@ public class BoardUI extends JFrame {
             return;
         }
 
-        if (selected == Modifier.Type.RESURRECTION && !game.getCapturedPieces(game.getCurrentTurn()).isEmpty()) {
+        if (selected == Modifier.Type.RESURRECTION && !game.getCapturedPieces(game.getCurrentTurn()).isEmpty())
+        {
             choosingModifier = false;
             placingResurrection = true;
         }
 
-        if (selected == Modifier.Type.BRICK) {
+        if (selected == Modifier.Type.BRICK)
+        {
             choosingModifier = false;
             placingWall = true;
             return;
         }
 
-        if (selected == Modifier.Type.PORTAL) {
+        if (selected == Modifier.Type.PORTAL)
+        {
             choosingModifier = false;
             placingPortal1 = true;
             game.setModifierOfferedThisCycle(true);
@@ -764,8 +810,10 @@ public class BoardUI extends JFrame {
         Modifier appliedModifier = game.handleModifierChoice(options, choice);
         redrawBoard();
 
-        if (network != null) {
-            if (appliedModifier != null) {
+        if (network != null)
+        {
+            if (appliedModifier != null)
+            {
                 final Modifier toSend = appliedModifier;
                 new Thread(() -> network.sendModifier(toSend)).start();
             }
@@ -774,7 +822,8 @@ public class BoardUI extends JFrame {
         choosingModifier = false;
     }
 
-    private boolean isPlacementModifierActive() {
+    private boolean isPlacementModifierActive()
+    {
         return placingSanctuary
             || placingWall
             || placingPortal1
@@ -782,7 +831,8 @@ public class BoardUI extends JFrame {
             || placingResurrection;
     }
 
-    private Color tileColor(int i, int j) {
+    private Color tileColor(int i, int j)
+    {
         return ((i + j) % 2 == 0) ? VERY_LIGHT_BROWN : DARK_BROWN;
     }
 
@@ -816,7 +866,8 @@ public class BoardUI extends JFrame {
                                                                       // at the end of all msgs
     }
 
-    private JPanel makeModifiedPieceSprite(Piece piece, String modPath) {
+    private JPanel makeModifiedPieceSprite(Piece piece, String modPath)
+    {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(tileSize, tileSize));
         ImageIcon image1 = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
@@ -828,7 +879,8 @@ public class BoardUI extends JFrame {
         layeredPane.add(pieceSprite, JLayeredPane.DEFAULT_LAYER);
 
         JLabel modifierLabel = new JLabel();
-        if (modPath != null) {
+        if (modPath != null)
+        {
             ImageIcon image2 = new ImageIcon(modPath);
 
             Image scaled2 = image2.getImage().getScaledInstance(tileSize / 3, tileSize / 3, Image.SCALE_SMOOTH);
@@ -845,19 +897,21 @@ public class BoardUI extends JFrame {
         return sprite;
     }
 
-    private void updateActiveModifiersPanel() {
+    private void updateActiveModifiersPanel()
+    {
         ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
 
-        if (modifiers.isEmpty()) {
+        if (modifiers.isEmpty())
+        {
             activeModifiersText.setText("None");
             return;
         }
 
         String text = "";
 
-        for (Modifier mod : modifiers) {
+        for (Modifier mod : modifiers)
+        {
             text += "- " + mod.getType();
-
             if (mod.getAffectedPiece() != null) {
                 text += " on " + mod.getAffectedPiece();
             }
