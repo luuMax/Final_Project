@@ -118,6 +118,14 @@ public class NetworkManager
                 + affectedRow + "," + affectedCol);
     }
 
+
+    public void sendResurrectionData(Piece piece, int row, int col)
+    {
+        out.println(
+            Modifier.Type.RESURRECTION.name() + ",0,-1,-1," + row + "," + col + ","
+                + piece.getType().name() + "," + piece.getSide().name());
+    }
+
     // Returns a ModifierData record — raw data only, no Piece object
     // GameRunner resolves the piece from the board using pieceRow/pieceCol
     public ModifierData receiveModifier()
@@ -134,15 +142,19 @@ public class NetworkManager
             int pieceCol = Integer.parseInt(p[3]);
             int affectedRow = Integer.parseInt(p[4]);
             int affectedCol = Integer.parseInt(p[5]);
+            Piece.Type revivedPieceType = p.length > 6 ? Piece.Type.valueOf(p[6]) : null;
+            Piece.Side revivedPieceSide = p.length > 7 ? Piece.Side.valueOf(p[7]) : null;
             return new ModifierData(
                 type,
                 turnsRemaining,
                 pieceRow,
                 pieceCol,
                 affectedRow,
-                affectedCol);
+                affectedCol,
+                revivedPieceType,
+                revivedPieceSide);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             return null;
         }
@@ -173,6 +185,8 @@ public class NetworkManager
         public final int           pieceCol;
         public final int           affectedRow;
         public final int           affectedCol;
+        public final Piece.Type    revivedPieceType;
+        public final Piece.Side    revivedPieceSide;
 
         public ModifierData(
             Modifier.Type type,
@@ -182,12 +196,27 @@ public class NetworkManager
             int affectedRow,
             int affectedCol)
         {
+            this(type, turnsRemaining, pieceRow, pieceCol, affectedRow, affectedCol, null, null);
+        }
+
+        public ModifierData(
+            Modifier.Type type,
+            int turnsRemaining,
+            int pieceRow,
+            int pieceCol,
+            int affectedRow,
+            int affectedCol,
+            Piece.Type revivedPieceType,
+            Piece.Side revivedPieceSide)
+        {
             this.type = type;
             this.turnsRemaining = turnsRemaining;
             this.pieceRow = pieceRow;
             this.pieceCol = pieceCol;
             this.affectedRow = affectedRow;
             this.affectedCol = affectedCol;
+            this.revivedPieceType = revivedPieceType;
+            this.revivedPieceSide = revivedPieceSide;
         }
     }
 }

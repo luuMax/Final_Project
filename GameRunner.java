@@ -117,7 +117,18 @@ public class GameRunner
 
         if (data.type == Modifier.Type.RESURRECTION)
         {
-            if (!game.getCapturedPieces(game.getCurrentTurn()).isEmpty())
+            Piece revivedPiece =
+                createPiece(data.revivedPieceType, data.revivedPieceSide, data.affectedRow, data.affectedCol);
+
+            if (revivedPiece != null)
+            {
+                removeFromCapturedPieces(revivedPiece);
+                game.getBoard().setPieceAt(
+                    revivedPiece,
+                    data.affectedRow,
+                    data.affectedCol);
+            }
+            else if (!game.getCapturedPieces(game.getCurrentTurn()).isEmpty())
             {
                 game.getBoard().setPieceAt(
                     game.getCapturedPieces(game.getCurrentTurn()).pop(),
@@ -152,5 +163,51 @@ public class GameRunner
         }
 
         game.addModifier(m);
+    }
+
+
+    private Piece createPiece(Piece.Type type, Piece.Side side, int row, int col)
+    {
+        if (type == null || side == null)
+        {
+            return null;
+        }
+
+        Color color = side == Piece.Side.WHITE ? Color.WHITE : Color.BLACK;
+
+        switch (type)
+        {
+            case PAWN:
+                return new Pawn(color, row, col);
+            case ROOK:
+                return new Rook(color, row, col);
+            case KNIGHT:
+                return new Knight(color, row, col);
+            case BISHOP:
+                return new Bishop(color, row, col);
+            case QUEEN:
+                return new Queen(color, row, col);
+            case KING:
+                return new King(color, row, col);
+            default:
+                return null;
+        }
+    }
+
+
+    private void removeFromCapturedPieces(Piece piece)
+    {
+        java.util.Stack<Piece> capturedPieces = game.getCapturedPieces(piece.getColor());
+
+        for (int i = capturedPieces.size() - 1; i >= 0; i--)
+        {
+            Piece capturedPiece = capturedPieces.get(i);
+            if (capturedPiece.getType() == piece.getType()
+                && capturedPiece.getSide() == piece.getSide())
+            {
+                capturedPieces.remove(i);
+                return;
+            }
+        }
     }
 }
