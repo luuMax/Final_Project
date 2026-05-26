@@ -740,6 +740,8 @@ public class BoardUI extends JFrame {
         if (selected == Modifier.Type.RESURRECTION && !game.getCapturedPieces(game.getCurrentTurn()).isEmpty()) {
             choosingModifier = false;
             placingResurrection = true;
+            game.setModifierOfferedThisCycle(true);
+            return;
         }
 
         if (selected == Modifier.Type.BRICK) {
