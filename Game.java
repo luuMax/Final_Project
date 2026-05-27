@@ -309,15 +309,15 @@ public class Game
         switch (type)
         {
             case PAWNS_ONLY:
-                return !hasPieceOfType(Pawn.class) 
-                    || !hasPieceOfTypeForColor(Pawn.class, getOpponentColor());
+                return !bothPlayersHavePieceOfType(Pawn.class);
             case INVINCIBLE_PAWNS:
+                return !hasPieceOfTypeForColor(Pawn.class, currentTurn);
             case BACK_IT_UP:
-                return !hasPieceOfType(Pawn.class);
+                return !hasAnyPawnThatCanBackUp();
             case EXPLODING_PIECE:
-                return !hasPieceOfType(Knight.class);
+                return !hasPieceOfTypeForColor(Knight.class, currentTurn);
             case SNIPER_BISHOP:
-                return !hasPieceOfType(Bishop.class);
+                return !hasPieceOfTypeForColor(Bishop.class, currentTurn);
             case FILE_SWAP:
                 return false; // always available
             case RESURRECTION:
@@ -518,8 +518,17 @@ public class Game
             boolean shouldRemove = false;
             switch (m.getType()) {
                 case PAWNS_ONLY:
-                    shouldRemove = !hasPieceOfType(Pawn.class) 
-                        || !hasPieceOfTypeForColor(Pawn.class, getOpponentColor());
+                    shouldRemove = !bothPlayersHavePieceOfType(Pawn.class);
+                    break;
+                case INVINCIBLE_PAWNS:
+                    shouldRemove = !hasAnyPieceOfType(Pawn.class);
+                    break;
+                case EXPLODING_PIECE:
+                case SNIPER_BISHOP:
+                    shouldRemove = m.getAffectedPiece() == null
+                        || board.getPieceAt(
+                            m.getAffectedPiece().getRow(),
+                            m.getAffectedPiece().getCol()) != m.getAffectedPiece();
                     break;
                 // add more cases as needed
                 default:
@@ -697,14 +706,46 @@ public class Game
      */
     private boolean hasPieceOfType(Class<?> pieceClass)
     {
+        return hasPieceOfTypeForColor(pieceClass, currentTurn);
+    }
+
+    private boolean hasAnyPieceOfType(Class<?> pieceClass)
+    {
         for (int r = 0; r < 8; r++)
         {
             for (int c = 0; c < 8; c++)
             {
                 Piece p = board.getPieceAt(r, c);
-                if (p != null && p.getColor() == currentTurn && pieceClass.isInstance(p))
+                if (p != null && pieceClass.isInstance(p))
                 {
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean bothPlayersHavePieceOfType(Class<?> pieceClass)
+    {
+        return hasPieceOfTypeForColor(pieceClass, Color.WHITE)
+            && hasPieceOfTypeForColor(pieceClass, Color.BLACK);
+    }
+
+    private boolean hasAnyPawnThatCanBackUp()
+    {
+        for (int row = 0; row < 8; row++)
+        {
+            for (int col = 0; col < 8; col++)
+            {
+                Piece piece = board.getPieceAt(row, col);
+                if (piece instanceof Pawn)
+                {
+                    int targetRow = piece.getColor() == Color.WHITE ? row + 1 : row - 1;
+                    if (targetRow >= 0 && targetRow < 8
+                        && board.getPieceAt(targetRow, col) == null)
+                    {
+                        return true;
+                    }
                 }
             }
         }
