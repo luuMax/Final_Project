@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import java.net.URL;
 
 /* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
@@ -476,6 +477,7 @@ public class BoardUI extends JFrame {
     }
 
     private void handleTileClick(int i, int j) {
+
         if (choosingModifier) return;
         if (localColor != null && game.getCurrentTurn() != localColor) {
             return;
@@ -644,8 +646,6 @@ public class BoardUI extends JFrame {
 
                     System.out.println("After switchTurn. currentTurn=" + game.getCurrentTurn());
 
-                    redrawBoard();
-
                     if (game.isGameOver()) {
                         endGame();
                     }
@@ -658,6 +658,12 @@ public class BoardUI extends JFrame {
                 }
             }
             redrawBoard();
+            ArrayList<int[]> explosions = game.kaboomKnight();
+            System.out.println("Explosions found: " + explosions.size());
+            for (int[] explosion : explosions)
+            {
+                playBomboExplosion(explosion[0], explosion[1]);
+            }
             
         }
         updateActiveModifiersPanel();
@@ -898,6 +904,51 @@ public class BoardUI extends JFrame {
 
             panelBoard[r][c].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         }
+    }
 
+    public void playBomboExplosion(int row, int col)
+    {
+        System.out.println("Playing explosion at " + row + ", " + col);
+        JLayeredPane kaboom = new JLayeredPane();
+        kaboom.setPreferredSize(new Dimension(tileSize, tileSize));
+
+        JPanel tile = panelBoard[row][col];
+
+        ImageIcon icon = new ImageIcon("./PieceSprites/explosion.gif");
+
+        JLabel gifLabel = new JLabel(icon);
+        gifLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gifLabel.setVerticalAlignment(SwingConstants.CENTER);
+        
+
+        
+
+        tile.removeAll();
+        tile.setLayout(new BorderLayout());
+        tile.add(gifLabel, BorderLayout.CENTER);
+
+        tile.revalidate();
+        tile.repaint();
+
+        Timer timer = new Timer(6000, e -> {
+            ((Timer)e.getSource()).stop();
+            Piece[][] boardArr = boardgrid.getBoard();
+
+            for (int x = row - 1; x <= row + 1; x++)
+            {
+                for (int y = col - 1; y <= col + 1; y++)
+                {
+                    if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                    {
+                        boardArr[x][y] = null;
+                    }
+                }
+            }
+
+            redrawBoard();
+        });
+
+        timer.setRepeats(false);
+        timer.start();
     }
 }
