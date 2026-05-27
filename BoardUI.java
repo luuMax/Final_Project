@@ -728,7 +728,6 @@ public class BoardUI extends JFrame {
 
         if (selected == Modifier.Type.SANCTUARY) {
             placingSanctuary = true;
-            game.handleModifierChoice(options, choice);
             redrawBoard();
             choosingModifier = false;
             
