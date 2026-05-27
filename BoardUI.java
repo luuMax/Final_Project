@@ -723,8 +723,6 @@ public class BoardUI extends JFrame {
                     optionStrings,
                     optionStrings[0]);
         }
-        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the "
-                + chosen.substring(3) + " modifier");
         int choice = Integer.parseInt(chosen.substring(0, 1)) - 1;
         Modifier.Type selected = options[choice];
 
@@ -768,6 +766,7 @@ public class BoardUI extends JFrame {
             }
         }
         updateActiveModifiersPanel();
+        addChatMessage((game.getCurrentTurn() == Color.WHITE ? "White" : "Black") + " has chosen the " + selected + " modifier");
         choosingModifier = false;
     }
 
