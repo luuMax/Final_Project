@@ -5,6 +5,7 @@ import javax.swing.border.Border;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.awt.*;
 
 public class BoardUI extends JFrame {
@@ -71,6 +72,9 @@ public class BoardUI extends JFrame {
     JTextArea textBody = new JTextArea("Game started.\n");
     JScrollPane scrollPane = new JScrollPane(textBody);
 
+    // Reduces a significant amount of lag
+    private HashMap<String, ImageIcon> icons = new HashMap<>();
+
     // 4-param constructor for local play — delegates to full constructor //
     public BoardUI(int windowW, int windowL, int tileS, Game game) {
         this(windowW, windowL, tileS, game, null, null);
@@ -89,13 +93,19 @@ public class BoardUI extends JFrame {
     }
 
     public JLabel getImage(Piece piece) {
-        ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
-        if (image.getImage() == null) {
-            System.out.println("Image not found: " + piece.toString());
-            return null;
+        
+        String key = tileSize + ":" + "./PieceSprites/new_" + piece.toString() + ".png";
+        if(!icons.containsKey(key))
+        {
+            ImageIcon image = new ImageIcon("./PieceSprites/new_" + piece.toString() + ".png");
+            Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
+            if (image.getImage() == null) {
+                System.out.println("Image not found: " + piece.toString());
+                return null;
+            }
+            icons.put(key, new ImageIcon(scaled));
         }
-        Image scaled = image.getImage().getScaledInstance(tileSize, tileSize, Image.SCALE_SMOOTH);
-        return new JLabel(new ImageIcon(scaled));
+        return new JLabel(icons.get(key));
     }
 
     public void initialize() {
@@ -395,6 +405,7 @@ public class BoardUI extends JFrame {
         JPanel square = new JPanel(new BorderLayout());
         square.setBackground(tileColor(i, j));
         square.setPreferredSize(new Dimension(tileSize, tileSize));
+        square.setBorder(null);
 
         int[] p1 = game.getPortal1();
         int[] p2 = game.getPortal2();
@@ -594,11 +605,12 @@ public class BoardUI extends JFrame {
             selectedRow = i;
             selectedCol = j;
             pieceSelected = true;
+
             highLightTile(panelBoard[i][j], HIGHLIGHT);
+            highlightLegalMoves(i, j);
+            //redrawBoard();
         } else {
-            highLightTile(
-                    panelBoard[selectedRow][selectedCol],
-                    tileColor(selectedRow, selectedCol));
+            highLightTile(panelBoard[selectedRow][selectedCol], tileColor(selectedRow, selectedCol));
             pieceSelected = false;
 
             if (selectedRow != i || selectedCol != j) {
@@ -645,6 +657,8 @@ public class BoardUI extends JFrame {
                     }
                 }
             }
+            redrawBoard();
+            
         }
         updateActiveModifiersPanel();
 
@@ -699,7 +713,7 @@ public class BoardUI extends JFrame {
     }
 
     private void highLightTile(JPanel panel, Color highLightColor) {
-        panel.setBackground(highLightColor);
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
     }
 
     // ------------------SHOW MODS METHOD -----------///
@@ -865,5 +879,25 @@ public class BoardUI extends JFrame {
         }
 
         activeModifiersText.setText(text);
+    }
+
+    private void highlightLegalMoves(int row, int col)
+    {
+        Piece piece  = boardgrid.getPieceAt(row, col);
+        if(piece == null)
+        {
+            return;
+        }
+
+        ArrayList<String> legalMoves = piece.getLegalMoves(boardgrid);
+
+        for(String move : legalMoves)
+        {
+            int r = Character.getNumericValue(move.charAt(0));
+            int c = Character.getNumericValue(move.charAt(2));
+
+            panelBoard[r][c].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+        }
+
     }
 }
