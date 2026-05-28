@@ -473,7 +473,7 @@ public class BoardUI extends JFrame {
                     } else if ((mod.getType().toString()).equals("Sniper Bishop")) {
                         modPath = "./PieceSprites/aguabishop.png";
                         break;
-                    } else if ((mod.getType().toString()).equals("[Title Card] Pawns")) {
+                    } else if ((mod.getType().toString()).equals("Invincible Pawns")) {
                         modPath = "./PieceSprites/invincible_pawn.png";
                         break;
                     }
