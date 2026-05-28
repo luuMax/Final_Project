@@ -482,16 +482,8 @@ public class Game
                 Piece piece = m.getAffectedPiece();
                 int row = piece.getRow();
                 int col = piece.getCol();
-                for (int x = row - 1; x <= row + 1; x++)
-                {
-                    for (int y = col - 1; y <= col + 1; y++)
-                    {
-                        if (x >= 0 && x < 8 && y >= 0 && y < 8)
-                        {
-                            boardArr[x][y] = null;
-                        }
-                    }
-                }
+
+                stuffToKaboom.add(new int[] {row, col});
             }
             // add more conditions for new modifiers
         }
@@ -750,5 +742,14 @@ public class Game
             }
         }
         return false;
+    }
+
+    private ArrayList<int[]> stuffToKaboom = new ArrayList<>();
+
+    public ArrayList<int[]> kaboomKnight()
+    {
+        ArrayList<int[]> copy = new ArrayList<>(stuffToKaboom);
+        stuffToKaboom.clear();
+        return copy;
     }
 }

@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import java.net.URL;
 
 /* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
@@ -44,6 +45,7 @@ public class BoardUI extends JFrame {
     private JPanel endPanel = new JPanel(new GridBagLayout());
     private JPanel modifierPanel;
     private JTextArea activeModifiersText;
+    private boolean animationPlaying = false;
 
     // Mouse Inputs //
     private int selectedRow;
@@ -118,9 +120,9 @@ public class BoardUI extends JFrame {
         setLayout(new BorderLayout());
         gamePanel.setBackground(BACKGROUND);
 
-        /////////
+        ///////////
         // Board //
-        /////////
+        ///////////
         board.setBounds(windowLength / 2, windowWidth / 2, tileSize * 8, tileSize * 8);
 
         for (int i = 0; i < 8; i++) {
@@ -133,9 +135,9 @@ public class BoardUI extends JFrame {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        /////////////////////////
+        ///////////////////////////
         // Adding board to frame //
-        /////////////////////////
+        ///////////////////////////
         c.gridx = 1;
         c.gridy = 1;
         c.gridwidth = 1;
@@ -156,9 +158,9 @@ public class BoardUI extends JFrame {
         JPanel fillerTile4 = new JPanel();
         fillerTile4.setBackground(BACKGROUND);
 
-        //////////////////
+        ////////////////////
         // Forfeit Button //
-        //////////////////
+        ////////////////////
         JPanel backPanel = new JPanel(new BorderLayout());
         backPanel.setBackground(BACKGROUND);
 
@@ -184,15 +186,13 @@ public class BoardUI extends JFrame {
                 endGameForfeit();
             }
         });
-        // buttonHolder.add(forfeitButton);
-        // backPanel.add(buttonHolder, BorderLayout.CENTER);
 
         JPanel backPanel2 = new JPanel(new BorderLayout());
         backPanel2.setBackground(BACKGROUND);
 
-        ///////////////
+        /////////////////
         // Draw Button //
-        ///////////////
+        /////////////////
         ImageIcon drawImage = new ImageIcon("./PieceSprites/DrawIcon.png");
         scaled = drawImage.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
@@ -227,9 +227,9 @@ public class BoardUI extends JFrame {
             }
         });
 
-        ////////////
+        //////////////
         // Game log //
-        ////////////
+        //////////////
         textBody = new JTextArea();
         textBody.setEditable(false);
         textBody.setLineWrap(true);
@@ -245,9 +245,9 @@ public class BoardUI extends JFrame {
         scrollPane.setBorder(BorderFactory.createLineBorder(BACKGROUND, 10));
         scrollPane.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
 
-        //////////////////////////
+        ////////////////////////////
         // Active Modifiers Panel //
-        //////////////////////////
+        ////////////////////////////
         modifierPanel = new JPanel(new BorderLayout());
         modifierPanel.setBackground(BACKGROUND);
         modifierPanel.setBorder(BorderFactory.createLineBorder(OUTLINE, 5));
@@ -273,9 +273,9 @@ public class BoardUI extends JFrame {
         modifierPanel.add(activeModsTitle, BorderLayout.NORTH);
         modifierPanel.add(activeModifiersText, BorderLayout.CENTER);
 
-        ////////////////////////////////////////////
+        //////////////////////////////////////////////
         // Right side panels(theres a lot going on) //
-        ////////////////////////////////////////////
+        //////////////////////////////////////////////
         GridBagConstraints bc = new GridBagConstraints(); // made a different Gridbagcontraints object cause i keep
                                                           // screwing the other stuff up :(
         bc.insets = new Insets(4, 5, 4, 5);
@@ -293,7 +293,7 @@ public class BoardUI extends JFrame {
         bc.anchor = GridBagConstraints.CENTER;
         buttonHolder2.add(scrollPane, bc);
 
-        // Active modifier panel
+        // Active modifier pane
         bc.insets = new Insets(0, 5, 4, 5);
         bc.gridx = 0;
         bc.gridy = 2;
@@ -330,9 +330,9 @@ public class BoardUI extends JFrame {
 
         backPanel2.add(buttonHolder2, BorderLayout.CENTER);
 
-        ///////////////////
+        /////////////////////
         // Everything else //
-        ///////////////////
+        /////////////////////
         c.gridwidth = 1;
         c.gridheight = 1;
         c.weightx = 1;
@@ -380,9 +380,9 @@ public class BoardUI extends JFrame {
 
         cardLayout.show(mainPanel, "Game");
 
-        ////////////////////////
+        /////////////////////////
         // Creating end screen //
-        ////////////////////////
+        /////////////////////////
         endPanel.setBackground(new Color(36, 34, 32));
         JButton backButton1 = MainMenuUI.makeButton("Return to main menu", 20, 500, 60, new Color(214, 214, 213));
         backButton1.addMouseListener(new MouseAdapter() {
@@ -476,6 +476,10 @@ public class BoardUI extends JFrame {
     }
 
     private void handleTileClick(int i, int j) {
+        if(animationPlaying){
+            return;
+        }
+
         if (choosingModifier) return;
         if (localColor != null && game.getCurrentTurn() != localColor) {
             return;
@@ -644,8 +648,6 @@ public class BoardUI extends JFrame {
 
                     System.out.println("After switchTurn. currentTurn=" + game.getCurrentTurn());
 
-                    redrawBoard();
-
                     if (game.isGameOver()) {
                         endGame();
                     }
@@ -658,10 +660,15 @@ public class BoardUI extends JFrame {
                 }
             }
             redrawBoard();
+            ArrayList<int[]> explosions = game.kaboomKnight();
+            System.out.println("Explosions found: " + explosions.size());
+            for (int[] explosion : explosions)
+            {
+                playBomboExplosion(explosion[0], explosion[1]);
+            }
             
         }
         updateActiveModifiersPanel();
-
     }
 
     public void endGame() {
@@ -670,9 +677,9 @@ public class BoardUI extends JFrame {
         if (winner == null) {
             result = "The game ended in draw.";
         } else if (winner == Color.WHITE) {
-            result = "White won by checkmate.";
+            result = "White won.";
         } else {
-            result = "Black won by checkmate.";
+            result = "Black won.";
         }
         JLabel outcome = new JLabel(result);
         outcome.setFont(new Font("Sans", Font.BOLD, 20));
@@ -898,6 +905,58 @@ public class BoardUI extends JFrame {
 
             panelBoard[r][c].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
         }
+    }
 
+    public void playBomboExplosion(int row, int col)
+    {
+        animationPlaying = true;
+        System.out.println("Playing explosion at " + row + ", " + col);
+        JLayeredPane kaboom = new JLayeredPane();
+        kaboom.setPreferredSize(new Dimension(tileSize, tileSize));
+
+        JPanel tile = panelBoard[row][col];
+
+        ImageIcon icon = new ImageIcon("./PieceSprites/explosion.gif");
+
+        JLabel gifLabel = new JLabel(icon);
+        gifLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gifLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        tile.removeAll();
+        tile.setLayout(new BorderLayout());
+        tile.add(gifLabel, BorderLayout.CENTER);
+
+        tile.revalidate();
+        tile.repaint();
+
+        Timer timer = new Timer(6000, e -> {
+            ((Timer)e.getSource()).stop();
+            Piece[][] boardArr = boardgrid.getBoard();
+
+            for (int x = row - 1; x <= row + 1; x++)
+            {
+                for (int y = col - 1; y <= col + 1; y++)
+                {
+                    if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                    {
+                        if(boardArr[x][y] instanceof King)
+                        {
+                            game.setWinner(boardArr[x][y].getColor().equals(Color.WHITE) ? Color.BLACK: Color.WHITE );
+                        }
+                        boardArr[x][y] = null;
+                    }
+                }
+            }
+
+            redrawBoard();
+            animationPlaying = false;
+
+            if(game.winner() != null)
+            {
+                endGame();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 }

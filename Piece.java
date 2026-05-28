@@ -17,8 +17,6 @@ public abstract class Piece
     private Type type;
     private Side side;
 
-
-
     public Piece(Color color, int row, int col)
     {
         this.color = color;
