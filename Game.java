@@ -489,10 +489,12 @@ public class Game
         }
     }
 
-    private Color getOpponentColor() {
-        return currentTurn == Color.WHITE ? Color.BLACK : Color.WHITE;
-    }
-
+    /**
+     * Method for determining whether or not a player has a specific type of piece
+     * @param pieceClass the type of piece
+     * @param color the color of the piece/the player
+     * @return true if they do have a piece of that type and color, false otherwise
+     */
     private boolean hasPieceOfTypeForColor(Class<?> pieceClass, Color color) {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
@@ -504,6 +506,10 @@ public class Game
         return false;
     }  
 
+    /**
+     * Checks whether or not modifiers still make sense for the board, and cancels them if necessary
+     * Example: Pawns Only modifier will be cancelled if a player has no pawns left
+     */
     private void validateActiveModifiers() {
         for (int i = 0; i < board.getActiveModifiers().size(); i++) {
             Modifier m = board.getActiveModifiers().get(i);
@@ -533,29 +539,54 @@ public class Game
         }
     }
 
+    /**
+     * Sets the coordinates for Portal 1
+     * @param row the row where the portal is set
+     * @param col the col where the portal is set
+     */
     public void setPortal1Pos(int row, int col) {
         Portal1[0] = row;
         Portal1[1] = col;
     }
 
+    /**
+     * Getter method for the coordinates of Portal 1
+     * @return an int[] representing the coordinates
+     */
     public int[] getPortal1() {
         return new int[]{Portal1[0], Portal1[1]};
     }
-
+    
+    /**
+     * Getter method for the coordinates of Portal 2
+     * @return an int[] representing the coordinates
+     */
     public int[] getPortal2() {
         return new int[]{Portal2[0], Portal2[1]};
     }
 
+    /**
+     * Sets the coordinates for Portal 2
+     * @param row the row where the portal is set
+     * @param col the col where the portal is set
+     */
     public void setPortal2Pos(int row, int col) {
         Portal2[0] = row;
         Portal2[1] = col;
     }
 
-
+    /**
+     * Sets the state of the portals (true = active; false = inactive)
+     * @param state the state of the portals
+     */
     public void setPortalsActive(boolean state) {
         portalsActive = true;
     }
 
+    /**
+     * Returns the state of the portals
+     * @return true if the portals are active, false if not
+     */
     public boolean arePortalsActive() {
         return portalsActive;
     }
@@ -615,22 +646,28 @@ public class Game
         return modifier;
     }
 
+    /**
+     * Sets the state of modifierOfferedThisCycle
+     * @param state the state of whether or not modifiers were offered this cycle
+     */
     public void setModifierOfferedThisCycle(boolean state) {
         modifierOfferedThisCycle = state;
     }
 
     // ==================== GAME STATE ====================
-    /**
-     * Checks whether the Kings are alive, which is important for game over
-     * logic
-     * 
-     * @return true if the game is over, false if the game is still going
-     */
 
+    /**
+     * Getter method for moveCount
+     * @return returns the moveCount
+     */
     public int getMoveCount() {
         return moveCount;
     }
-
+    
+    /**
+     * Checks whether or not the kings are alive
+     * @return true if both kings are alive, false if any are dead
+     */
     private boolean checkKingsAlive()
     {
         boolean whiteKingAlive = false;
@@ -676,7 +713,11 @@ public class Game
         return false;
     }
 
-
+    /**
+     * returns a stack of captured pieces
+     * @param color the color of the pieces that were captured
+     * @return a stack of all captured pieces of that color
+     */
     public Stack<Piece> getCapturedPieces(Color color) {
         if (color == Color.WHITE) {
             return capturedWhitePieces;
@@ -684,23 +725,20 @@ public class Game
         return capturedBlackPieces;
     }
 
+    /**
+     * Switches the turn and sets modifierOfferedThisCycle to false to avoid infinite looping
+     */
     public void switchTurn() {
         System.out.println("switchTurn called, before: " + currentTurn);
         currentTurn = (currentTurn == Color.WHITE) ? Color.BLACK : Color.WHITE;
         modifierOfferedThisCycle = false;
     }
-    /**
-     * Checks whether there is a piece of a given type on the board
-     * 
-     * @param pieceClass
-     *            the type of piece
-     * @return true if there exists a piece of that type, false if not
-     */
-    private boolean hasPieceOfType(Class<?> pieceClass)
-    {
-        return hasPieceOfTypeForColor(pieceClass, currentTurn);
-    }
 
+    /**
+     * Checks if there is any piece of the given type on the board
+     * @param pieceClass the class of the piece
+     * @return true if there are any pieces of that type on the board, false if otherwise
+     */
     private boolean hasAnyPieceOfType(Class<?> pieceClass)
     {
         for (int r = 0; r < 8; r++)
@@ -716,13 +754,22 @@ public class Game
         }
         return false;
     }
-
+    
+    /**
+     * Checks if both players have a piece of a certain type
+     * @param pieceClass the type of piece
+     * @return true if both players do have a piece of a certain type, false if not
+     */
     private boolean bothPlayersHavePieceOfType(Class<?> pieceClass)
     {
         return hasPieceOfTypeForColor(pieceClass, Color.WHITE)
             && hasPieceOfTypeForColor(pieceClass, Color.BLACK);
     }
 
+    /**
+     * Checks if both players have a pawn that can be moved backwards
+     * @return true if both players do, false if at least one of the players cannot
+     */
     private boolean hasAnyPawnThatCanBackUp()
     {
         for (int row = 0; row < 8; row++)
@@ -746,6 +793,10 @@ public class Game
 
     private ArrayList<int[]> stuffToKaboom = new ArrayList<>();
 
+    /**
+     * Executes code for the modifier MI_BOMBO to explode
+     * @return an arraylist<int[]> representing all the coordinates that must be exploded after the animation
+     */
     public ArrayList<int[]> kaboomKnight()
     {
         ArrayList<int[]> copy = new ArrayList<>(stuffToKaboom);
