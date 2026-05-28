@@ -467,7 +467,7 @@ public class BoardUI extends JFrame {
         if (piece != null) {
             for (Modifier mod : boardgrid.getActiveModifiers()) {
                 if (mod.getAffectedPiece() != null && mod.getAffectedPiece().equals(piece)) {
-                    if ((mod.getType().toString()).equals("Mi Bomboclart")) {
+                    if ((mod.getType().toString()).equals("Mi Bombo")) {
                         modPath = "./PieceSprites/bombo.png";
                         break;
                     } else if ((mod.getType().toString()).equals("Sniper Bishop")) {
