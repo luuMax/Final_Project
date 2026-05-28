@@ -11,7 +11,11 @@ public class MainMenuUI extends JFrame
 
     private static Color fontColor = new Color(214,214,213);
 
-    //Start of prgm screen
+    /**
+     * Creates a new MainMenuUI object
+     * @param windowW window width
+     * @param windowL window length
+     */
     public MainMenuUI(int windowW, int windowL)
     {
         windowWidth = windowW;
@@ -19,6 +23,9 @@ public class MainMenuUI extends JFrame
         initialize();
     }
 
+    /**
+     * initializes the main menu
+     */
     public void initialize()
     {
         setTitle("The Menu");
@@ -173,6 +180,15 @@ public class MainMenuUI extends JFrame
         setVisible(true);
     }
 
+    /**
+     * Makes a button
+     * @param name button name
+     * @param size button size
+     * @param width button width
+     * @param height button height
+     * @param fontColor font Color
+     * @return the button
+     */
     public static JButton makeButton(String name, int size, int width, int height, Color fontColor)
     {
         JButton button = new JButton(name);
