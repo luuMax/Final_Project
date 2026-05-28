@@ -937,7 +937,10 @@ public class BoardUI extends JFrame {
             {
                 for (int y = col - 1; y <= col + 1; y++)
                 {
-                    boardArr[x][y] = null;
+                    if (x >= 0 && x < 8 && y >= 0 && y < 8)
+                    {
+                        boardArr[x][y] = null;
+                    }
                 }
             }
 
