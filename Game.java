@@ -22,6 +22,9 @@ public class Game
     private int[] Portal2 = {-1, -1};
     private boolean portalsActive = false;
 
+    /**
+     * Constructor initializes board, general game states
+     */
     public Game()
     {
         board = new Board(Board.BoardType.DEFAULT);
@@ -30,30 +33,46 @@ public class Game
         gameOver = false;
     }
 
-
+    /**
+     * retrieves the board
+     * @return the Board
+     */
     public Board getBoard()
     {
         return board;
     }
 
-
+    /**
+     * Gets the player's turn
+     * @return the color of the player who's turn it is
+     */
     public Color getCurrentTurn()
     {
         return currentTurn;
     }
 
-
+    /**
+     * Checks if the game is over
+     * @return
+     */
     public boolean isGameOver()
     {
         return gameOver;
     }
 
-
+    /**
+     * Retrieves the winner
+     * @return  the color of the winner
+     */
     public Color winner()
     {
         return winner;
     }
 
+    /**
+     * Sets the winner
+     * @param winner the Color of the winner
+     */
     public void setWinner(Color winner)
     {
         this.winner = winner;

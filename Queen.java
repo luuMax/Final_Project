@@ -1,10 +1,20 @@
 import java.awt.*;
 
 public class Queen extends Piece {
+    /**
+     * Creates a new Queen object
+     * @param color The color of the piece
+     * @param row The row of the piece
+     * @param col The col of the piece
+     */
     public Queen(Color color , int row, int col) {
         super(color, row, col);
         setType(Type.QUEEN);
     }
+
+    /**
+     * Checks if the piece can move to a square legally, as specified in Piece
+     */
     public boolean canMoveTo(int fromRow, int fromCol, int toRow, int toCol, Board board) {
         if (board.getPieceAt(toRow, toCol) != null && board.getPieceAt(toRow, toCol).getColor() == this.getColor()) {
             return false;
