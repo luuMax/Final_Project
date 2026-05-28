@@ -57,7 +57,12 @@ public class Modifier {
     private int turnsRemaining;
     private Type type;
 
-    // used for modifiers that affect a single piece
+    /**
+     * Constructs a modifier that targets a specific piece
+     * @param turnsRemaining amt of turns the modifier lasts for
+     * @param type the type of modifier
+     * @param affectedPiece the affected piece
+     */
     public Modifier(int turnsRemaining, Type type, Piece affectedPiece) {
         this.turnsRemaining = turnsRemaining;
         this.type = type;
@@ -66,14 +71,24 @@ public class Modifier {
         this.affectedCol = -1;
     }
 
-    // used for board-wide modifiers
+    /**
+     * Constructs a modifier that affects a certain type of piece
+     * @param remainingTurns amt of turns the modifier lasts for
+     * @param type the type of modifier
+     */
     public Modifier(int remainingTurns, Type type) {
         this(remainingTurns, type, null);
         this.affectedRow = -1;
         this.affectedCol = -1;
     }
 
-    // used for modifiers that affect a square
+    /**
+     * Constructs a modifier that affects a certain square
+     * @param turnsRemaining amt of turns remaining
+     * @param type the type of modifier
+     * @param affectedRow the affected row
+     * @param affectedCol the affected col
+     */
     public Modifier(int turnsRemaining, Type type, int affectedRow, int affectedCol) {
         this.turnsRemaining = turnsRemaining;
         this.type = type;
@@ -82,35 +97,57 @@ public class Modifier {
         this.affectedCol = affectedCol;
     }
 
-    // returns the type of modifier
+    /**
+     * gets the type of modifier
+     * @return the type of modifier from the enum
+     */
     public Type getType() {
         return type;
     }
     
-    // returns the number of turns remaining on a modifier
+    /**
+     * gets the amount of turns remaining on a modifier
+     * @return the amount of turns remaining on a modifier
+     */
     public int getTurnsRemaining() {
         return turnsRemaining;
     }
 
-    // decreases the remaining turns on the modifier
+    /**
+     * Decrements the turns remaining on modifiers
+     */
     public void decrementTurns() {
         turnsRemaining--;
     }
 
-    // for modifiers that affect a certain piece, such as the exploding knight
+    /**
+     * Gets the affected piece on a modifier
+     * @return the affected piece
+     */
     public Piece getAffectedPiece() {
         return affectedPiece;
     }
 
+    /**
+     * Gets the affected row
+     * @return affected row
+     */
     public int getAffectedRow() {
         return affectedRow;
     }    
 
+    /**
+     * Gets the affected col
+     * @return affected col
+     */
     public int getAffectedCol() {
         return affectedCol;
     }
 
-    // for modifiers that affect a certain class of pieces, such as only Pawns can move
+    /**
+     * For modifiers that affect a certain class
+     * @return the class of pieces affected
+     */
     public Class<?> affectedClass() {
         switch (type) {
             case PAWNS_ONLY:   return Pawn.class;
@@ -118,6 +155,11 @@ public class Modifier {
         }
     }
 
+    /**
+     * Changes the toString() to give a different description for modifiers
+     * @param type the type of modifier
+     * @return the description
+     */
     public String getDescription(Modifier.Type type) {
         switch (type) {
             case PAWNS_ONLY: return "Only pawns can move for 5 turns";

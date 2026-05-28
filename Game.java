@@ -10,12 +10,14 @@ public class Game
     private Board                              board;
     private Color                              currentTurn;
     private boolean                            gameOver;
-    private ArrayList<Move>                    moveHistory              = new ArrayList<>();
     private int                                moveCount                = 0;
     private boolean                            modifierOfferedThisCycle = false;
     private Color                              winner                   = null;
     private Stack<Piece> capturedWhitePieces = new Stack<>();
     private Stack<Piece> capturedBlackPieces = new Stack<>();
+    private enum MoveType {
+        NORMAL, PROMOTION, EN_PASSANT, SHORT_CASTLE, LONG_CASTLE
+    }
 
     // Portals
     private int[] Portal1 = {-1, -1};
@@ -123,13 +125,9 @@ public class Game
             return false;
         }
 
-        Move.MoveType moveType = categorizeMoveType(fromRow, fromCol, toRow, toCol);
-        moveHistory.add(new Move(fromRow, fromCol, toRow, toCol, moveType, board));
+        MoveType moveType = categorizeMoveType(fromRow, fromCol, toRow, toCol);
         piece = applyMove(fromRow, fromCol, toRow, toCol, moveType, piece);
         updateEnPassantFlags(piece, fromRow, toRow, moveType);
-
-        // System.out.println(moveHistory.get(moveHistory.size() -
-        // 1).getNotation());
         ArrayList<Modifier> expiredModifiers = board.decrementModifiers();
         handleExpiredModifiers(expiredModifiers);
 
@@ -145,12 +143,6 @@ public class Game
             board.setPieceAt(board.getPieceAt(Portal2[0], Portal2[1]), Portal1[0], Portal1[1]);
             board.setPieceAt(temp, Portal2[0], Portal2[1]);
         }
-
-
-        // for (Modifier m : board.getActiveModifiers()) {
-        // System.out.println(m.getType().toString() + " - turns remaining: " +
-        // m.getTurnsRemaining());
-        // }
         return true;
     }
 
@@ -168,34 +160,34 @@ public class Game
      *            the col of the square the player is moving the piece to
      * @return MoveType of the move the player is making
      */
-    public Move.MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol)
+    public MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol)
     {
-        Move.MoveType moveType;
+        MoveType moveType;
         Piece piece = board.getPieceAt(fromRow, fromCol);
 
         if (piece instanceof King && (Math.abs(toCol - fromCol) == 2))
         {
             if (toCol > fromCol)
             {
-                moveType = Move.MoveType.SHORT_CASTLE;
+                moveType = MoveType.SHORT_CASTLE;
             }
             else
             {
-                moveType = Move.MoveType.LONG_CASTLE;
+                moveType = MoveType.LONG_CASTLE;
             }
         }
         else if (piece instanceof Pawn && (Math.abs(toCol - fromCol) == 1)
             && board.getPieceAt(toRow, toCol) == null)
         {
-            moveType = Move.MoveType.EN_PASSANT;
+            moveType = MoveType.EN_PASSANT;
         }
         else if (piece instanceof Pawn && (toRow == 0 || toRow == 7))
         {
-            moveType = Move.MoveType.PROMOTION;
+            moveType = MoveType.PROMOTION;
         }
         else
         {
-            moveType = Move.MoveType.NORMAL;
+            moveType = MoveType.NORMAL;
         }
         return moveType;
     }
@@ -222,7 +214,7 @@ public class Game
         int fromCol,
         int toRow,
         int toCol,
-        Move.MoveType moveType,
+        MoveType moveType,
         Piece piece)
     {
         Piece capturedPiece = board.getPieceAt(toRow, toCol);
@@ -244,11 +236,11 @@ public class Game
                 }
             }
         }
-        if (moveType == Move.MoveType.EN_PASSANT)
+        if (moveType == MoveType.EN_PASSANT)
         {
             board.getBoard()[fromRow][toCol] = null;
         }
-        else if (moveType == Move.MoveType.SHORT_CASTLE)
+        else if (moveType == MoveType.SHORT_CASTLE)
         {
             Piece rook = board.getPieceAt(fromRow, 7);
             board.getBoard()[fromRow][5] = rook;
@@ -256,7 +248,7 @@ public class Game
             rook.setCol(5);
             rook.isFirstMove = false;
         }
-        else if (moveType == Move.MoveType.LONG_CASTLE)
+        else if (moveType == MoveType.LONG_CASTLE)
         {
             Piece rook = board.getPieceAt(fromRow, 0);
             board.getBoard()[fromRow][3] = rook;
@@ -264,14 +256,14 @@ public class Game
             rook.setCol(3);
             rook.isFirstMove = false;
         }
-        else if (moveType == Move.MoveType.PROMOTION)
+        else if (moveType == MoveType.PROMOTION)
         {
             piece = new Queen(piece.getColor(), toRow, toCol);
         }
 
         board.setPieceAt(piece, toRow, toCol);
         board.setPieceAt(null, fromRow, fromCol);
-        if (moveType != Move.MoveType.PROMOTION)
+        if (moveType != MoveType.PROMOTION)
         {
             piece.isFirstMove = false;
         }
@@ -290,9 +282,9 @@ public class Game
      * @param moveType
      *            the moveType of the move the player is making
      */
-    public void updateEnPassantFlags(Piece piece, int fromRow, int toRow, Move.MoveType moveType)
+    public void updateEnPassantFlags(Piece piece, int fromRow, int toRow, MoveType moveType)
     {
-        if (moveType != Move.MoveType.EN_PASSANT && piece instanceof Pawn
+        if (moveType != MoveType.EN_PASSANT && piece instanceof Pawn
             && Math.abs(toRow - fromRow) == 2)
         {
             ((Pawn)piece).isEnPassantable = true;
