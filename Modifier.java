@@ -40,12 +40,16 @@ public class Modifier {
         @Override
         public String toString() {
             switch (this) {
-                case PAWNS_ONLY:      return "PawnStars";
-                case INVINCIBLE_PAWNS: return "[Title Card] Pawns";
-                case BACK_IT_UP: return "Back that Ahh up";
-                case SANCTUARY: return "Mi casa es su casa";
-                case EXPLODING_PIECE: return "Mi Bomboclart";
+                case PAWNS_ONLY:      return "Pawns Only";
+                case INVINCIBLE_PAWNS: return "Invincible Pawns";
+                case BACK_IT_UP: return "Pawns Move Backwards";
+                case SANCTUARY: return "Sanctuary";
+                case EXPLODING_PIECE: return "Mi Bombo";
                 case SNIPER_BISHOP:   return "Sniper Bishop";
+                case BRICK:           return "Brick an Empty Square";
+                case PORTAL:          return "Open two connecting Portals";
+                case FILE_SWAP:       return "Flip two random files";
+                case RESURRECTION:    return "Resurrect your last lost piece";
                 default:              return super.toString();
             }
         }
