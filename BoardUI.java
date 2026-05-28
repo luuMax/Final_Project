@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.*;
 
+/**
+ * Class for game window
+ */
 public class BoardUI extends JFrame {
     // General Sizes //
     private int windowWidth;
@@ -77,12 +80,28 @@ public class BoardUI extends JFrame {
     // Reduces a significant amount of lag
     private HashMap<String, ImageIcon> icons = new HashMap<>();
 
-    // 4-param constructor for local play — delegates to full constructor //
+    /**
+     * 4-param constructor for local play — delegates to full constructor
+     * 
+     * @param windowW
+     * @param windowL
+     * @param tileS
+     * @param game
+     */
     public BoardUI(int windowW, int windowL, int tileS, Game game) {
         this(windowW, windowL, tileS, game, null, null);
     }
 
-    // 6-param constructor for networked play //
+    /**
+     * 6-param constructor for networked play
+     * 
+     * @param windowW
+     * @param windowL
+     * @param tileS
+     * @param game
+     * @param net
+     * @param loCol
+     */
     public BoardUI(int windowW, int windowL, int tileS, Game game, NetworkManager net, Color loCol) {
         windowWidth = windowW;
         windowLength = windowL;
@@ -94,6 +113,13 @@ public class BoardUI extends JFrame {
         initialize();
     }
 
+    /**
+     * Gets the image png for a certain piece then stores it in a JLabel to add to tiles to represent pieces
+     * Scales the images to preferred tile size
+     * 
+     * @param piece
+     * @return new JLabel
+     */
     public JLabel getImage(Piece piece) {
         
         String key = tileSize + ":" + "./PieceSprites/new_" + piece.toString() + ".png";
@@ -110,6 +136,11 @@ public class BoardUI extends JFrame {
         return new JLabel(icons.get(key));
     }
 
+    /**
+     * Creates the game window, board(with clickable tiles), gamelog, active modifier panel,
+     * draw button, and forfeit button. Creates the end screen, which is seperate from the
+     * normal game screen. Switches using cardlayout.
+     */
     public void initialize() {
         setTitle("The Game");
         getContentPane().setBackground(BACKGROUND);
@@ -401,6 +432,16 @@ public class BoardUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Helper method that makes the individiual clickable tiles. Creates any background modifier sprites(portals, bricks, sanctuary)
+     * Adds the bomb icon or watergun icon to respective piece modifiers. Defines mouseaction respone as handTileClick()
+     * 
+     * @param i
+     *      row
+     * @param j
+     *      column
+     * @return
+     */
     private JPanel makeTile(int i, int j) {
         JPanel square = new JPanel(new BorderLayout());
         square.setBackground(tileColor(i, j));
@@ -475,6 +516,16 @@ public class BoardUI extends JFrame {
         return square;
     }
 
+    /**
+     * Dictates the response of clicking a tile. Responsible for allowing the player to pick up and move pieces,
+     * place board affecting modifiers, trigger animations, and updates whether the game is over or not. Adds
+     * necessary game log messages to the gamelog.
+     * 
+     * @param i
+     *      row
+     * @param j
+     *      column
+     */
     private void handleTileClick(int i, int j) {
         if(animationPlaying){
             return;
@@ -696,6 +747,9 @@ public class BoardUI extends JFrame {
         endPanel.repaint();
     }
 
+    /**
+     * 
+     */
     public void endGameForfeit() {
         Color winner = game.winner();
         String result;
