@@ -939,6 +939,10 @@ public class BoardUI extends JFrame {
                 {
                     if (x >= 0 && x < 8 && y >= 0 && y < 8)
                     {
+                        if(boardArr[x][y] instanceof King)
+                        {
+                            game.setWinner(boardArr[x][y].getColor().equals(Color.WHITE) ? Color.BLACK: Color.WHITE );
+                        }
                         boardArr[x][y] = null;
                     }
                 }
@@ -946,6 +950,11 @@ public class BoardUI extends JFrame {
 
             redrawBoard();
             animationPlaying = false;
+
+            if(game.winner() != null)
+            {
+                endGame();
+            }
         });
         timer.setRepeats(false);
         timer.start();
