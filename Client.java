@@ -1,28 +1,17 @@
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Client
 {
-    public static void main(String[] args)
-    {
-        
-        System.out.println("localhost"); // local
-        System.out.println("172.18.231.33"); // Alex
-        System.out.println("172.18.231.34"); // neel
-        System.out.println("10.18.81.146"); // max
-        System.out.println("10.18.81.246"); //also max
 
-        System.out.print("input gamelink: ");
-        Scanner scan = new Scanner(System.in);
-        String hoster = scan.nextLine();
-
-        connect(hoster); 
-
-        scan.close();
-    }
-
-
+    /**
+     * Decodes the game code into an IP address, connects to the host on port
+     * 4999, receives the color assignment, then hands off to GameRunner.
+     *
+     * @param gamecode
+     *            the alphanumeric code shared by the host, encoding their IP
+     *            address in base-36
+     */
     public static void connect(String gamecode)
     {
         try
@@ -32,7 +21,7 @@ public class Client
             System.out.println("Connected to server.");
 
             NetworkManager network = new NetworkManager(socket, false);
-                                                                        
+
             String assigned = network.readSetup();
             network.isWhite = assigned.equals("WHITE");
 

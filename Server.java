@@ -6,12 +6,12 @@ import java.util.Random;
 public class Server
 {
 
-    public static void main(String[] args)
-    {
-        connect();
-    }
-
-
+    /**
+     * Listens for exactly one incoming connection on port 4999, randomly
+     * assigns colors, sends the client their color, then hands off to
+     * GameRunner. The server socket is closed immediately after the first
+     * client connects.
+     */
     public static void connect()
     {
         try

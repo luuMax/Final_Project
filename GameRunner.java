@@ -1,5 +1,12 @@
 import java.awt.*;
 
+/**
+ * Coordinates the start of a networked game session. Creates the Game and
+ * BoardUI, then spins up a background listener thread that applies the
+ * opponent's moves for the duration of the game. Has no knowledge of chess
+ * rules — delegates all game logic to Game. For local (non-networked) games,
+ * pass null as the network parameter; GameRunner will skip threading entirely.
+ */
 public class GameRunner
 {
     private Game           game;
@@ -7,6 +14,11 @@ public class GameRunner
     private NetworkManager network;
     private Color          localColor;
 
+    /**
+     * @param network
+     *            the active connection to the opponent, or null for a local
+     *            game
+     */
     public GameRunner(NetworkManager network)
     {
         this.network = network;
@@ -15,13 +27,14 @@ public class GameRunner
     }
 
 
-    /* 
-    Gamerunner handles all listening thread logic, used for BoardUI to handle updates between Client-Server. 
-    Currenlty, MainMenuUI bypasses gameRunner for local games (singleplayer), but Gamerunner (more like NetworkRunner) is used 
-    when a Network is active. 
-    
-    */
-    public void start() 
+    /**
+     * Initializes the Game and BoardUI, then — if networked — starts a daemon
+     * thread that loops for the entire game: 1. Blocks on receiveMove() until
+     * the opponent moves 2. Applies the move to Game 3. If a modifier is
+     * triggered, reads and applies it 4. Switches turn and redraws the UI If
+     * the opponent disconnects, the thread exits and closes the socket.
+     */
+    public void start()
     {
         game = new Game();
 
@@ -94,6 +107,16 @@ public class GameRunner
     }
 
 
+    /**
+     * Reconstructs and applies a modifier received from the opponent. Handles
+     * BRICK, PORTAL, and RESURRECTION as special cases since they modify the
+     * board directly rather than going through Game.addModifier(). All other
+     * modifiers are reconstructed from ModifierData fields and added via
+     * Game.addModifier().
+     *
+     * @param data
+     *            the raw modifier data received from the opponent
+     */
     private void applyReceivedModifier(NetworkManager.ModifierData data)
     {
         if (data.type == Modifier.Type.BRICK)
@@ -117,16 +140,16 @@ public class GameRunner
 
         if (data.type == Modifier.Type.RESURRECTION)
         {
-            Piece revivedPiece =
-                createPiece(data.revivedPieceType, data.revivedPieceSide, data.affectedRow, data.affectedCol);
+            Piece revivedPiece = createPiece(
+                data.revivedPieceType,
+                data.revivedPieceSide,
+                data.affectedRow,
+                data.affectedCol);
 
             if (revivedPiece != null)
             {
                 removeFromCapturedPieces(revivedPiece);
-                game.getBoard().setPieceAt(
-                    revivedPiece,
-                    data.affectedRow,
-                    data.affectedCol);
+                game.getBoard().setPieceAt(revivedPiece, data.affectedRow, data.affectedCol);
             }
             else if (!game.getCapturedPieces(game.getCurrentTurn()).isEmpty())
             {
@@ -150,11 +173,7 @@ public class GameRunner
         else if (data.affectedRow != -1 && data.affectedCol != -1)
         {
             // square-targeted modifier
-            m = new Modifier(
-                data.turnsRemaining,
-                data.type,
-                data.affectedRow,
-                data.affectedCol);
+            m = new Modifier(data.turnsRemaining, data.type, data.affectedRow, data.affectedCol);
         }
         else
         {
@@ -166,6 +185,20 @@ public class GameRunner
     }
 
 
+    /**
+     * Instantiates a Piece subclass from its type and side enums. Used during
+     * RESURRECTION to rebuild the revived piece on this board.
+     *
+     * @param type
+     *            the piece type to create
+     * @param side
+     *            WHITE or BLACK
+     * @param row
+     *            row to place the piece at
+     * @param col
+     *            column to place the piece at
+     * @return the new Piece, or null if type or side is null
+     */
     private Piece createPiece(Piece.Type type, Piece.Side side, int row, int col)
     {
         if (type == null || side == null)
@@ -195,6 +228,14 @@ public class GameRunner
     }
 
 
+    /**
+     * (helper method) Removes the first matching piece from the captured pieces
+     * stack. Matches by type and side. Used during RESURRECTION to keep the
+     * captured pieces list consistent after a piece is revived.
+     *
+     * @param piece
+     *            the piece to remove from the captured stack
+     */
     private void removeFromCapturedPieces(Piece piece)
     {
         java.util.Stack<Piece> capturedPieces = game.getCapturedPieces(piece.getColor());
