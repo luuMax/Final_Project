@@ -1,6 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.net.URL;
+
 
 /* import java.awt.event.ActionListener; */
 import java.awt.event.MouseAdapter;
