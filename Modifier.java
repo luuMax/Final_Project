@@ -1,4 +1,3 @@
-package src;
 
 /**
  * A custom data structure that represents any relevant data about a modifier, like name, type of modifier, pieces affected, etc.

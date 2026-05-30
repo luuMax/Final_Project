@@ -1,4 +1,3 @@
-package src;
 import java.util.ArrayList;
 import java.awt.*;
 // used javafx color instead of awt color to avoid conflicts with
