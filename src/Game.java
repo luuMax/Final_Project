@@ -1,0 +1,842 @@
+package src;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Stack;
+
+import java.util.Random;
+
+/**
+ * The game, contains a board, stores the current turn, if the game has ended, the active modifiers and their locations, 
+ * and the modifiers that will be offered.
+ */
+public class Game
+{
+    private Board                              board;
+    private Color                              currentTurn;
+    private boolean                            gameOver;
+    private int                                moveCount                = 0;
+    private boolean                            modifierOfferedThisCycle = false;
+    private Color                              winner                   = null;
+    private Stack<Piece> capturedWhitePieces = new Stack<>();
+    private Stack<Piece> capturedBlackPieces = new Stack<>();
+    private enum MoveType {
+        /**
+         * A normal move
+         */
+        NORMAL, 
+        /**
+         * When a pawn reaches the other side of the board
+         */
+        PROMOTION, 
+        /**
+         * A special rule for chess
+         */
+        EN_PASSANT, 
+        /**
+         * Castling move
+         */
+        SHORT_CASTLE, 
+        /**
+         * Another castling move
+         */
+        LONG_CASTLE
+    }
+
+    // Portals
+    private int[] Portal1 = {-1, -1};
+    private int[] Portal2 = {-1, -1};
+    private boolean portalsActive = false;
+
+    /**
+     * Constructor initializes board, general game states
+     */
+    public Game()
+    {
+        board = new Board(Board.BoardType.DEFAULT);
+        board.initializePieces();
+        currentTurn = Color.WHITE;
+        gameOver = false;
+    }
+
+    /**
+     * retrieves the board
+     * @return the Board
+     */
+    public Board getBoard()
+    {
+        return board;
+    }
+
+    /**
+     * Gets the player's turn
+     * @return the color of the player who's turn it is
+     */
+    public Color getCurrentTurn()
+    {
+        return currentTurn;
+    }
+
+    /**
+     * Checks if the game is over
+     * @return
+     */
+    public boolean isGameOver()
+    {
+        return gameOver;
+    }
+
+    /**
+     * Retrieves the winner
+     * @return  the color of the winner
+     */
+    public Color winner()
+    {
+        return winner;
+    }
+
+    /**
+     * Sets the winner
+     * @param winner the Color of the winner
+     */
+    public void setWinner(Color winner)
+    {
+        this.winner = winner;
+    }
+
+
+    // ==================== CORE GAME LOGIC ====================
+    /**
+     * Attempts to make a move after checking if it is legal; handles modifiers;
+     * checks if the game is over
+     * 
+     * @param fromRow
+     *            the row of the piece the player is moving
+     * @param fromCol
+     *            the col of the piece the player is moving
+     * @param toRow
+     *            the row of the square the player is moving the piece to
+     * @param toCol
+     *            the row of the square the player is moving the piece to
+     * @return true if the move was successfully made, false if invalid
+     */
+    public boolean makeMove(int fromRow, int fromCol, int toRow, int toCol)
+    {
+        validateActiveModifiers();
+        if (gameOver)
+        {
+            System.out.println("Game is already over.");
+            return false;
+        }
+
+        Piece piece = board.getPieceAt(fromRow, fromCol);
+
+        if (piece == null || piece.getColor() != currentTurn)
+        {
+            System.out
+                .println("Invalid move: No piece of current player's color at the source square.");
+            return false;
+        }
+
+        if (!piece.canMoveTo(fromRow, fromCol, toRow, toCol, board))
+        {
+            System.out.println("Invalid move: The piece cannot move to the target square.");
+            return false;
+        }
+
+        if (isBlockedByModifier(piece, toRow, toCol))
+        {
+            return false;
+        }
+
+        MoveType moveType = categorizeMoveType(fromRow, fromCol, toRow, toCol);
+        piece = applyMove(fromRow, fromCol, toRow, toCol, moveType, piece);
+        updateEnPassantFlags(piece, fromRow, toRow, moveType);
+        ArrayList<Modifier> expiredModifiers = board.decrementModifiers();
+        handleExpiredModifiers(expiredModifiers);
+
+        if (checkKingsAlive())
+        {
+            return true;
+        }
+
+        moveCount++;
+
+        if (portalsActive && (currentTurn == Color.BLACK)) {
+            Piece temp = board.getPieceAt(Portal1[0], Portal1[1]);
+            board.setPieceAt(board.getPieceAt(Portal2[0], Portal2[1]), Portal1[0], Portal1[1]);
+            board.setPieceAt(temp, Portal2[0], Portal2[1]);
+        }
+        return true;
+    }
+
+
+    /**
+     * Categorizes the move type of a move
+     * 
+     * @param fromRow
+     *            the row of the piece the player is moving
+     * @param fromCol
+     *            the col of the piece the player is moving
+     * @param toRow
+     *            the row of the square the player is moving the piece to
+     * @param toCol
+     *            the col of the square the player is moving the piece to
+     * @return MoveType of the move the player is making
+     */
+    public MoveType categorizeMoveType(int fromRow, int fromCol, int toRow, int toCol)
+    {
+        MoveType moveType;
+        Piece piece = board.getPieceAt(fromRow, fromCol);
+
+        if (piece instanceof King && (Math.abs(toCol - fromCol) == 2))
+        {
+            if (toCol > fromCol)
+            {
+                moveType = MoveType.SHORT_CASTLE;
+            }
+            else
+            {
+                moveType = MoveType.LONG_CASTLE;
+            }
+        }
+        else if (piece instanceof Pawn && (Math.abs(toCol - fromCol) == 1)
+            && board.getPieceAt(toRow, toCol) == null)
+        {
+            moveType = MoveType.EN_PASSANT;
+        }
+        else if (piece instanceof Pawn && (toRow == 0 || toRow == 7))
+        {
+            moveType = MoveType.PROMOTION;
+        }
+        else
+        {
+            moveType = MoveType.NORMAL;
+        }
+        return moveType;
+    }
+
+    /**
+     * Applies the move to the board
+     * 
+     * @param fromRow
+     *            the row of the piece the player is moving
+     * @param fromCol
+     *            the col of the piece the player is moving
+     * @param toRow
+     *            the row of the square the player is moving the piece to
+     * @param toCol
+     *            the col of the square the player is moving the piece to
+     * @param moveType
+     *            the moveType of the move the player is making
+     * @param piece
+     *            the piece the player is moving
+     * @return the Piece that is moved
+     */
+    public Piece applyMove(
+        int fromRow,
+        int fromCol,
+        int toRow,
+        int toCol,
+        MoveType moveType,
+        Piece piece)
+    {
+        Piece capturedPiece = board.getPieceAt(toRow, toCol);
+        if (capturedPiece != null)
+        {
+            if (capturedPiece.getColor() == Color.WHITE) {
+                capturedWhitePieces.push(capturedPiece);
+            }
+            else {
+                capturedBlackPieces.push(capturedPiece);
+            }
+            for (int i = 0; i < board.getActiveModifiers().size(); i++)
+            {
+                Modifier m = board.getActiveModifiers().get(i);
+                if (m.getAffectedPiece() == capturedPiece)
+                {
+                    board.getActiveModifiers().remove(i);
+                    i--;
+                }
+            }
+        }
+        if (moveType == MoveType.EN_PASSANT)
+        {
+            board.getBoard()[fromRow][toCol] = null;
+        }
+        else if (moveType == MoveType.SHORT_CASTLE)
+        {
+            Piece rook = board.getPieceAt(fromRow, 7);
+            board.getBoard()[fromRow][5] = rook;
+            board.getBoard()[fromRow][7] = null;
+            rook.setCol(5);
+            rook.isFirstMove = false;
+        }
+        else if (moveType == MoveType.LONG_CASTLE)
+        {
+            Piece rook = board.getPieceAt(fromRow, 0);
+            board.getBoard()[fromRow][3] = rook;
+            board.getBoard()[fromRow][0] = null;
+            rook.setCol(3);
+            rook.isFirstMove = false;
+        }
+        else if (moveType == MoveType.PROMOTION)
+        {
+            piece = new Queen(piece.getColor(), toRow, toCol);
+        }
+
+        board.setPieceAt(piece, toRow, toCol);
+        board.setPieceAt(null, fromRow, fromCol);
+        if (moveType != MoveType.PROMOTION)
+        {
+            piece.isFirstMove = false;
+        }
+        return piece;
+    }
+
+
+    /**
+     * updates enPassantFlags
+     * 
+     * @param piece
+     * @param fromRow
+     *            the row of the piece the player is moving
+     * @param toRow
+     *            the row of the square the player is moving the piece to
+     * @param moveType
+     *            the moveType of the move the player is making
+     */
+    public void updateEnPassantFlags(Piece piece, int fromRow, int toRow, MoveType moveType)
+    {
+        if (moveType != MoveType.EN_PASSANT && piece instanceof Pawn
+            && Math.abs(toRow - fromRow) == 2)
+        {
+            ((Pawn)piece).isEnPassantable = true;
+        }
+
+        for (int r = 0; r < 8; r++)
+        {
+            for (int c = 0; c < 8; c++)
+            {
+                Piece p = board.getPieceAt(r, c);
+                if (p instanceof Pawn && p != piece && p.getColor() != currentTurn)
+                {
+                    ((Pawn)p).isEnPassantable = false;
+                }
+            }
+        }
+    }
+
+
+    // ==================== MODIFIER LOGIC ====================
+    /**
+     * Offers three random modifiers from the pool of all modifiers and excludes
+     * modifiers that don't make sense for the current board state
+     * 
+     * @return an array of Modifier.Type that contains the three random
+     *         modifiers chosen
+     */
+
+    public Modifier.Type[] offeredModifiers()
+    {
+        ArrayList<Modifier.Type> pool = new ArrayList<>(Arrays.asList(Modifier.Type.values()));
+        pool.removeIf(type -> {
+            switch (type)
+            {
+                case PAWNS_ONLY:
+                    return !bothPlayersHavePieceOfType(Pawn.class);
+                case INVINCIBLE_PAWNS:
+                    return !hasPieceOfTypeForColor(Pawn.class, currentTurn);
+                case BACK_IT_UP:
+                    return !hasAnyPawnThatCanBackUp();
+                case EXPLODING_PIECE:
+                    return !hasPieceOfTypeForColor(Knight.class, currentTurn);
+                case SNIPER_BISHOP:
+                    return !hasPieceOfTypeForColor(Bishop.class, currentTurn);
+                case FILE_SWAP:
+                    return false; // always available
+                case RESURRECTION:
+                    return getCapturedPieces(getCurrentTurn()).isEmpty();
+                default:
+                    return false;
+            }
+        });
+
+        Collections.shuffle(pool);
+        Modifier.Type[] offered = new Modifier.Type[Math.min(3, pool.size())];
+        for (int i = 0; i < offered.length; i++)
+        {
+            offered[i] = pool.get(i);
+        }
+        return offered;
+    }
+
+
+    /**
+     * Adds a modifier to the Board's activeModifiers
+     * 
+     * @param modifier
+     *            the modifier being added
+     */
+    public void addModifier(Modifier modifier)
+    {
+        // use if statements for instant effect modifiers
+        if (modifier.getType() == Modifier.Type.BACK_IT_UP)
+        {
+            // white pawns
+            for (int row = board.getBoard().length - 1; row >= 0; row--)
+            {// reverse so that the same pawn isn't moved back multiple times
+                for (int col = 0; col < board.getBoard()[0].length; col++)
+                {
+                    Piece piece = board.getPieceAt(row, col);
+                    if (piece instanceof Pawn && piece.getColor() == Color.WHITE && (row + 1) < 8
+                        && board.getPieceAt(row + 1, col) == null)
+                    {
+                        board.setPieceAt(piece, row + 1, col);
+                        board.setPieceAt(null, row, col);
+                    }
+                }
+            }
+
+            // black pawns
+            for (int row = 0; row < board.getBoard().length; row++)
+            {// reverse so that the same pawn isn't moved back multiple times
+                for (int col = 0; col < board.getBoard()[0].length; col++)
+                {
+                    Piece piece = board.getPieceAt(row, col);
+                    if (piece instanceof Pawn && piece.getColor() == Color.BLACK && (row - 1) >= 0
+                        && board.getPieceAt(row - 1, col) == null)
+                    {
+                        board.setPieceAt(piece, row - 1, col);
+                        board.setPieceAt(null, row, col);
+                    }
+                }
+            }
+            modifierOfferedThisCycle = true;
+            return;
+        }
+        
+        else if (modifier.getType() == Modifier.Type.FILE_SWAP) {
+            Random rand = new Random();
+            Piece tempPiece;
+            int file1 = modifier.getAffectedRow();
+            int file2 = modifier.getAffectedCol();
+
+            if (file1 < 0 || file1 > 7 || file2 < 0 || file2 > 7 || file1 == file2) {
+                file1 = rand.nextInt(8);
+
+                // makes sure file2 isn't the same as file1
+                do {
+                    file2 = rand.nextInt(8);
+                } while(file2 == file1);
+            }
+
+            // goes down the file row by row and swaps pieces
+            for (int row = 0; row < board.getBoard().length; row++) {
+                tempPiece = board.getPieceAt(row, file1);
+                board.setPieceAt(board.getPieceAt(row, file2), row, file1);
+                board.setPieceAt(tempPiece, row, file2);
+            }
+            modifierOfferedThisCycle = true;
+            return;
+        }
+        board.addModifier(modifier);
+        modifierOfferedThisCycle = true; // prevents infinite loop of modifiers
+                                         // being offered
+    }
+
+
+    /**
+     * Considers whether modifiers should be offered or not based on move number
+     * and whether modifiers were already offered
+     * 
+     * @return true if modifiers should be offered and false if not
+     */
+    public boolean shouldOfferModifier()
+    {
+        return (moveCount > 0 && moveCount % 5 == 0 && !modifierOfferedThisCycle);
+    }
+
+
+    /**
+     * Checks if a move is illegal based on current modifiers
+     * 
+     * @param piece
+     *            the piece in question of being able to move
+     * @return true if the piece is illegal, false if it is legal
+     */
+    private boolean isBlockedByModifier(Piece piece, int toRow, int toCol)
+    {
+        // check if blocked by a brick
+        if (board.getPieceAt(toRow, toCol) instanceof Brick) {
+            return true;
+        }
+
+        // cycle through active modifiers
+        for (Modifier m : board.getActiveModifiers())
+        {
+            Class<?> required = m.affectedClass();
+            if (required != null && !required.isInstance(piece))
+            {
+                return true;
+            }
+            if (m.getType() == Modifier.Type.INVINCIBLE_PAWNS)
+            {
+                Piece target = board.getPieceAt(toRow, toCol);
+                if (target instanceof Pawn)
+                {
+                    return true;
+                }
+            }
+            else if (m.getType() == Modifier.Type.SANCTUARY)
+            {
+                if (m.getAffectedRow() == toRow && m.getAffectedCol() == toCol
+                    && board.getPieceAt(toRow, toCol) != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Handles modifiers on their expiration
+     * 
+     * @param expiredModifiers
+     *            all the modifiers that have expired
+     */
+    private void handleExpiredModifiers(ArrayList<Modifier> expiredModifiers)
+    {
+        for (Modifier m : expiredModifiers)
+        {
+            if (m.getType() == Modifier.Type.EXPLODING_PIECE)
+            {
+                Piece piece = m.getAffectedPiece();
+                int row = piece.getRow();
+                int col = piece.getCol();
+
+                stuffToKaboom.add(new int[] {row, col});
+            }
+            // add more conditions for new modifiers
+        }
+    }
+
+    /**
+     * Method for determining whether or not a player has a specific type of piece
+     * @param pieceClass the type of piece
+     * @param color the color of the piece/the player
+     * @return true if they do have a piece of that type and color, false otherwise
+     */
+    private boolean hasPieceOfTypeForColor(Class<?> pieceClass, Color color) {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                Piece p = board.getPieceAt(r, c);
+                if (p != null && p.getColor() == color && pieceClass.isInstance(p))
+                    return true;
+            }
+        }
+        return false;
+    }  
+
+    /**
+     * Checks whether or not modifiers still make sense for the board, and cancels them if necessary
+     * Example: Pawns Only modifier will be cancelled if a player has no pawns left
+     */
+    private void validateActiveModifiers() {
+        for (int i = 0; i < board.getActiveModifiers().size(); i++) {
+            Modifier m = board.getActiveModifiers().get(i);
+            boolean shouldRemove = false;
+            switch (m.getType()) {
+                case PAWNS_ONLY:
+                    shouldRemove = !bothPlayersHavePieceOfType(Pawn.class);
+                    break;
+                case INVINCIBLE_PAWNS:
+                    shouldRemove = !hasAnyPieceOfType(Pawn.class);
+                    break;
+                case EXPLODING_PIECE:
+                case SNIPER_BISHOP:
+                    shouldRemove = m.getAffectedPiece() == null
+                        || board.getPieceAt(
+                            m.getAffectedPiece().getRow(),
+                            m.getAffectedPiece().getCol()) != m.getAffectedPiece();
+                    break;
+                // add more cases as needed
+                default:
+                    break;
+            }
+            if (shouldRemove) {
+                board.getActiveModifiers().remove(i);
+                i--;
+            }
+        }
+    }
+
+    /**
+     * Sets the coordinates for Portal 1
+     * @param row the row where the portal is set
+     * @param col the col where the portal is set
+     */
+    public void setPortal1Pos(int row, int col) {
+        Portal1[0] = row;
+        Portal1[1] = col;
+    }
+
+    /**
+     * Getter method for the coordinates of Portal 1
+     * @return an int[] representing the coordinates
+     */
+    public int[] getPortal1() {
+        return new int[]{Portal1[0], Portal1[1]};
+    }
+    
+    /**
+     * Getter method for the coordinates of Portal 2
+     * @return an int[] representing the coordinates
+     */
+    public int[] getPortal2() {
+        return new int[]{Portal2[0], Portal2[1]};
+    }
+
+    /**
+     * Sets the coordinates for Portal 2
+     * @param row the row where the portal is set
+     * @param col the col where the portal is set
+     */
+    public void setPortal2Pos(int row, int col) {
+        Portal2[0] = row;
+        Portal2[1] = col;
+    }
+
+    /**
+     * Sets the state of the portals (true = active; false = inactive)
+     * @param state the state of the portals
+     */
+    public void setPortalsActive(boolean state) {
+        portalsActive = true;
+    }
+
+    /**
+     * Returns the state of the portals
+     * @return true if the portals are active, false if not
+     */
+    public boolean arePortalsActive() {
+        return portalsActive;
+    }
+
+    /**
+     * Handles the modifier choice chosen by the player
+     * 
+     * @param options
+     *            An array list of Modifiers that were offered to the player
+     * @param choice
+     *            The choice is the index of options that was selected by the
+     *            player
+     */
+    public Modifier handleModifierChoice(Modifier.Type[] options, int choice)
+    {
+        Modifier modifier;
+        if (options[choice] == Modifier.Type.EXPLODING_PIECE)
+        {
+            
+            int[] square = getBoard().randomSquare(Knight.class, getCurrentTurn());
+            Piece knight = getBoard().getPieceAt(square[0], square[1]);
+            System.out.println(
+                "The knight on " + (char)('a' + knight.getCol()) + Math.abs(knight.getRow() - 8)
+                    + " is about to explode mi bomboclat in 5 turns");
+            modifier = new Modifier(10, Modifier.Type.EXPLODING_PIECE, knight);
+        }
+        else if (options[choice] == Modifier.Type.SNIPER_BISHOP)
+        {
+            int[] square = getBoard().randomSquare(Bishop.class, getCurrentTurn());
+            Piece bishop = getBoard().getPieceAt(square[0], square[1]);
+            System.out.println(
+                "The bishop on " + (char)('a' + bishop.getCol()) + Math.abs(bishop.getRow() - 8)
+                    + " is una esniper for 5 turns");
+            modifier = new Modifier(5, Modifier.Type.SNIPER_BISHOP, bishop);
+        }
+        else if (options[choice] == Modifier.Type.BRICK) {
+            setModifierOfferedThisCycle(true);
+            return new Modifier(0, Modifier.Type.BRICK);
+        }
+        else if (options[choice] == Modifier.Type.FILE_SWAP) {
+            Random rand = new Random();
+            int file1 = rand.nextInt(8);
+            int file2;
+
+            do {
+                file2 = rand.nextInt(8);
+            } while (file2 == file1);
+
+            modifier = new Modifier(0, Modifier.Type.FILE_SWAP, file1, file2);
+        }
+        else
+        {
+            modifier = new Modifier(5, options[choice]);
+        }
+
+        addModifier(modifier);
+        return modifier;
+    }
+
+    /**
+     * Sets the state of modifierOfferedThisCycle
+     * @param state the state of whether or not modifiers were offered this cycle
+     */
+    public void setModifierOfferedThisCycle(boolean state) {
+        modifierOfferedThisCycle = state;
+    }
+
+    // ==================== GAME STATE ====================
+
+    /**
+     * Getter method for moveCount
+     * @return returns the moveCount
+     */
+    public int getMoveCount() {
+        return moveCount;
+    }
+    
+    /**
+     * Checks whether or not the kings are alive
+     * @return true if both kings are alive, false if any are dead
+     */
+    private boolean checkKingsAlive()
+    {
+        boolean whiteKingAlive = false;
+        boolean blackKingAlive = false;
+        for (int row = 0; row < board.getBoard().length; row++)
+        {
+            for (int col = 0; col < board.getBoard()[0].length; col++)
+            {
+                Piece piece = board.getPieceAt(row, col);
+                if (piece instanceof King)
+                {
+                    if (piece.getColor() == Color.WHITE)
+                    {
+                        whiteKingAlive = true;
+                    }
+                    else
+                    {
+                        blackKingAlive = true;
+                    }
+                }
+            }
+        }
+        if (!whiteKingAlive && !blackKingAlive)
+        {
+            gameOver = true;
+            winner = Color.GRAY;
+            System.out.println("DRAW: BOTH KINGS ARE DEAD");
+            return true;
+        }
+        if (!whiteKingAlive || !blackKingAlive)
+        {
+            gameOver = true;
+            if (whiteKingAlive)
+            {
+                winner = Color.WHITE;
+            }
+            else
+            {
+                winner = Color.BLACK;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * returns a stack of captured pieces
+     * @param color the color of the pieces that were captured
+     * @return a stack of all captured pieces of that color
+     */
+    public Stack<Piece> getCapturedPieces(Color color) {
+        if (color == Color.WHITE) {
+            return capturedWhitePieces;
+        }
+        return capturedBlackPieces;
+    }
+
+    /**
+     * Switches the turn and sets modifierOfferedThisCycle to false to avoid infinite looping
+     */
+    public void switchTurn() {
+        System.out.println("switchTurn called, before: " + currentTurn);
+        currentTurn = (currentTurn == Color.WHITE) ? Color.BLACK : Color.WHITE;
+        modifierOfferedThisCycle = false;
+    }
+
+    /**
+     * Checks if there is any piece of the given type on the board
+     * @param pieceClass the class of the piece
+     * @return true if there are any pieces of that type on the board, false if otherwise
+     */
+    private boolean hasAnyPieceOfType(Class<?> pieceClass)
+    {
+        for (int r = 0; r < 8; r++)
+        {
+            for (int c = 0; c < 8; c++)
+            {
+                Piece p = board.getPieceAt(r, c);
+                if (p != null && pieceClass.isInstance(p))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if both players have a piece of a certain type
+     * @param pieceClass the type of piece
+     * @return true if both players do have a piece of a certain type, false if not
+     */
+    private boolean bothPlayersHavePieceOfType(Class<?> pieceClass)
+    {
+        return hasPieceOfTypeForColor(pieceClass, Color.WHITE)
+            && hasPieceOfTypeForColor(pieceClass, Color.BLACK);
+    }
+
+    /**
+     * Checks if both players have a pawn that can be moved backwards
+     * @return true if both players do, false if at least one of the players cannot
+     */
+    private boolean hasAnyPawnThatCanBackUp()
+    {
+        for (int row = 0; row < 8; row++)
+        {
+            for (int col = 0; col < 8; col++)
+            {
+                Piece piece = board.getPieceAt(row, col);
+                if (piece instanceof Pawn)
+                {
+                    int targetRow = piece.getColor() == Color.WHITE ? row + 1 : row - 1;
+                    if (targetRow >= 0 && targetRow < 8
+                        && board.getPieceAt(targetRow, col) == null)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private ArrayList<int[]> stuffToKaboom = new ArrayList<>();
+
+    /**
+     * Executes code for the modifier MI_BOMBO to explode
+     * @return an arraylist<int[]> representing all the coordinates that must be exploded after the animation
+     */
+    public ArrayList<int[]> kaboomKnight()
+    {
+        ArrayList<int[]> copy = new ArrayList<>(stuffToKaboom);
+        stuffToKaboom.clear();
+        return copy;
+    }
+}
