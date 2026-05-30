@@ -747,7 +747,7 @@ public class BoardUI extends JFrame {
     }
 
     /**
-     * 
+     * Ends the game with the condiiton that it ended in forfeit.
      */
     public void endGameForfeit() {
         Color winner = game.winner();
@@ -778,6 +778,13 @@ public class BoardUI extends JFrame {
 
     // ------------------SHOW MODS METHOD -----------///
 
+    /**
+     * Creates the pop up that allows players to select a modifier. Certain modifiers
+     * choices are retrived from game and presented to the player. Chosen modifier
+     * is updated on the board.
+     * 
+     * @param options
+     */
     public void showMods(Modifier.Type[] options) {
         redrawBoard();
         choosingModifier = true;
@@ -843,6 +850,10 @@ public class BoardUI extends JFrame {
         choosingModifier = false;
     }
 
+    /**
+     * Simple helper for long boolean statements in modifier methods
+     * @return
+     */
     private boolean isPlacementModifierActive() {
         return placingSanctuary
             || placingWall
@@ -851,10 +862,19 @@ public class BoardUI extends JFrame {
             || placingResurrection;
     }
 
+    /**
+     * Returns the tile color of the tile at the indicated position on the board
+     * @param i
+     * @param j
+     * @return
+     */
     private Color tileColor(int i, int j) {
         return ((i + j) % 2 == 0) ? VERY_LIGHT_BROWN : DARK_BROWN;
     }
 
+    /**
+     * Redraws the whole board, updating each tile sperately
+     */
     public void redrawBoard() // Our main source of lag/delay
     {
         board.removeAll();
@@ -879,12 +899,23 @@ public class BoardUI extends JFrame {
         updateActiveModifiersPanel();
     }
 
+    /**
+     * Adds a message to the game log panel
+     * @param message
+     */
     private void addChatMessage(String message) {
         textBody.append("\n" + message);
         textBody.setCaretPosition(textBody.getDocument().getLength());// Just sets where the next append will be, so rn
                                                                       // at the end of all msgs
     }
 
+    /**
+     * Loads in the icons used for modifiers like mi bombo or sniper bishop and places
+     * them on the top left corner of piece
+     * @param piece
+     * @param modPath
+     * @return
+     */
     private JPanel makeModifiedPieceSprite(Piece piece, String modPath) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(tileSize, tileSize));
@@ -914,6 +945,9 @@ public class BoardUI extends JFrame {
         return sprite;
     }
 
+    /**
+     * Updates the active modifier panel with the active modifiers retrived from game
+     */
     private void updateActiveModifiersPanel() {
         ArrayList<Modifier> modifiers = boardgrid.getActiveModifiers();
 
@@ -941,6 +975,12 @@ public class BoardUI extends JFrame {
         activeModifiersText.setText(text);
     }
 
+    /**
+     * Outlines the legal moves a certain piece at the indicated position on the board can move to
+     * using piece can move to logic.
+     * @param row
+     * @param col
+     */
     private void highlightLegalMoves(int row, int col)
     {
         Piece piece  = boardgrid.getPieceAt(row, col);
@@ -960,6 +1000,12 @@ public class BoardUI extends JFrame {
         }
     }
 
+    /**
+     * Loads the gif animation, temporarily freezes tile clicks to allow for the animation to play
+     * and carrys out the intended effect of the mi bombo modifier
+     * @param row
+     * @param col
+     */
     public void playBomboExplosion(int row, int col)
     {
         animationPlaying = true;
